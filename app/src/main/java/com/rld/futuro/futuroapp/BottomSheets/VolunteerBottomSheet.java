@@ -24,6 +24,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private BottomSheetBehavior bottomSheetBehavior;
 
     private FragmentManager fragmentManager;
+    private Fragment currentFragment;
 
     public VolunteerBottomSheet() {
 
@@ -63,22 +64,22 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         PersonalFragment personalFragment = new PersonalFragment();
         AddressFragment addressFragment = new AddressFragment();
-        Fragment currentFragment = personalFragment;
+        currentFragment = personalFragment;
 
         fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();;
 
         ((ImageButton) view.findViewById(R.id.volunteer_bs_ib_close))
                 .setOnClickListener(v -> {
-                    showFragment(currentFragment, addressFragment, fragmentManager);
+                    dismiss();
                 });
 
         setCancelable(false);
         return bottomSheet;
     }
 
-    private void showFragment(Fragment currentFragment, Fragment fragment, FragmentManager fragmentManager) {
+    private void showFragment(Fragment fragment, FragmentManager fragmentManager) {
         fragmentManager.beginTransaction().hide(currentFragment).show(fragment).commit();
         currentFragment = fragment;
     }
