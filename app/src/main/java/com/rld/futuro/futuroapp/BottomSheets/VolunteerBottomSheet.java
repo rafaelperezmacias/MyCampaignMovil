@@ -15,7 +15,6 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.rld.futuro.futuroapp.Fragments.VolunteerBS.AddressFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
 import com.rld.futuro.futuroapp.R;
 
@@ -51,24 +50,15 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Toolbar toolbar = view.findViewById(R.id.volunter_bs_toolbar);
-            NestedScrollView nestedScrollView = view.findViewById(R.id.volunteer_bs_nested);
-            nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener)
-                    (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                        if(scrollY == 0) {
-                            toolbar.setElevation(0);
-                        } else {
-                            toolbar.setElevation(8);
-                        }
-                    });
+            toolbar.setElevation(12.0f);
         }
 
         PersonalFragment personalFragment = new PersonalFragment();
-        AddressFragment addressFragment = new AddressFragment();
         currentFragment = personalFragment;
 
         fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();;
+        // fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();;
 
         ((ImageButton) view.findViewById(R.id.volunteer_bs_ib_close))
                 .setOnClickListener(v -> {

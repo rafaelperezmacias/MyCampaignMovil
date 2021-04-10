@@ -48,22 +48,11 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/volunteer_bs_nested"
+    <androidx.fragment.app.FragmentContainerView
         android:layout_below="@+id/volunter_bs_toolbar"
+        android:id="@+id/volunteer_bs_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false">
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/volunteer_bs_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </androidx.fragment.app.FragmentContainerView>
-
-
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="match_parent">
+    </androidx.fragment.app.FragmentContainerView>
 
 </RelativeLayout>
