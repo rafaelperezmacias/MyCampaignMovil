@@ -15,7 +15,10 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
+import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
+import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
 import com.rld.futuro.futuroapp.R;
 
 public class VolunteerBottomSheet extends BottomSheetDialogFragment {
@@ -48,16 +51,19 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             @Override public void onSlide(@NonNull View view, float v) { }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Toolbar toolbar = view.findViewById(R.id.volunter_bs_toolbar);
             toolbar.setElevation(12.0f);
         }
 
         PersonalFragment personalFragment = new PersonalFragment();
+        ContactFragment contactFragment = new ContactFragment();
+        OtherFragment otherFragment = new OtherFragment();
+        SectionFragment sectionFragment = new SectionFragment();
         currentFragment = personalFragment;
 
         fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).commit();
         // fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();;
 
         ((ImageButton) view.findViewById(R.id.volunteer_bs_ib_close))
