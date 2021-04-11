@@ -32,6 +32,9 @@ public class Volunteer {
 
     private String notes;
 
+    //
+    private boolean isJalisco;
+
     public Volunteer() {
         this.names = "";
         this.lastNames = "";
@@ -58,7 +61,7 @@ public class Volunteer {
         this.notes = "";
     }
 
-    public String convertImageToString(Bitmap image){
+    public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, array);
         byte[] bytes = array.toByteArray();
@@ -214,7 +217,4 @@ public class Volunteer {
         return notes;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 }

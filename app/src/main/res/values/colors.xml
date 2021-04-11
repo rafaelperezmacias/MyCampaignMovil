@@ -7,9 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_blue_600">#FF039BE5</color>
-    <color name="light_blue_900">#FF01579B</color>
-    <color name="light_blue_A200">#FF40C4FF</color>
-    <color name="light_blue_A400">#FF00B0FF</color>
-    <color name="black_overlay">#66000000</color>
+
+    <color name="error_r_background">#FFDCE0</color>
+    <color name="error_r_text">#86181D</color>
+    <color name="error_r">#d9534f</color>
+
+    <color name="error_y_background">#ffe69c</color>
+    <color name="error_y_text">#cc9a06</color>
+    <color name="error_y">#ffc107</color>
 </resources>

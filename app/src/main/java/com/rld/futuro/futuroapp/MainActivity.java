@@ -13,10 +13,11 @@ import com.rld.futuro.futuroapp.Models.Volunteer;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    ArrayList<Volunteer> volunteers;
-    Volunteer volunteer;
-    JSONManager jsonManager;
-    TextView text;
+
+    private ArrayList<Volunteer> volunteers;
+    private Volunteer volunteer;
+    private JSONManager jsonManager;
+    private TextView text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
                     jsonManager.createJSON(volunteers);
                     text.setText(jsonManager.getJson().toString());
                 });
-
-
-
     }
+
 }
