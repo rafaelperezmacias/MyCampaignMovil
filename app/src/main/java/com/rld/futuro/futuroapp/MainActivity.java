@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
 import com.rld.futuro.futuroapp.Models.JSONManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 
@@ -29,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
 
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener( v -> {
-                    //VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet();
-                    //volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
-                    volunteer = new Volunteer();
+                    VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers);
+                    volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+
+                    /*volunteer = new Volunteer();
                     volunteer.setNames("Luis");
                     volunteer.setLastNames("Rayas");
                     volunteer.setAddressName("Real de Liliput");
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                     jsonManager = new JSONManager();
                     jsonManager.createJSON(volunteers);
-                    text.setText(jsonManager.getJson().toString());
+                    text.setText(jsonManager.getJson().toString()); */
                 });
     }
 

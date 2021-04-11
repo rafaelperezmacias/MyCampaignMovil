@@ -111,7 +111,8 @@ public class ContactFragment extends Fragment {
         for ( State state : states ) {
             if ( state.getName().equals(lytStates.getEditText().getText().toString()) ) {
                 volunteer.setJalisco(state.getName().equals("Jalisco"));
-                volunteer.setState(state);
+                volunteer.setState(state.getName());
+                volunteer.setStateNumber(state.getNumber());
                 break;
             }
         }
@@ -128,6 +129,12 @@ public class ContactFragment extends Fragment {
             //TODO Validar la seccion seleccionada
         }
         return true;
+    }
+
+    public void setVolunteer() {
+        volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
+        volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
+        volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
     }
 
     private boolean isStateSelected() {

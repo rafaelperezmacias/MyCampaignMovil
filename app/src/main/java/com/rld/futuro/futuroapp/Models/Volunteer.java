@@ -24,6 +24,7 @@ public class Volunteer {
 
     // Casillas
     private String state;
+    private int stateNumber;
     private String section;
     private String municipality;
     private String sector;
@@ -67,6 +68,22 @@ public class Volunteer {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public int getStateNumber() {
+        return stateNumber;
+    }
+
+    public void setStateNumber(int stateNumber) {
+        this.stateNumber = stateNumber;
+    }
+
+    public boolean isJalisco() {
+        return isJalisco;
+    }
+
+    public void setJalisco(boolean jalisco) {
+        isJalisco = jalisco;
     }
 
     public String getNames() {
@@ -217,4 +234,30 @@ public class Volunteer {
         return notes;
     }
 
+    @Override
+    public String toString() {
+        return "Volunteer{" +
+                "names='" + names + '\'' +
+                ", lastNames='" + lastNames + '\'' +
+                ", addressName='" + addressName + '\'' +
+                ", addressNumExt='" + addressNumExt + '\'' +
+                ", addressNumInt='" + addressNumInt + '\'' +
+                ", suburb='" + suburb + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", electorKey='" + electorKey + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", imgString='" + imgString + '\'' +
+                ", img=" + img +
+                ", state='" + state + '\'' +
+                ", stateNumber=" + stateNumber +
+                ", section='" + section + '\'' +
+                ", municipality='" + municipality + '\'' +
+                ", sector='" + sector + '\'' +
+                ", localDistrict='" + localDistrict + '\'' +
+                ", federalDistrict='" + federalDistrict + '\'' +
+                ", notes='" + notes + '\'' +
+                ", isJalisco=" + isJalisco +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package com.rld.futuro.futuroapp.BottomSheets;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 
+import java.util.ArrayList;
+
 public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -34,8 +37,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private Volunteer volunteer;
 
-    public VolunteerBottomSheet() {
+    private ArrayList<Volunteer> volunteers;
+
+    public VolunteerBottomSheet(ArrayList<Volunteer> volunteers)
+    {
         volunteer = new Volunteer();
+        this.volunteers = volunteers;
     }
 
     @Override
@@ -111,6 +118,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 if ( !personalFragment.isComplete() ) {
                     return;
                 }
+                personalFragment.setVolunteer();
                 btnSave.setText(getString(R.string.fbs_continue));
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
                 txtSubtitle.setText(getString(R.string.fbs_step2));
@@ -121,10 +129,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 if ( !contactFragment.isComplete() ) {
                     return;
                 }
+
                 contactFragment.getState();
                 sectionFragment.setState();
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step3));
+                contactFragment.setVolunteer();
                 showFragment(sectionFragment, fragmentManager);
 
             } else if ( currentFragment == sectionFragment ) {
@@ -133,6 +143,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
 
+                sectionFragment.setVolunter();
                 txtSubtitle.setText(getString(R.string.fbs_step4));
                 showFragment(otherFragment, fragmentManager);
                 btnSave.setText(getString(R.string.fbs_finish));
@@ -140,6 +151,8 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
             } else if ( currentFragment == otherFragment ) {
                 Toast.makeText(getContext(), "Guardar", Toast.LENGTH_SHORT).show();
+                Log.e("Volunteer", "" + volunteer.toString());
+                volunteers.add(volunteer);
             }
 
         });

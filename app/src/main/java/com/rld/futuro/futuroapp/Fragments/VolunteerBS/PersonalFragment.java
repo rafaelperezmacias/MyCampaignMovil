@@ -44,6 +44,17 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
+    public void setVolunteer() {
+        volunteer.setLastNames(lytLastNames.getEditText().getText().toString().trim());
+        volunteer.setNames(lytNames.getEditText().getText().toString().trim());
+        volunteer.setAddressName(lytStreet.getEditText().getText().toString().trim());
+        volunteer.setAddressNumExt(lytOutNumber.getEditText().getText().toString().trim());
+        if ( !lytComplement.getEditText().getText().toString().isEmpty() ) {
+            volunteer.setAddressNumInt(lytComplement.getEditText().getText().toString().trim());
+        }
+        volunteer.setZipCode(lytCP.getEditText().getText().toString().trim());
+    }
+
     public boolean isComplete() {
         return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
             | !TextInputLayoutUtils.isValid(lytLastNames, getString(R.string.fpvbs_lastNames_error))
