@@ -3,6 +3,7 @@
     android:id="@+id/volunteer_bs_nested"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="16dp"
@@ -184,7 +185,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcvbs_sections_cb_lyt"
+            android:id="@+id/fcvbs_sections_lyt"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -202,26 +203,48 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Field without image -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcvbs_sections_lyt"
-            android:visibility="gone"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="@string/fcvbs_section"
-            android:paddingStart="56dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="8dp"
-            app:errorEnabled="true">
+            android:layout_marginStart="56dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/error_y_background"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/error_y_background"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="0dp"
+            app:contentPadding="16dp"
+            app:strokeColor="@color/error_y_text"
+            app:strokeWidth="1dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:inputType="textCapWords"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </com.google.android.material.textfield.TextInputEditText>
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_baseline_warning_24"
+                    android:tint="@color/error_y"
+                    android:contentDescription="@string/icon"/>
+
+                <TextView
+                    android:id="@+id/fcvbs_cardError_txt"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/error_y_text"
+                    tools:text="@string/fcvbs_error_1"
+                    />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

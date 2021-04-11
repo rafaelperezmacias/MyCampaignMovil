@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
+import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 
 public class VolunteerBottomSheet extends BottomSheetDialogFragment {
@@ -30,8 +32,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
 
-    public VolunteerBottomSheet() {
+    private Volunteer volunteer;
 
+    public VolunteerBottomSheet() {
+        volunteer = new Volunteer();
     }
 
     @Override
@@ -60,12 +64,14 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         MaterialButton btnSave = view.findViewById(R.id.fvbs_save_btn);
         ImageButton btnClose = view.findViewById(R.id.fvbs_close_btn);
+        TextView txtSubtitle = view.findViewById(R.id.fvbs_subtitle);
 
-        PersonalFragment personalFragment = new PersonalFragment();
-        ContactFragment contactFragment = new ContactFragment();
-        OtherFragment otherFragment = new OtherFragment();
-        SectionFragment sectionFragment = new SectionFragment();
+        PersonalFragment personalFragment = new PersonalFragment(volunteer);
+        ContactFragment contactFragment = new ContactFragment(volunteer);
+        OtherFragment otherFragment = new OtherFragment(volunteer);
+        SectionFragment sectionFragment = new SectionFragment(volunteer);
         currentFragment = personalFragment;
+        txtSubtitle.setText(getString(R.string.fbs_step1));
 
         fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
@@ -74,53 +80,68 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
 
         btnClose.setOnClickListener(v -> {
-            int imageToButton = R.drawable.ic_baseline_arrow_back_24;
             if ( currentFragment == personalFragment ) {
+
                 Toast.makeText(getContext(), "Cerrar", Toast.LENGTH_SHORT).show();
-                // dismiss();
-                return;
+                // dismiss()
+
             } else if ( currentFragment == contactFragment ) {
+
+                btnClose.setImageResource(R.drawable.ic_sharp_close_24);
+                txtSubtitle.setText(getString(R.string.fbs_step1));
                 showFragment(personalFragment, fragmentManager);
-                imageToButton = R.drawable.ic_sharp_close_24;
+
             } else if ( currentFragment == sectionFragment ) {
+
+                txtSubtitle.setText(getString(R.string.fbs_step2));
                 showFragment(contactFragment, fragmentManager);
+
             } else if ( currentFragment == otherFragment ) {
+
+                btnSave.setText(getString(R.string.fbs_continue));
+                txtSubtitle.setText(getString(R.string.fbs_step3));
                 showFragment(sectionFragment, fragmentManager);
             }
-            btnSave.setText("CONTINUAR");
-            btnClose.setImageResource(imageToButton);
+
         });
 
         btnSave.setOnClickListener(v -> {
-            String textToButton = "CONTINUAR";
-            boolean printInfo = true;
             if ( currentFragment == personalFragment ) {
 
                 if ( !personalFragment.isComplete() ) {
-                    printInfo = false;
                     return;
                 }
+                btnSave.setText(getString(R.string.fbs_continue));
+                btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
+                txtSubtitle.setText(getString(R.string.fbs_step2));
                 showFragment(contactFragment, fragmentManager);
 
             } else if ( currentFragment == contactFragment ) {
 
                 if ( !contactFragment.isComplete() ) {
-                    printInfo = false;
                     return;
                 }
+                contactFragment.getState();
+                sectionFragment.setState();
+                btnSave.setText(getString(R.string.fbs_continue));
+                txtSubtitle.setText(getString(R.string.fbs_step3));
                 showFragment(sectionFragment, fragmentManager);
 
             } else if ( currentFragment == sectionFragment ) {
+
+                if ( !sectionFragment.isComplete() ) {
+                    return;
+                }
+
+                txtSubtitle.setText(getString(R.string.fbs_step4));
                 showFragment(otherFragment, fragmentManager);
-                textToButton = "FINALIZAR";
+                btnSave.setText(getString(R.string.fbs_finish));
+                btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
+
             } else if ( currentFragment == otherFragment ) {
                 Toast.makeText(getContext(), "Guardar", Toast.LENGTH_SHORT).show();
-                return;
             }
-            if ( printInfo ) {
-                btnSave.setText(textToButton);
-                btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
-            }
+
         });
 
         setCancelable(false);

@@ -20,7 +20,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
-            android:text="Identificacion de la sección"
+            android:text="@string/fsvbs_title"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
@@ -31,7 +31,7 @@
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             android:paddingBottom="10dp"
-            android:text="Estado"
+            android:text="@string/fsvbs_state"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
@@ -63,6 +63,7 @@
                     app:layout_constraintGuide_percent=".55"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fsvbs_stateName_lyt"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="@id/guideline50"
@@ -70,20 +71,21 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Nombre"
+                    android:hint="@string/fsvbs_name"
                     android:paddingStart="16dp"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:inputType="textCapWords"
+                        android:enabled="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                     </com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fsvbs_stateNumber_lyt"
                     app:layout_constraintLeft_toLeftOf="@id/guideline50"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -91,16 +93,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Número"
+                    android:hint="@string/fsvbs_number"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     app:errorEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:inputType="textCapWords"
+                        android:enabled="false"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                     </com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -111,10 +113,11 @@
 
         <!-- Field without image -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fsvbs_section_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Sección"
+            android:hint="@string/fSvbs_section"
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">
@@ -135,7 +138,7 @@
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             android:paddingBottom="10dp"
-            android:text="Municipio"
+            android:text="@string/fSvbs_municipio"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
@@ -164,6 +167,7 @@
                     app:layout_constraintGuide_percent=".55"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fsvbs_municipioName_lyt"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="@id/guideline502"
@@ -171,7 +175,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Nombre"
+                    android:hint="@string/fsvbs_name"
                     android:paddingStart="16dp"
                     app:errorEnabled="true">
 
@@ -179,12 +183,12 @@
                         android:inputType="textCapWords"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
                     </com.google.android.material.textfield.TextInputEditText>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/fsvbs_municipioNumber_lyt"
                     app:layout_constraintLeft_toLeftOf="@id/guideline502"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -192,7 +196,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Número"
+                    android:hint="@string/fsvbs_number"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     app:errorEnabled="true">
@@ -212,10 +216,11 @@
 
         <!-- Field without image -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fsvbs_sector_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Sector"
+            android:hint="@string/fSvbs_sector"
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">
@@ -224,7 +229,6 @@
                 android:inputType="textCapWords"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </com.google.android.material.textfield.TextInputEditText>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -245,11 +249,12 @@
                 android:contentDescription="@string/icon"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fsvbs_dlocal_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/icon1"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Distrito local"
+                android:hint="@string/fSvbs_distrito_local"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 app:errorEnabled="true">
@@ -267,10 +272,11 @@
 
         <!-- Field without image -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fsvbs_dfederal_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Distrito federal"
+            android:hint="@string/fSvbs_distrito_federal"
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">

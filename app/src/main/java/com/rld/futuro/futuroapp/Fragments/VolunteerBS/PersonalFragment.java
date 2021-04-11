@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
 
@@ -21,9 +22,11 @@ public class PersonalFragment extends Fragment {
     private TextInputLayout lytComplement;
     private TextInputLayout lytCP;
 
-    public PersonalFragment()
-    {
+    private Volunteer volunteer;
 
+    public PersonalFragment(Volunteer volunteer)
+    {
+        this.volunteer = volunteer;
     }
 
     @Nullable

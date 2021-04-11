@@ -8,13 +8,16 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 
 public class OtherFragment extends Fragment {
 
-    public OtherFragment()
-    {
+    private Volunteer volunteer;
 
+    public OtherFragment(Volunteer volunteer)
+    {
+        this.volunteer = volunteer;
     }
 
     @Nullable
