@@ -20,7 +20,7 @@
             android:gravity="center_vertical">
 
             <ImageButton
-                android:id="@+id/volunteer_bs_ib_close"
+                android:id="@+id/fvbs_close_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingStart="0dp"
@@ -30,40 +30,44 @@
                 android:tint="@color/black"
                 android:contentDescription="@string/icon" />
 
-            <TextView
+            <LinearLayout
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Registro de voluntario"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fbs_title"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+
+                <TextView
+                    android:id="@+id/fvbs_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Paso 1 de 4"/>
+
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/fvbs_save_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:textStyle="bold"
                 android:gravity="center"
-                android:text="CONTINUAR" />
+                android:text="@string/fbs_continue" />
 
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/volunteer_bs_nested"
+    <androidx.fragment.app.FragmentContainerView
         android:layout_below="@+id/volunter_bs_toolbar"
+        android:id="@+id/volunteer_bs_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false">
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/volunteer_bs_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </androidx.fragment.app.FragmentContainerView>
-
-
-    </androidx.core.widget.NestedScrollView>
+        android:layout_height="match_parent">
+    </androidx.fragment.app.FragmentContainerView>
 
 </RelativeLayout>

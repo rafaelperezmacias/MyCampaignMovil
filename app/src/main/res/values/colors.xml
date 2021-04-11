@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="error_r_background">#FFDCE0</color>
+    <color name="error_r_text">#86181D</color>
+    <color name="error_r">#d9534f</color>
+
+    <color name="error_y_background">#ffe69c</color>
+    <color name="error_y_text">#cc9a06</color>
+    <color name="error_y">#ffc107</color>
 </resources>
