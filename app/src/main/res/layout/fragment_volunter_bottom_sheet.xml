@@ -20,7 +20,7 @@
             android:gravity="center_vertical">
 
             <ImageButton
-                android:id="@+id/volunteer_bs_ib_close"
+                android:id="@+id/fvbs_close_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingStart="0dp"
@@ -38,6 +38,7 @@
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/fvbs_save_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"

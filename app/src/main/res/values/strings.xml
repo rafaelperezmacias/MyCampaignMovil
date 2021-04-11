@@ -1,4 +1,71 @@
 <resources>
     <string name="app_name">FuturoApp</string>
     <string name="icon">icon</string>
+
+    <!-- Fragment Datos personales Volunteer BottomSheet  -->
+    <string name="fpvbs_names">Nombre(s)</string>
+    <string name="fpvbs_names_error">Ingrese el nombre</string>
+    <string name="fpvbs_lastNames">Apellido(s)</string>
+    <string name="fpvbs_lastNames_error">Ingrese los apellidos</string>
+    <string name="fpvbs_street">Calle</string>
+    <string name="fpvbs_street_error">Ingrese la calle</string>
+    <string name="fpvbs_complement">Complemento</string>
+    <string name="fpvbs_out_number">Número Exterior</string>
+    <string name="fpvbs_out_number_error">Ingrese el número exterior</string>
+    <string name="fpvbs_cp">Código Postal</string>
+    <string name="fpvbs_cp_error">Ingrese el código postal</string>
+    <string name="fpvbs_address">Domicilio</string>
+    <string name="fpvbs_personal">Datos personales</string>
+
+    <!-- Fragment Contacto Volunteer BottomSheet  -->
+    <string name="fcvbs_id">Identificación</string>
+    <string name="fcvbs_key">Clave de elector</string>
+    <string name="fcvbs_key_error">Ingrese la clave de elector</string>
+    <string name="fcvbs_contact">Contacto</string>
+    <string name="fcvbs_email">Correo electrónico</string>
+    <string name="fcvbs_email_error">Ingrese el correo electrónico</string>
+    <string name="fcvbs_phone">Teléfono</string>
+    <string name="fcvbs_phone_error">Ingrese el teléfono</string>
+    <string name="fcvbs_searchSection">Búsqueda de casilla</string>
+    <string name="fcvbs_state">Estado</string>
+    <string name="fcvbs_state_error">Ingrese un estado valido</string>
+    <string name="fcvbs_section">Sección</string>
+    <string name="fcvbs_section_error">Sección</string>
+
+    <!-- Estados de Mexico -->
+    <string-array name="states">
+        <item>1-Aguascalientes</item>
+        <item>2-Baja California</item>
+        <item>3-Baja California Sur</item>
+        <item>4-Campeche</item>
+        <item>5-Coahuila</item>
+        <item>6-Colima</item>
+        <item>7-Chiapas</item>
+        <item>8-Chihuahua</item>
+        <item>9-Distrito Federal</item>
+        <item>10-Durango</item>
+        <item>11-Guanajuato</item>
+        <item>12-Guerrero</item>
+        <item>13-Hidalgo</item>
+        <item>14-Jalisco</item>
+        <item>15-México</item>
+        <item>16-Michoacán</item>
+        <item>17-Morelos</item>
+        <item>18-Nayarit</item>
+        <item>19-Nuevo León</item>
+        <item>20-Oaxaca</item>
+        <item>21-Puebla</item>
+        <item>22-Querétaro</item>
+        <item>23-Quintana Roo</item>
+        <item>24-San Luis Potosí</item>
+        <item>25-Sinaloa</item>
+        <item>26-Sonora</item>
+        <item>27-Tabasco</item>
+        <item>28-Tamaulipas</item>
+        <item>29-Tlaxcala</item>
+        <item>30-Veracruz</item>
+        <item>31-Yucatán</item>
+        <item>32-Zacatecas</item>
+    </string-array>
+
 </resources>

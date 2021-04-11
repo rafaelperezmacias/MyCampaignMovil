@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.button.MaterialButton;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
@@ -56,6 +58,9 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             toolbar.setElevation(12.0f);
         }
 
+        MaterialButton btnSave = view.findViewById(R.id.fvbs_save_btn);
+        ImageButton btnClose = view.findViewById(R.id.fvbs_close_btn);
+
         PersonalFragment personalFragment = new PersonalFragment();
         ContactFragment contactFragment = new ContactFragment();
         OtherFragment otherFragment = new OtherFragment();
@@ -63,13 +68,60 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         currentFragment = personalFragment;
 
         fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).commit();
-        // fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, addressFragment).hide(addressFragment).commit();;
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
 
-        ((ImageButton) view.findViewById(R.id.volunteer_bs_ib_close))
-                .setOnClickListener(v -> {
-                    dismiss();
-                });
+        btnClose.setOnClickListener(v -> {
+            int imageToButton = R.drawable.ic_baseline_arrow_back_24;
+            if ( currentFragment == personalFragment ) {
+                Toast.makeText(getContext(), "Cerrar", Toast.LENGTH_SHORT).show();
+                // dismiss();
+                return;
+            } else if ( currentFragment == contactFragment ) {
+                showFragment(personalFragment, fragmentManager);
+                imageToButton = R.drawable.ic_sharp_close_24;
+            } else if ( currentFragment == sectionFragment ) {
+                showFragment(contactFragment, fragmentManager);
+            } else if ( currentFragment == otherFragment ) {
+                showFragment(sectionFragment, fragmentManager);
+            }
+            btnSave.setText("CONTINUAR");
+            btnClose.setImageResource(imageToButton);
+        });
+
+        btnSave.setOnClickListener(v -> {
+            String textToButton = "CONTINUAR";
+            boolean printInfo = true;
+            if ( currentFragment == personalFragment ) {
+
+                if ( !personalFragment.isComplete() ) {
+                    printInfo = false;
+                    return;
+                }
+                showFragment(contactFragment, fragmentManager);
+
+            } else if ( currentFragment == contactFragment ) {
+
+                if ( !contactFragment.isComplete() ) {
+                    printInfo = false;
+                    return;
+                }
+                showFragment(sectionFragment, fragmentManager);
+
+            } else if ( currentFragment == sectionFragment ) {
+                showFragment(otherFragment, fragmentManager);
+                textToButton = "FINALIZAR";
+            } else if ( currentFragment == otherFragment ) {
+                Toast.makeText(getContext(), "Guardar", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if ( printInfo ) {
+                btnSave.setText(textToButton);
+                btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
+            }
+        });
 
         setCancelable(false);
         return bottomSheet;

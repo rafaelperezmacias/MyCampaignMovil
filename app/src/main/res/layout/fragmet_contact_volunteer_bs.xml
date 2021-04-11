@@ -20,7 +20,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
-            android:text="Identificación"
+            android:text="@string/fcvbs_id"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
@@ -40,11 +40,12 @@
                 android:contentDescription="@string/icon"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fcvbs_electorKey_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/icon"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Clave de elector"
+                android:hint="@string/fcvbs_key"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 app:errorEnabled="true">
@@ -53,7 +54,6 @@
                     android:inputType="textCapWords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -63,7 +63,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/> -->
+            android:background="@android:color/darker_gray"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
-            android:text="Contacto"
+            android:text="@string/fcvbs_contact"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
@@ -92,11 +92,12 @@
                 android:contentDescription="@string/icon"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fcvbs_email_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/icon1"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Correo electrónico"
+                android:hint="@string/fcvbs_email"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 app:errorEnabled="true">
@@ -105,7 +106,6 @@
                     android:inputType="textCapWords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -128,11 +128,12 @@
                 android:contentDescription="@string/icon"/>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fcvbs_phone_lyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/icon2"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Teléfono"
+                android:hint="@string/fcvbs_phone"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 app:errorEnabled="true">
@@ -141,7 +142,6 @@
                     android:inputType="textCapWords"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
                 </com.google.android.material.textfield.TextInputEditText>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -151,7 +151,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/> -->
+            android:background="@android:color/darker_gray"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -160,17 +160,17 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
-            android:text="Búsqueda de casilla"
+            android:text="@string/fcvbs_searchSection"
             android:textColor="@android:color/black"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
         <!-- Field without image -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcv_states_cb"
+            android:id="@+id/fcvbs_states_lyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:hint="Estado"
+            android:hint="@string/fcvbs_state"
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">
@@ -179,17 +179,17 @@
                 android:inputType="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </AutoCompleteTextView>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcv_sections_cb"
+            android:id="@+id/fcvbs_sections_cb_lyt"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:hint="Sección"
+            android:hint="@string/fcvbs_section"
             android:paddingStart="56dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">
@@ -198,8 +198,28 @@
                 android:inputType="none"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </AutoCompleteTextView>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Field without image -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fcvbs_sections_lyt"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="@string/fcvbs_section"
+            android:paddingStart="56dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textCapWords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </com.google.android.material.textfield.TextInputEditText>
 
         </com.google.android.material.textfield.TextInputLayout>
 
