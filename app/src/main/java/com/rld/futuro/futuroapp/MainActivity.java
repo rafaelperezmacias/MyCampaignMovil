@@ -1,10 +1,15 @@
 package com.rld.futuro.futuroapp;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
@@ -15,23 +20,31 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+
     private ArrayList<Volunteer> volunteers;
     private Volunteer volunteer;
     private JSONManager jsonManager;
     private TextView text;
 
+    private static final int CODE_INTENT_MENU = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         volunteers = new ArrayList<>();
 
         text = findViewById(R.id.txt);
 
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener( v -> {
-                    VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers);
-                    volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                    startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
 
                     /*volunteer = new Volunteer();
                     volunteer.setNames("Luis");
@@ -57,4 +70,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if ( requestCode == CODE_INTENT_MENU ) {
+            if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
+                Toast.makeText(this, "TOMAR FOTO", Toast.LENGTH_SHORT).show();
+            } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
+                VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers);
+                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+            }
+        }
+    }
 }

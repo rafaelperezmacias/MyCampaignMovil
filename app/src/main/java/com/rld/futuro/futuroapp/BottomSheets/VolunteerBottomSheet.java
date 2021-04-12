@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -55,9 +54,8 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if(BottomSheetBehavior.STATE_HIDDEN == i) dismiss();
-                if(BottomSheetBehavior.STATE_DRAGGING == i) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                if( BottomSheetBehavior.STATE_HIDDEN == i ) {
+                    dismiss();
                 }
             }
 
@@ -88,9 +86,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         btnClose.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {
-
-                Toast.makeText(getContext(), "Cerrar", Toast.LENGTH_SHORT).show();
-                // dismiss()
+                dismiss();
 
             } else if ( currentFragment == contactFragment ) {
 

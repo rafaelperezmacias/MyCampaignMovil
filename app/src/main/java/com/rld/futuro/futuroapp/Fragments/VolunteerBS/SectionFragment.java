@@ -73,7 +73,7 @@ public class SectionFragment extends Fragment {
         lytStateName.getEditText().setText("" + volunteer.getState());
         lytStateNumber.getEditText().setText("" + volunteer.getStateNumber());
         if ( volunteer.isJalisco() ) {
-            lytSection.setEnabled(false);
+            lytSection.getEditText().setEnabled(false);
             lytSection.getEditText().setText("1234");
             lytSector.getEditText().requestFocus();
         }

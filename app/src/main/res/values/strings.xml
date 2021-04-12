@@ -59,6 +59,17 @@
     <string name="fSvbs_distrito_local_error">Ingrese el distrito local</string>
     <string name="fSvbs_distrito_federal">Distrito federal</string>
     <string name="fSvbs_distrito_federal_error">Ingrese el distrito federal</string>
+    <string name="amv_title">Registro de voluntarios</string>
+    <string name="amv_opc">O</string>
+    <string name="avm_take">Tomar una foto</string>
+    <string name="avm_capture">Captura manual</string>
+    <string name="fovbs_notes">Ingrese aqui sus notas (opcional).</string>
+    <string name="fovbs_notes_title">Notas</string>
+    <string name="fovbs_section_title">Identificacion de la sección</string>
+    <string name="fovbs_question_one">¿Va a cuidar la casilla en la sección donde vive?</string>
+    <string name="fovbs_yes">Si</string>
+    <string name="fovbs_no">No</string>
+    <string name="fovbs_repre">¿Qué tipo de representante es?</string>
 
     <!-- Estados de Mexico -->
     <string-array name="states">
