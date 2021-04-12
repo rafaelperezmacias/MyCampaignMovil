@@ -15,4 +15,13 @@
     <color name="error_y_background">#ffe69c</color>
     <color name="error_y_text">#cc9a06</color>
     <color name="error_y">#ffc107</color>
+
+    <color name="gray">#b1b1b1</color>
+
+    <color name="orange_liane">#f3911e</color>
+    <color name="dark_orange_liane">#ed5a25</color>
+    <color name="red_liane">#c83231</color>
+    <color name="yellow_liane">#f8c013</color>
+    <color name="light_orange_liane">#f8ad3b</color>
+
 </resources>

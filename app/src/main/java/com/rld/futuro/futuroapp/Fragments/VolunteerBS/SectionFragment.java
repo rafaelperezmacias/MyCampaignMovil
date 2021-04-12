@@ -49,6 +49,14 @@ public class SectionFragment extends Fragment {
         return view;
     }
 
+    public void setVolunter() {
+        volunteer.setSector(lytSector.getEditText().getText().toString().trim());
+        if ( !volunteer.isJalisco() ) {
+            volunteer.setSection(lytSection.getEditText().getText().toString().trim());
+            volunteer.setMunicipality(lytMunicipioName.getEditText().getText().toString().trim());
+        }
+    }
+
     public boolean isComplete() {
         if ( volunteer.isJalisco() ) {
             return TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error));
@@ -65,7 +73,7 @@ public class SectionFragment extends Fragment {
         lytStateName.getEditText().setText("" + volunteer.getState());
         lytStateNumber.getEditText().setText("" + volunteer.getStateNumber());
         if ( volunteer.isJalisco() ) {
-            lytSection.setEnabled(false);
+            lytSection.getEditText().setEnabled(false);
             lytSection.getEditText().setText("1234");
             lytSector.getEditText().requestFocus();
         }

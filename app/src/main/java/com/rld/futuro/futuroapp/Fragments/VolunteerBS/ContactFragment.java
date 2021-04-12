@@ -11,9 +11,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
@@ -32,8 +34,9 @@ public class ContactFragment extends Fragment {
     private TextInputLayout lytStates;
     private TextInputLayout lytSections;
 
-    private CardView cardError;
+    private MaterialCardView cardError;
     private TextView txtError;
+    private AppCompatImageView imgCardIcon;
 
     private List<State> states;
 
@@ -61,6 +64,7 @@ public class ContactFragment extends Fragment {
 
         cardError = view.findViewById(R.id.card_error);
         txtError = view.findViewById(R.id.fcvbs_cardError_txt);
+        imgCardIcon = view.findViewById(R.id.fbvbs_cardIcon_img);
 
         states = State.getStates(getContext());
         addStates();
@@ -78,11 +82,11 @@ public class ContactFragment extends Fragment {
                     if ( lytStates.getEditText().getText().toString().equals("Jalisco") ) {
                         lytSections.setVisibility(View.VISIBLE);
                         isJaliscoSelected = true;
-                        txtError.setText(getString(R.string.fcvbs_error_1));
+                        showCardError1();
                     } else {
                         lytSections.setVisibility(View.GONE);
                         isJaliscoSelected = false;
-                        txtError.setText(getString(R.string.fcvbs_error_2));
+                        showCardError2();
                     }
                 } else {
                     isStateValid = false;
@@ -96,6 +100,24 @@ public class ContactFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showCardError1() {
+        txtError.setText(getString(R.string.fcvbs_error_1));
+        cardError.setBackgroundColor(getContext().getResources().getColor(R.color.error_y_background));
+        cardError.setCardBackgroundColor(getContext().getResources().getColor(R.color.error_y_background));
+        cardError.setStrokeColor(getContext().getResources().getColor(R.color.error_y_text));
+        imgCardIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.error_y));
+        txtError.setTextColor(getContext().getResources().getColor(R.color.error_y_text));
+    }
+
+    private void showCardError2() {
+        txtError.setText(getString(R.string.fcvbs_error_2));
+        cardError.setBackgroundColor(getContext().getResources().getColor(R.color.error_r_background));
+        cardError.setCardBackgroundColor(getContext().getResources().getColor(R.color.error_r_background));
+        cardError.setStrokeColor(getContext().getResources().getColor(R.color.error_r_text));
+        imgCardIcon.setColorFilter(ContextCompat.getColor(getContext(), R.color.error_r));
+        txtError.setTextColor(getContext().getResources().getColor(R.color.error_r_text));
     }
 
     private void addStates() {
@@ -129,6 +151,12 @@ public class ContactFragment extends Fragment {
             //TODO Validar la seccion seleccionada
         }
         return true;
+    }
+
+    public void setVolunteer() {
+        volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
+        volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
+        volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
     }
 
     private boolean isStateSelected() {

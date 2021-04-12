@@ -72,6 +72,22 @@ public class Volunteer {
         return imgString;
     }
 
+    public int getStateNumber() {
+        return stateNumber;
+    }
+
+    public void setStateNumber(int stateNumber) {
+        this.stateNumber = stateNumber;
+    }
+
+    public boolean isJalisco() {
+        return isJalisco;
+    }
+
+    public void setJalisco(boolean jalisco) {
+        isJalisco = jalisco;
+    }
+
     public String getNames() {
         return names;
     }
