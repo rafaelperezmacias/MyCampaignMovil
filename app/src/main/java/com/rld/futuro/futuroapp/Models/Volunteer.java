@@ -24,6 +24,7 @@ public class Volunteer {
 
     // Casillas
     private String state;
+    private int stateNumber;
     private String section;
     private String municipality;
     private String sector;
@@ -52,6 +53,7 @@ public class Volunteer {
 
         // Casillas
         this.state = "";
+        this.stateNumber = -1;
         this.section = "";
         this.municipality = "";
         this.sector = "";
@@ -59,6 +61,7 @@ public class Volunteer {
         this.federalDistrict = "";
 
         this.notes = "";
+        this.isJalisco = false;
     }
 
     public String convertImageToString(Bitmap image) {
@@ -173,6 +176,22 @@ public class Volunteer {
         this.state = state;
     }
 
+    public int getStateNumber() {
+        return stateNumber;
+    }
+
+    public void setStateNumber(int stateNumber) {
+        this.stateNumber = stateNumber;
+    }
+
+    public boolean isJalisco() {
+        return isJalisco;
+    }
+
+    public void setJalisco(boolean jalisco) {
+        isJalisco = jalisco;
+    }
+
     public String getSection() {
         return section;
     }
@@ -217,4 +236,30 @@ public class Volunteer {
         return notes;
     }
 
+    @Override
+    public String toString() {
+        return "Volunteer{" +
+                "names='" + names + '\'' +
+                ", lastNames='" + lastNames + '\'' +
+                ", addressName='" + addressName + '\'' +
+                ", addressNumExt='" + addressNumExt + '\'' +
+                ", addressNumInt='" + addressNumInt + '\'' +
+                ", suburb='" + suburb + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", electorKey='" + electorKey + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", imgString='" + imgString + '\'' +
+                ", img=" + img +
+                ", state='" + state + '\'' +
+                ", stateNumber=" + stateNumber +
+                ", section='" + section + '\'' +
+                ", municipality='" + municipality + '\'' +
+                ", sector='" + sector + '\'' +
+                ", localDistrict='" + localDistrict + '\'' +
+                ", federalDistrict='" + federalDistrict + '\'' +
+                ", notes='" + notes + '\'' +
+                ", isJalisco=" + isJalisco +
+                '}';
+    }
 }

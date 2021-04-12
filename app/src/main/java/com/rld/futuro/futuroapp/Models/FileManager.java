@@ -1,19 +1,27 @@
 package com.rld.futuro.futuroapp.Models;
 
+import android.content.Context;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class JSONManager {
+public class FileManager {
+    private final String fileNameJSON;
+
     private JSONObject json;
 
-    public JSONManager() {
-        this.json = null;
+    public FileManager(){
+        json = null;
+        fileNameJSON = "data";
     }
 
-    public void createJSON(ArrayList<Volunteer> volunteers) {
+    private void createJSON(ArrayList<Volunteer> volunteers) {
         this.json = new JSONObject();
         JSONObject obj = null;
         JSONArray jsonArray = new JSONArray();
@@ -50,18 +58,53 @@ public class JSONManager {
             jsonArray.put(obj);
         }
         try {
-            getJson().put("users", jsonArray);
+            this.json.put("users", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void readJSON(){
+    public void saveFile(ArrayList<Volunteer> volunteers, Context context) {
+        FileOutputStream fileOutputStream = null;
+        createJSON(volunteers);
+        try {
+            fileOutputStream = context.openFileOutput(fileNameJSON + ".json", context.MODE_PRIVATE);
+            fileOutputStream.write(this.json.toString().getBytes());
+            Log.d("TAG1", "Fichero Salvado en: " + context.getFilesDir() + "/" + fileNameJSON);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void deleteFile(Context context){
+        File file = new File(context.getFilesDir() + "/" + fileNameJSON + ".json");
+        if (file.exists()){
+            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
+            file.delete();
+        } else {
+            Log.d("TAG1", "archivo no existente");
+        }
+    }
+
+    public void readFile(Context context){
 
     }
 
+    public String getFileName() {
+        return fileNameJSON;
+    }
+
     public void deleteCurrentJSON(){
-        this.json = null;
+        if (json != null)
+            json = null;
     }
 
     public JSONObject getJson() {
