@@ -3,7 +3,7 @@
     <string name="icon">icon</string>
 
     <!-- inputs caracter -->
-    <string name="input_only_leters_to_upper">ABCDEFGHIJKLMNÑOPQRSTUVWXYZ</string>
+    <string name="input_only_leters_to_upper">ABCDEFGHIJKLMNÑ OPQRSTUVWXYZ</string>
 
     <!-- Volunteer BottomSheet  -->
     <string name="fbs_title">Registro de voluntario</string>
