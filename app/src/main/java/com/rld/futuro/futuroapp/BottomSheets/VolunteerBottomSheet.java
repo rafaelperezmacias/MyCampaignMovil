@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
@@ -93,8 +94,16 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         btnClose.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {
-                dismiss();
+                new MaterialAlertDialogBuilder(mainActivity)
+                        .setTitle("Alerta")
+                        .setMessage("¿Esta seguro de querer cancelar el proceso?")
+                        .setNegativeButton("Quedarme", (dialog, which) -> {
 
+                        })
+                        .setPositiveButton("Si", (dialog, which) -> {
+                            dismiss();
+                        })
+                        .show();
             } else if ( currentFragment == contactFragment ) {
 
                 btnClose.setImageResource(R.drawable.ic_sharp_close_24);
