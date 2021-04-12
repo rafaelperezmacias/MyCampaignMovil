@@ -1,40 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/am_main_lyt"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/imgTest"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".MainActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        app:titleTextColor="@color/white"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/light_orange_liane"
-        app:popupTheme="@style/Menu" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnTest"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            app:titleTextColor="@color/white"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Click" />
+            android:background="@color/light_orange_liane"
+            app:popupTheme="@style/Menu" />
 
-        <TextView
-            android:id="@+id/txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Prueba"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="Voluntarios"
+                    android:textColor="@android:color/black"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+
+                <Button
+                    android:layout_margin="10dp"
+                    android:id="@+id/btnTest"
+                    android:backgroundTint="@color/dark_orange_liane"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nuevo"
+                    android:textStyle="bold"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    style="@style/Widget.MaterialComponents.Button.Icon"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Prueba"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

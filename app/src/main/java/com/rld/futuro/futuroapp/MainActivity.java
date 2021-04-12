@@ -1,17 +1,24 @@
 package com.rld.futuro.futuroapp;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.material.snackbar.Snackbar;
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
 import com.rld.futuro.futuroapp.Models.JSONManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
@@ -45,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener( v -> {
                     startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
-
                     /*volunteer = new Volunteer();
                     volunteer.setNames("Luis");
                     volunteer.setLastNames("Rayas");
@@ -77,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
                 Toast.makeText(this, "TOMAR FOTO", Toast.LENGTH_SHORT).show();
             } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
-                VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers);
+                VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         }

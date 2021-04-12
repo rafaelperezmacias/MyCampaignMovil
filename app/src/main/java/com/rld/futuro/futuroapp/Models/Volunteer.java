@@ -7,6 +7,9 @@ import java.io.ByteArrayOutputStream;
 
 public class Volunteer {
 
+    public static final int TYPE_RC = 344;
+    public static final int TYPE_RG = 356;
+
     // TODO Modelado de la clase voluntario
     private String names;
     private String lastNames;
@@ -27,11 +30,16 @@ public class Volunteer {
     private int stateNumber;
     private String section;
     private String municipality;
+    private String numberMunicipality;
     private String sector;
     private String localDistrict;
+    private String numberLocalDistrict;
     private String federalDistrict;
+    private String numberFederalDistrict;
 
     private String notes;
+    private int typeUser;
+    private boolean isCasillaLocal;
 
     //
     private boolean isJalisco;
@@ -68,6 +76,46 @@ public class Volunteer {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getNumberMunicipality() {
+        return numberMunicipality;
+    }
+
+    public void setNumberMunicipality(String numberMunicipality) {
+        this.numberMunicipality = numberMunicipality;
+    }
+
+    public String getNumberLocalDistrict() {
+        return numberLocalDistrict;
+    }
+
+    public void setNumberLocalDistrict(String numberLocalDistrict) {
+        this.numberLocalDistrict = numberLocalDistrict;
+    }
+
+    public String getNumberFederalDistrict() {
+        return numberFederalDistrict;
+    }
+
+    public void setNumberFederalDistrict(String numberFederalDistrict) {
+        this.numberFederalDistrict = numberFederalDistrict;
+    }
+
+    public int getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(int typeUser) {
+        this.typeUser = typeUser;
     }
 
     public int getStateNumber() {
@@ -230,8 +278,12 @@ public class Volunteer {
         this.federalDistrict = federalDistrict;
     }
 
-    public String getNotes() {
-        return notes;
+    public boolean isCasillaLocal() {
+        return isCasillaLocal;
+    }
+
+    public void setCasillaLocal(boolean casillaLocal) {
+        isCasillaLocal = casillaLocal;
     }
 
     @Override
@@ -253,10 +305,15 @@ public class Volunteer {
                 ", stateNumber=" + stateNumber +
                 ", section='" + section + '\'' +
                 ", municipality='" + municipality + '\'' +
+                ", numberMunicipality='" + numberMunicipality + '\'' +
                 ", sector='" + sector + '\'' +
                 ", localDistrict='" + localDistrict + '\'' +
+                ", numberLocalDistrict='" + numberLocalDistrict + '\'' +
                 ", federalDistrict='" + federalDistrict + '\'' +
+                ", numberFederalDistrict='" + numberFederalDistrict + '\'' +
                 ", notes='" + notes + '\'' +
+                ", typeUser=" + typeUser +
+                ", isCasillaLocal=" + isCasillaLocal +
                 ", isJalisco=" + isJalisco +
                 '}';
     }

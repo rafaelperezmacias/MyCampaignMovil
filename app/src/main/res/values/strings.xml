@@ -10,6 +10,7 @@
     <string name="fbs_step4">Paso 4 de 4</string>
     <string name="fbs_continue">CONTINUAR</string>
     <string name="fbs_finish">FINALIZAR</string>
+    <string name="fbs_snackbar">Voluntario registrado con éxito</string>
 
     <!-- Fragment Datos personales Volunteer BottomSheet  -->
     <string name="fpvbs_names">Nombre(s)</string>
@@ -43,11 +44,11 @@
     <string name="fcvbs_error_1">Los datos del siguiente formulario se autorellenaran con la información de este (solo Jalisco).</string>
     <string name="fcvbs_error_2">Error al obtener los datos locales, se procedera al registro manualmente.</string>
 
-    <!-- Fragment Contacto Volunteer BottomSheet  -->
+    <!-- Fragment Seccion Volunteer BottomSheet  -->
     <string name="fsvbs_title">Identificacion de la sección</string>
     <string name="fsvbs_state">Estado</string>
     <string name="fsvbs_name">Nombre</string>
-    <string name="fsvbs_number">Numero</string>
+    <string name="fsvbs_number">Número</string>
     <string name="fSvbs_section">Sección</string>
     <string name="fSvbs_section_error">Ingrese la sección</string>
     <string name="fSvbs_municipio">Municipio</string>
@@ -59,10 +60,12 @@
     <string name="fSvbs_distrito_local_error">Ingrese el distrito local</string>
     <string name="fSvbs_distrito_federal">Distrito federal</string>
     <string name="fSvbs_distrito_federal_error">Ingrese el distrito federal</string>
-    <string name="amv_title">Registro de voluntarios</string>
-    <string name="amv_opc">O</string>
-    <string name="avm_take">Tomar una foto</string>
-    <string name="avm_capture">Captura manual</string>
+    <string name="fpvbs_suburb_error">Ingrese la colonia</string>
+    <string name="fsvbs_dlocal_title">Distrito local</string>
+    <string name="fsvbs_dfederal_title">Distrito federal</string>
+
+    <!-- Fragment otros Volunteer BottomSheet  -->
+    <string name="fovbs_title">Datos finales</string>
     <string name="fovbs_notes">Ingrese aqui sus notas (opcional).</string>
     <string name="fovbs_notes_title">Notas</string>
     <string name="fovbs_section_title">Identificacion de la sección</string>
@@ -70,41 +73,50 @@
     <string name="fovbs_yes">Si</string>
     <string name="fovbs_no">No</string>
     <string name="fovbs_repre">¿Qué tipo de representante es?</string>
+    <string name="fpvbs_suburb">Colonia</string>
+
+    <!-- Main Activity  -->
+
+    <!-- Menu activity -->
+    <string name="amv_title">Registro de voluntarios</string>
+    <string name="amv_opc">O</string>
+    <string name="avm_take">Tomar una foto</string>
+    <string name="avm_capture">Captura manual</string>
 
     <!-- Estados de Mexico -->
     <string-array name="states">
-        <item>1-Aguascalientes</item>
-        <item>2-Baja California</item>
-        <item>3-Baja California Sur</item>
-        <item>4-Campeche</item>
-        <item>5-Coahuila</item>
-        <item>6-Colima</item>
-        <item>7-Chiapas</item>
-        <item>8-Chihuahua</item>
-        <item>9-Distrito Federal</item>
-        <item>10-Durango</item>
-        <item>11-Guanajuato</item>
-        <item>12-Guerrero</item>
-        <item>13-Hidalgo</item>
-        <item>14-Jalisco</item>
-        <item>15-México</item>
-        <item>16-Michoacán</item>
-        <item>17-Morelos</item>
-        <item>18-Nayarit</item>
-        <item>19-Nuevo León</item>
-        <item>20-Oaxaca</item>
-        <item>21-Puebla</item>
-        <item>22-Querétaro</item>
-        <item>23-Quintana Roo</item>
-        <item>24-San Luis Potosí</item>
-        <item>25-Sinaloa</item>
-        <item>26-Sonora</item>
-        <item>27-Tabasco</item>
-        <item>28-Tamaulipas</item>
-        <item>29-Tlaxcala</item>
-        <item>30-Veracruz</item>
-        <item>31-Yucatán</item>
-        <item>32-Zacatecas</item>
+        <item>1-AGUASCALIENTES</item>
+        <item>2-BAJA CALIFORNIA</item>
+        <item>3-BAJA CALIFORNIA SUR</item>
+        <item>4-CAMPECHE</item>
+        <item>5-COAHUILA</item>
+        <item>6-COLIMA</item>
+        <item>7-CHIAPAS</item>
+        <item>8-CHIHUAHUA</item>
+        <item>9-DISTRITO FEDERAL</item>
+        <item>10-DURANGO</item>
+        <item>11-GUANAJUATO</item>
+        <item>12-GUERRERO</item>
+        <item>13-HIDALGO</item>
+        <item>14-JALISCO</item>
+        <item>15-MÉXICO</item>
+        <item>16-MICHOACÁN</item>
+        <item>17-MORELOS</item>
+        <item>18-NAYARIT</item>
+        <item>19-NUEVO LEÓN</item>
+        <item>20-OAXACA</item>
+        <item>21-PUEBLA</item>
+        <item>22-QUERÉTARO</item>
+        <item>23-QUINTANA ROO</item>
+        <item>24-SAN LUIS POTOSÍ</item>
+        <item>25-SINALOA</item>
+        <item>26-SONORA</item>
+        <item>27-TABASCO</item>
+        <item>28-TAMAULIPAS</item>
+        <item>29-TLAXCALA</item>
+        <item>30-VERACRUZ</item>
+        <item>31-YUCATÁN</item>
+        <item>32-ZACATECAS</item>
     </string-array>
 
 </resources>

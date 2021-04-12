@@ -53,7 +53,7 @@ public class ContactFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragmet_contact_volunteer_bs, container, false);
+        View view = inflater.inflate(R.layout.fragment_contact_volunteer_bs, container, false);
 
         lytElectorKey = view.findViewById(R.id.fcvbs_electorKey_lyt);
         lytEmail = view.findViewById(R.id.fcvbs_email_lyt);
@@ -77,9 +77,9 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if ( isValidState(lytStates.getEditText().getText().toString()) ) {
+                if ( isValidState(lytStates.getEditText().getText().toString().trim()) ) {
                     isStateValid = true;
-                    if ( lytStates.getEditText().getText().toString().equals("Jalisco") ) {
+                    if ( lytStates.getEditText().getText().toString().equals(State.STATE_JALISCO) ) {
                         lytSections.setVisibility(View.VISIBLE);
                         isJaliscoSelected = true;
                         showCardError1();
@@ -131,8 +131,8 @@ public class ContactFragment extends Fragment {
 
     public void getState() {
         for ( State state : states ) {
-            if ( state.getName().equals(lytStates.getEditText().getText().toString()) ) {
-                volunteer.setJalisco(state.getName().equals("Jalisco"));
+            if ( state.getName().equals(lytStates.getEditText().getText().toString().trim()) ) {
+                volunteer.setJalisco(state.getName().equals(State.STATE_JALISCO));
                 volunteer.setState(state.getName());
                 volunteer.setStateNumber(state.getNumber());
                 break;
