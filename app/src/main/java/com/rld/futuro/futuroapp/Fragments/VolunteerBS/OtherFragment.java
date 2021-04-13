@@ -79,4 +79,13 @@ public class OtherFragment extends Fragment {
 
         return view;
     }
+
+    public void setVolunteer() {
+        if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
+            volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
+        }
+        volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
+        volunteer.setCasillaLocal(yesOPC.isSelected());
+    }
+
 }

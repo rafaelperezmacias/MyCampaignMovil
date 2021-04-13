@@ -9,6 +9,8 @@ import java.util.List;
 
 public class State {
 
+    public static final String STATE_JALISCO = "JALISCO";
+
     private int number;
     private String name;
 

@@ -20,6 +20,7 @@ public class PersonalFragment extends Fragment {
     private TextInputLayout lytStreet;
     private TextInputLayout lytOutNumber;
     private TextInputLayout lytComplement;
+    private TextInputLayout lytSuburb;
     private TextInputLayout lytCP;
 
     private Volunteer volunteer;
@@ -40,6 +41,7 @@ public class PersonalFragment extends Fragment {
         lytOutNumber = view.findViewById(R.id.fpvbs_outNumber_lyt);
         lytComplement = view.findViewById(R.id.fpvbs_complement_lyt);
         lytCP = view.findViewById(R.id.fpvbs_cp_lyt);
+        lytSuburb = view.findViewById(R.id.fpvbs_suburb_lyt);
 
         return view;
     }
@@ -52,6 +54,7 @@ public class PersonalFragment extends Fragment {
         if ( !lytComplement.getEditText().getText().toString().isEmpty() ) {
             volunteer.setAddressNumInt(lytComplement.getEditText().getText().toString().trim());
         }
+        volunteer.setSuburb(lytSuburb.getEditText().getText().toString().trim());
         volunteer.setZipCode(lytCP.getEditText().getText().toString().trim());
     }
 
@@ -60,7 +63,8 @@ public class PersonalFragment extends Fragment {
             | !TextInputLayoutUtils.isValid(lytLastNames, getString(R.string.fpvbs_lastNames_error))
             | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
             | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
-            | !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))) ;
+            | !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))
+            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error)) );
     }
 
 

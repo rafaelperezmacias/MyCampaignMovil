@@ -22,8 +22,10 @@ public class SectionFragment extends Fragment {
     private TextInputLayout lytMunicipioName;
     private TextInputLayout lytMunicipioNumber;
     private TextInputLayout lytSector;
-    private TextInputLayout lytDistritoLocal;
-    private TextInputLayout lytDistritoFederal;
+    private TextInputLayout lytDistritoLocalName;
+    private TextInputLayout lytDistritoLocalNumber;
+    private TextInputLayout lytDistritoFederalName;
+    private TextInputLayout lytDistritoFederalNumber;
 
     private Volunteer volunteer;
 
@@ -43,8 +45,10 @@ public class SectionFragment extends Fragment {
         lytMunicipioName = view.findViewById(R.id.fsvbs_municipioName_lyt);
         lytMunicipioNumber = view.findViewById(R.id.fsvbs_municipioNumber_lyt);
         lytSector = view.findViewById(R.id.fsvbs_sector_lyt);
-        lytDistritoLocal = view.findViewById(R.id.fsvbs_dlocal_lyt);
-        lytDistritoFederal = view.findViewById(R.id.fsvbs_dfederal_lyt);
+        lytDistritoLocalName = view.findViewById(R.id.fsvbs_dlocal_name_lyt);
+        lytDistritoLocalNumber = view.findViewById(R.id.fsvbs_dlocal_number_lyt);
+        lytDistritoFederalName = view.findViewById(R.id.fsvbs_dfederal_name_lyt);
+        lytDistritoFederalNumber = view.findViewById(R.id.fsvbs_dfederal_number_lyt);
 
         return view;
     }
@@ -54,6 +58,11 @@ public class SectionFragment extends Fragment {
         if ( !volunteer.isJalisco() ) {
             volunteer.setSection(lytSection.getEditText().getText().toString().trim());
             volunteer.setMunicipality(lytMunicipioName.getEditText().getText().toString().trim());
+            volunteer.setNumberMunicipality(lytMunicipioNumber.getEditText().getText().toString().trim());
+            volunteer.setLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
+            volunteer.setNumberLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
+            volunteer.setFederalDistrict(lytDistritoFederalName.getEditText().getText().toString().trim());
+            volunteer.setNumberFederalDistrict(lytDistritoFederalNumber.getEditText().getText().toString().trim());
         }
     }
 
@@ -65,8 +74,10 @@ public class SectionFragment extends Fragment {
                 | !TextInputLayoutUtils.isValid(lytMunicipioName, getString(R.string.fSvbs_municipio_name_error))
                 | !TextInputLayoutUtils.isValid(lytMunicipioNumber, getString(R.string.fSvbs_municipio_number_error))
                 | !TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoLocal, getString(R.string.fSvbs_distrito_local_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoFederal, getString(R.string.fSvbs_distrito_federal_error))) ;
+                | !TextInputLayoutUtils.isValid(lytDistritoLocalName, getString(R.string.fSvbs_municipio_name_error))
+                | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error))
+                | !TextInputLayoutUtils.isValid(lytDistritoFederalName, getString(R.string.fSvbs_municipio_name_error))
+                | !TextInputLayoutUtils.isValid(lytDistritoFederalNumber, getString(R.string.fSvbs_municipio_number_error)) );
     }
 
     public void setState() {
@@ -76,6 +87,10 @@ public class SectionFragment extends Fragment {
             lytSection.getEditText().setEnabled(false);
             lytSection.getEditText().setText("1234");
             lytSector.getEditText().requestFocus();
+        } else {
+            lytSection.getEditText().requestFocus();
+            lytSection.getEditText().setEnabled(true);
+            lytSection.getEditText().setText("");
         }
     }
 }

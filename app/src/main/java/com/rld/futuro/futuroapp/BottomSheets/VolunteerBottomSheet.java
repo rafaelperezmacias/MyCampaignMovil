@@ -3,6 +3,9 @@ package com.rld.futuro.futuroapp.BottomSheets;
 import android.app.Dialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -18,10 +21,13 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
+import com.rld.futuro.futuroapp.MainActivity;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 
@@ -37,11 +43,13 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private Volunteer volunteer;
 
     private ArrayList<Volunteer> volunteers;
+    private MainActivity mainActivity;
 
-    public VolunteerBottomSheet(ArrayList<Volunteer> volunteers)
+    public VolunteerBottomSheet(ArrayList<Volunteer> volunteers, MainActivity mainActivity)
     {
         volunteer = new Volunteer();
         this.volunteers = volunteers;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -86,8 +94,16 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         btnClose.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {
-                dismiss();
+                new MaterialAlertDialogBuilder(mainActivity)
+                        .setTitle("Alerta")
+                        .setMessage("¿Esta seguro de querer cancelar el proceso?")
+                        .setNegativeButton("Quedarme", (dialog, which) -> {
 
+                        })
+                        .setPositiveButton("Si", (dialog, which) -> {
+                            dismiss();
+                        })
+                        .show();
             } else if ( currentFragment == contactFragment ) {
 
                 btnClose.setImageResource(R.drawable.ic_sharp_close_24);
@@ -127,10 +143,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
 
                 contactFragment.getState();
+                contactFragment.setVolunteer();
                 sectionFragment.setState();
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step3));
-                contactFragment.setVolunteer();
                 showFragment(sectionFragment, fragmentManager);
 
             } else if ( currentFragment == sectionFragment ) {
@@ -146,9 +162,18 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
 
             } else if ( currentFragment == otherFragment ) {
-                Toast.makeText(getContext(), "Guardar", Toast.LENGTH_SHORT).show();
-                Log.e("Volunteer", "" + volunteer.toString());
+                otherFragment.setVolunteer();
+                Toast.makeText(getContext(), "" + volunteer.toString(), Toast.LENGTH_LONG).show();
+                Log.e("Volunter", "" + volunteer.toString());
                 volunteers.add(volunteer);
+                dismiss();
+                SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+                snackbarText.append(getString(R.string.fbs_snackbar));
+                snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                Snackbar.make(mainActivity.findViewById(R.id.am_main_lyt), snackbarText, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getResources().getColor(R.color.dark_orange_liane))
+                        .setTextColor(getResources().getColor(R.color.white))
+                        .show();
             }
 
         });

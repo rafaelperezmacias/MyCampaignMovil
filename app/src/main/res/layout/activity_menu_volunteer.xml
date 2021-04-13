@@ -181,7 +181,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/amv_capture_btn"
             app:layout_constraintTop_toTopOf="@id/limit60H"
-            app:layout_constraintBottom_toBottomOf="@id/limit87H"
+            app:layout_constraintBottom_toBottomOf="@id/limit90H"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"

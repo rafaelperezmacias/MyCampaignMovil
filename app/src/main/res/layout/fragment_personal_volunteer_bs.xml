@@ -40,10 +40,12 @@
             android:hint="@string/fpvbs_lastNames"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            app:errorTextColor="@color/red_liane"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="textCapCharacters"
+                android:digits="@string/input_only_leters_to_upper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -66,6 +68,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:inputType="textCapCharacters"
+            android:digits="@string/input_only_leters_to_upper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>
@@ -116,6 +119,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="textCapCharacters"
+                android:digits="@string/input_only_leters_to_upper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -172,7 +176,27 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:inputType="textCapWords"
+            android:inputType="textCapCharacters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.google.android.material.textfield.TextInputEditText>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Field without image -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fpvbs_suburb_lyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:hint="@string/fpvbs_suburb"
+        android:paddingStart="56dp"
+        android:paddingEnd="16dp"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:inputType="textCapCharacters"
+            android:digits="@string/input_only_leters_to_upper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>
