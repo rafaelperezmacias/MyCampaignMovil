@@ -7,13 +7,14 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
-import com.rld.futuro.futuroapp.Models.JSONManager;
+import com.rld.futuro.futuroapp.Models.FileManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 
 import java.util.ArrayList;
@@ -24,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Volunteer> volunteers;
     private Volunteer volunteer;
-    private JSONManager jsonManager;
+    private FileManager fileManager;
     private TextView text;
+    private Button btnGuardar, btnBorrar;
 
     private static final int CODE_INTENT_MENU = 100;
 
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         volunteers = new ArrayList<>();
+        fileManager = new FileManager();
 
         text = findViewById(R.id.txt);
 
@@ -68,6 +71,35 @@ public class MainActivity extends AppCompatActivity {
                     jsonManager.createJSON(volunteers);
                     text.setText(jsonManager.getJson().toString()); */
                 });
+
+        btnBorrar = findViewById(R.id.btnBorrar);
+        btnBorrar.setOnClickListener(v -> {
+            volunteers = fileManager.readFile(getApplicationContext());
+            Log.d("TAG1", volunteers.toString());
+        });
+
+        btnGuardar = findViewById(R.id.btnGuardar);
+        btnGuardar.setOnClickListener(v -> {
+            volunteer = new Volunteer();
+            volunteer.setNames("Luis");
+            volunteer.setLastNames("Rayas");
+            volunteer.setAddressName("Real de Liliput");
+            volunteers.add(volunteer);
+
+            volunteer = new Volunteer();
+            volunteer.setNames("Rafael");
+            volunteer.setLastNames("Macias");
+            volunteer.setAddressName("Tona York");
+            volunteers.add(volunteer);
+
+            volunteer = new Volunteer();
+            volunteer.setNames("Daniel");
+            volunteer.setLastNames("Michel");
+            volunteer.setAddressName("Tortugas ninja Av");
+            volunteers.add(volunteer);
+
+            fileManager.saveFile(volunteers, getApplicationContext());
+        });
     }
 
     @Override

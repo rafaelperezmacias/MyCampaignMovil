@@ -53,7 +53,6 @@ public class Volunteer {
 
         // Casillas
         this.state = "";
-        this.stateNumber = -1;
         this.section = "";
         this.municipality = "";
         this.sector = "";
@@ -61,7 +60,6 @@ public class Volunteer {
         this.federalDistrict = "";
 
         this.notes = "";
-        this.isJalisco = false;
     }
 
     public String convertImageToString(Bitmap image) {
@@ -172,8 +170,8 @@ public class Volunteer {
         return imgString;
     }
 
-    public void setImgString(Bitmap image) {
-        this.imgString = convertImageToString(image);
+    public void setImgString(String strImage) {
+        this.imgString = strImage;
     }
 
     public Bitmap getImg() {
@@ -190,22 +188,6 @@ public class Volunteer {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public int getStateNumber() {
-        return stateNumber;
-    }
-
-    public void setStateNumber(int stateNumber) {
-        this.stateNumber = stateNumber;
-    }
-
-    public boolean isJalisco() {
-        return isJalisco;
-    }
-
-    public void setJalisco(boolean jalisco) {
-        isJalisco = jalisco;
     }
 
     public String getSection() {
@@ -250,6 +232,10 @@ public class Volunteer {
 
     public String getNotes() {
         return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @Override

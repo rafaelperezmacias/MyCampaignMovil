@@ -7,13 +7,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class FileManager {
     private final String fileNameJSON;
-
     private JSONObject json;
 
     public FileManager(){
@@ -22,9 +24,9 @@ public class FileManager {
     }
 
     private void createJSON(ArrayList<Volunteer> volunteers) {
-        this.json = new JSONObject();
-        JSONObject obj = null;
-        JSONArray jsonArray = new JSONArray();
+        this.json = new JSONObject(); //Root
+        JSONArray jsonArray = new JSONArray(); //Array
+        JSONObject obj = null; // Objet
         int cont = 0;
         while (cont < volunteers.size()) {
             obj = new JSONObject();
@@ -64,13 +66,64 @@ public class FileManager {
         }
     }
 
+    private ArrayList<Volunteer> readJSON(String data){
+        ArrayList<Volunteer> volunteers = new ArrayList<Volunteer>();
+
+        try {
+            JSONObject root = new JSONObject(data);
+            this.json = root;
+            //Log.d("TAG1", "Info: " + data);
+            //Log.d("TAG1", "JSON data: " + root.toString());
+
+            JSONArray user = root.getJSONArray("users");
+            //Log.d("TAG1", "Objeto User: " + user.toString());
+            int cont = 0;
+            while (cont < user.length()) {
+                Volunteer volunteer = new Volunteer();
+                JSONObject object = null;
+                try {
+                    object = user.getJSONObject(cont);
+                    volunteer.setNames(object.getString("name"));
+                    volunteer.setLastNames(object.getString("lastNames"));
+                    volunteer.setAddressName(object.getString("addressName"));
+                    volunteer.setAddressNumExt(object.getString("addressNumExt"));
+                    volunteer.setAddressNumInt(object.getString("addressNumInt"));
+                    volunteer.setSuburb(object.getString("suburb"));
+                    volunteer.setZipCode(object.getString("zipCode"));
+                    volunteer.setElectorKey(object.getString("electoralKey"));
+                    volunteer.setEmail(object.getString("email"));
+                    volunteer.setPhone(object.getString("phone"));
+
+                    volunteer.setImgString(object.getString("image"));
+
+                    volunteer.setState(object.getString("state"));
+                    volunteer.setSection(object.getString("section"));
+                    volunteer.setMunicipality(object.getString("municipality"));
+                    volunteer.setSector(object.getString("sector"));
+                    volunteer.setLocalDistrict(object.getString("localDistrict"));
+                    volunteer.setFederalDistrict(object.getString("federalDistrict"));
+                    volunteer.setNotes(object.getString("notes"));
+                    volunteers.add(volunteer);
+                    cont++;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        return volunteers;
+    }
+
     public void saveFile(ArrayList<Volunteer> volunteers, Context context) {
         FileOutputStream fileOutputStream = null;
         createJSON(volunteers);
         try {
             fileOutputStream = context.openFileOutput(fileNameJSON + ".json", context.MODE_PRIVATE);
             fileOutputStream.write(this.json.toString().getBytes());
-            Log.d("TAG1", "Fichero Salvado en: " + context.getFilesDir() + "/" + fileNameJSON);
+            //Log.d("TAG1", "Fichero Salvado en: " + context.getFilesDir() + "/" + fileNameJSON);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -94,17 +147,34 @@ public class FileManager {
         }
     }
 
-    public void readFile(Context context){
+    public ArrayList<Volunteer> readFile(Context context){
+        FileInputStream fileInputStream = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try{
+            fileInputStream = context.openFileInput(fileNameJSON + ".json");
 
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String lineaTexto;
+            while((lineaTexto = bufferedReader.readLine())!= null){
+                stringBuilder.append(lineaTexto);
+            }
+        }catch (Exception e){
+            Log.d("TAG1", "archivo no existente");
+        }finally {
+            if(fileInputStream !=null){
+                try {
+                    fileInputStream.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return readJSON(stringBuilder.toString());
     }
 
     public String getFileName() {
         return fileNameJSON;
-    }
-
-    public void deleteCurrentJSON(){
-        if (json != null)
-            json = null;
     }
 
     public JSONObject getJson() {

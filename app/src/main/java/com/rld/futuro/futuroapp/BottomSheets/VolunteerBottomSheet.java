@@ -22,8 +22,6 @@ import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
-import com.rld.futuro.futuroapp.Models.FileManager;
-import com.rld.futuro.futuroapp.Models.JSONManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 
