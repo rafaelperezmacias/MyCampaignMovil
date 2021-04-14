@@ -1,7 +1,13 @@
 package com.rld.futuro.futuroapp.Models;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,9 +24,10 @@ public class FileManager {
     private final String fileNameJSON;
     private JSONObject json;
 
-    public FileManager(){
+    public FileManager(Activity activity){
         json = null;
         fileNameJSON = "data";
+        checkExternalStoragePermission(activity);
     }
 
     private void createJSON(ArrayList<Volunteer> volunteers) {
@@ -49,7 +56,6 @@ public class FileManager {
                 obj.put("municipality", volunteers.get(cont).getMunicipality());
                 obj.put("sector", volunteers.get(cont).getSector());
                 obj.put("localDistrict", volunteers.get(cont).getLocalDistrict());
-                obj.put("federalDistrict", volunteers.get(cont).getFederalDistrict());
 
                 obj.put("notes", volunteers.get(cont).getNotes());
                 cont++;
@@ -67,7 +73,7 @@ public class FileManager {
     }
 
     private ArrayList<Volunteer> readJSON(String data){
-        ArrayList<Volunteer> volunteers = new ArrayList<Volunteer>();
+        ArrayList<Volunteer> volunteers = new ArrayList<>();
 
         try {
             JSONObject root = new JSONObject(data);
@@ -101,7 +107,6 @@ public class FileManager {
                     volunteer.setMunicipality(object.getString("municipality"));
                     volunteer.setSector(object.getString("sector"));
                     volunteer.setLocalDistrict(object.getString("localDistrict"));
-                    volunteer.setFederalDistrict(object.getString("federalDistrict"));
                     volunteer.setNotes(object.getString("notes"));
                     volunteers.add(volunteer);
                     cont++;
@@ -172,6 +177,18 @@ public class FileManager {
         }
         return readJSON(stringBuilder.toString());
     }
+
+    private void checkExternalStoragePermission(Activity activity) {
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            Log.i("Mensaje", "No se tiene permiso para leer.");
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 225);
+        } else {
+            Log.i("Mensaje", "Se tiene permiso para leer!");
+        }
+    }
+
 
     public String getFileName() {
         return fileNameJSON;

@@ -12,7 +12,7 @@ public class Volunteer {
 
     // TODO Modelado de la clase voluntario
     private String names;
-    private String lastNames;
+    private String lastNames; // Fragmentar
     private String addressName;
     private String addressNumExt;
     private String addressNumInt;
@@ -34,8 +34,6 @@ public class Volunteer {
     private String sector;
     private String localDistrict;
     private String numberLocalDistrict;
-    private String federalDistrict;
-    private String numberFederalDistrict;
 
     private String notes;
     private int typeUser;
@@ -65,7 +63,6 @@ public class Volunteer {
         this.municipality = "";
         this.sector = "";
         this.localDistrict = "";
-        this.federalDistrict = "";
 
         this.notes = "";
     }
@@ -100,14 +97,6 @@ public class Volunteer {
 
     public void setNumberLocalDistrict(String numberLocalDistrict) {
         this.numberLocalDistrict = numberLocalDistrict;
-    }
-
-    public String getNumberFederalDistrict() {
-        return numberFederalDistrict;
-    }
-
-    public void setNumberFederalDistrict(String numberFederalDistrict) {
-        this.numberFederalDistrict = numberFederalDistrict;
     }
 
     public int getTypeUser() {
@@ -270,24 +259,12 @@ public class Volunteer {
         this.localDistrict = localDistrict;
     }
 
-    public String getFederalDistrict() {
-        return federalDistrict;
-    }
-
-    public void setFederalDistrict(String federalDistrict) {
-        this.federalDistrict = federalDistrict;
-    }
-
     public boolean isCasillaLocal() {
         return isCasillaLocal;
     }
 
     public void setCasillaLocal(boolean casillaLocal) {
         isCasillaLocal = casillaLocal;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 
     @Override
@@ -313,8 +290,6 @@ public class Volunteer {
                 ", sector='" + sector + '\'' +
                 ", localDistrict='" + localDistrict + '\'' +
                 ", numberLocalDistrict='" + numberLocalDistrict + '\'' +
-                ", federalDistrict='" + federalDistrict + '\'' +
-                ", numberFederalDistrict='" + numberFederalDistrict + '\'' +
                 ", notes='" + notes + '\'' +
                 ", typeUser=" + typeUser +
                 ", isCasillaLocal=" + isCasillaLocal +

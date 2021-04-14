@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -21,7 +22,7 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
-import com.rld.futuro.futuroapp.Models.JSONManager;
+import com.rld.futuro.futuroapp.Models.FileManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Volunteer> volunteers;
     private Volunteer volunteer;
-    private JSONManager jsonManager;
     private TextView text;
+    private FileManager fileManager;
 
     private static final int CODE_INTENT_MENU = 100;
 
@@ -53,27 +54,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener( v -> {
                     startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
-                    /*volunteer = new Volunteer();
-                    volunteer.setNames("Luis");
-                    volunteer.setLastNames("Rayas");
-                    volunteer.setAddressName("Real de Liliput");
-                    volunteers.add(volunteer);
 
-                    volunteer = new Volunteer();
-                    volunteer.setNames("Rafael");
-                    volunteer.setLastNames("Macias");
-                    volunteer.setAddressName("Tona York");
-                    volunteers.add(volunteer);
-
-                    volunteer = new Volunteer();
-                    volunteer.setNames("Daniel");
-                    volunteer.setLastNames("Michel");
-                    volunteer.setAddressName("Tortugas ninja Av");
-                    volunteers.add(volunteer);
-
-                    jsonManager = new JSONManager();
-                    jsonManager.createJSON(volunteers);
-                    text.setText(jsonManager.getJson().toString()); */
                 });
     }
 
@@ -82,11 +63,14 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if ( requestCode == CODE_INTENT_MENU ) {
             if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
-                Toast.makeText(this, "TOMAR FOTO", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, CameraPreview.class);
+                startActivity(intent);
             } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
                 VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         }
     }
+
+
 }
