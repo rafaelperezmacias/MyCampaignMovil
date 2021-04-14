@@ -218,8 +218,8 @@ public class Volunteer {
         return imgString;
     }
 
-    public void setImgString(Bitmap image) {
-        this.imgString = convertImageToString(image);
+    public void setImgString(String strImage) {
+        this.imgString = strImage;
     }
 
     public Bitmap getImg() {
@@ -284,6 +284,10 @@ public class Volunteer {
 
     public void setCasillaLocal(boolean casillaLocal) {
         isCasillaLocal = casillaLocal;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     @Override
