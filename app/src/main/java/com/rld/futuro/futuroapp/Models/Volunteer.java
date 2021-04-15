@@ -14,7 +14,8 @@ public class Volunteer implements Serializable {
 
     // TODO Modelado de la clase voluntario
     private String names;
-    private String lastNames; // Fragmentar
+    private String lastName1; // Fragmentar
+    private String lastName2;
     private String addressName;
     private String addressNumExt;
     private String addressNumInt;
@@ -47,7 +48,8 @@ public class Volunteer implements Serializable {
 
     public Volunteer() {
         this.names = "";
-        this.lastNames = "";
+        this.lastName1 = "";
+        this.lastName2 = "";
         this.addressName = "";
         this.addressNumExt = "";
         this.addressNumInt = "";
@@ -143,12 +145,20 @@ public class Volunteer implements Serializable {
         this.names = names;
     }
 
-    public String getLastNames() {
-        return lastNames;
+    public String getLastName1() {
+        return lastName1;
     }
 
-    public void setLastNames(String lastNames) {
-        this.lastNames = lastNames;
+    public String getLastName2() {
+        return lastName2;
+    }
+
+    public void setLastName1(String lastName1) {
+        this.lastName1 = lastName1;
+    }
+
+    public void setLastName2(String lastName2) {
+        this.lastName2 = lastName2;
     }
 
     public String getAddressName() {
@@ -284,7 +294,8 @@ public class Volunteer implements Serializable {
     public String toString() {
         return "Volunteer{" +
                 "names='" + names + '\'' +
-                ", lastNames='" + lastNames + '\'' +
+                ", lastName1='" + lastName1 + '\'' +
+                ", lastName2='" + lastName2 + '\'' +
                 ", addressName='" + addressName + '\'' +
                 ", addressNumExt='" + addressNumExt + '\'' +
                 ", addressNumInt='" + addressNumInt + '\'' +
