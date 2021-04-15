@@ -177,7 +177,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fcvbs_sections_lyt"
+        android:id="@+id/fcvbs_sections_auto_lyt"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

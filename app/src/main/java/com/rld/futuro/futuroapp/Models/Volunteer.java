@@ -44,6 +44,8 @@ public class Volunteer implements Serializable {
 
     //
     private boolean isJalisco;
+    private Section sectionObject;
+    private boolean isLocal;
 
     public Volunteer() {
         this.names = "";
@@ -77,6 +79,22 @@ public class Volunteer implements Serializable {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public Section getSectionObject() {
+        return sectionObject;
+    }
+
+    public void setSectionObject(Section sectionObject) {
+        this.sectionObject = sectionObject;
+    }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean local) {
+        isLocal = local;
     }
 
     public void setNotes(String notes) {

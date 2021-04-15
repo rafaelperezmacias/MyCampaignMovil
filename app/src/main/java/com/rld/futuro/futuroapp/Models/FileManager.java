@@ -30,6 +30,180 @@ public class FileManager {
         }
     }
 
+    public void createJSONFromDB(JSONArray jsonArray, String fileName, String id, Context context) {
+        FileOutputStream fileOutputStream = null;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(id, jsonArray);
+        } catch (JSONException ignored) {
+            return;
+        }
+        try {
+            fileOutputStream = context.openFileOutput( fileName, context.MODE_PRIVATE);
+            fileOutputStream.write(jsonObject.toString().getBytes());
+        } catch (Exception ignored) {
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public ArrayList<LocalDistrict> readJSONLocalDistricts(Context context){
+        ArrayList<LocalDistrict> localDistricts = new ArrayList<>();
+        FileInputStream fileInputStream = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try{
+            fileInputStream = context.openFileInput("data-localDistricts.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String lineaTexto;
+            while((lineaTexto = bufferedReader.readLine())!= null){
+                stringBuilder.append(lineaTexto);
+            }
+        }catch (Exception e){
+            return new ArrayList<>();
+        }finally {
+            if(fileInputStream !=null){
+                try {
+                    fileInputStream.close();
+                }catch (Exception e){
+
+                }
+            }
+        }
+
+        try {
+            JSONObject root = new JSONObject(stringBuilder.toString());
+            JSONArray localDistrictsJSON = root.getJSONArray("localDistricts");
+            JSONObject object;
+            int cont = 0;
+            LocalDistrict localDistrict;
+            while (cont < localDistrictsJSON.length()) {
+                localDistrict = new LocalDistrict();
+                try {
+                    object = localDistrictsJSON.getJSONObject(cont);
+                    localDistrict.setLocalDistrict(object.getString("localDistrict"));
+                    localDistrict.setNumberLocalDistrict(object.getInt("numberLocalDistrict"));
+                    localDistricts.add(localDistrict);
+                    cont++;
+                } catch (JSONException e) {
+                    return new ArrayList<>();
+                }
+            }
+        }
+        catch(JSONException e){
+            return new ArrayList<>();
+        }
+
+        return localDistricts;
+    }
+
+    public ArrayList<Municipality> readJSONMunicipalities(Context context){
+        ArrayList<Municipality> municipalities = new ArrayList<>();
+        FileInputStream fileInputStream = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try{
+            fileInputStream = context.openFileInput("data-municipalities.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String lineaTexto;
+            while((lineaTexto = bufferedReader.readLine())!= null){
+                stringBuilder.append(lineaTexto);
+            }
+        }catch (Exception e){
+            return new ArrayList<>();
+        }finally {
+            if(fileInputStream !=null){
+                try {
+                    fileInputStream.close();
+                }catch (Exception e){
+
+                }
+            }
+        }
+
+        try {
+            JSONObject root = new JSONObject(stringBuilder.toString());
+            JSONArray localDistrictsJSON = root.getJSONArray("municipalities");
+            JSONObject object;
+            int cont = 0;
+            Municipality municipality;
+            while (cont < localDistrictsJSON.length()) {
+                municipality = new Municipality();
+                try {
+                    object = localDistrictsJSON.getJSONObject(cont);
+                    municipality.setMunicipality(object.getString("municipality"));
+                    municipality.setMunicipalityNumber(object.getInt("municipalityNumber"));
+                    municipalities.add(municipality);
+                    cont++;
+                } catch (JSONException e) {
+                    return new ArrayList<>();
+                }
+            }
+        }
+        catch(JSONException e){
+            return new ArrayList<>();
+        }
+
+        return municipalities;
+    }
+
+    public ArrayList<Section> readJSONSections(Context context){
+        ArrayList<Section> sections = new ArrayList<>();
+        FileInputStream fileInputStream = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try{
+            fileInputStream = context.openFileInput("data-sections.json");
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String lineaTexto;
+            while((lineaTexto = bufferedReader.readLine())!= null){
+                stringBuilder.append(lineaTexto);
+            }
+        }catch (Exception e){
+            return new ArrayList<>();
+        }finally {
+            if(fileInputStream !=null){
+                try {
+                    fileInputStream.close();
+                }catch (Exception e){
+
+                }
+            }
+        }
+
+        try {
+            JSONObject root = new JSONObject(stringBuilder.toString());
+            JSONArray localDistrictsJSON = root.getJSONArray("sections");
+            JSONObject object;
+            int cont = 0;
+            Section section;
+            while (cont < localDistrictsJSON.length()) {
+                section = new Section();
+                try {
+                    object = localDistrictsJSON.getJSONObject(cont);
+                    section.setNumberMunicipality(object.getInt("numberMunicipality"));
+                    section.setNumberLocalDistrict(object.getInt("numberLocalDistrict"));
+                    section.setSection(object.getInt("section"));
+                    sections.add(section);
+                    cont++;
+                } catch (JSONException e) {
+                    return new ArrayList<>();
+                }
+            }
+        }
+        catch(JSONException e){
+            return new ArrayList<>();
+        }
+
+        return sections;
+    }
+
     private void createJSON(ArrayList<Volunteer> volunteers) {
         this.json = new JSONObject(); //Root
         JSONArray jsonArray = new JSONArray(); //Array

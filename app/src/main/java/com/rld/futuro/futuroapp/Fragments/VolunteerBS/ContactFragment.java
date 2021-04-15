@@ -3,6 +3,7 @@ package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,13 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.futuro.futuroapp.MainActivity;
+import com.rld.futuro.futuroapp.Models.FileManager;
+import com.rld.futuro.futuroapp.Models.Section;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
 import com.rld.futuro.futuroapp.Models.State;
+import com.rld.futuro.futuroapp.Request.AppConfig;
 import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
 
 import java.util.ArrayList;
@@ -32,7 +37,7 @@ public class ContactFragment extends Fragment {
     private TextInputLayout lytPhone;
 
     private TextInputLayout lytStates;
-    private TextInputLayout lytSections;
+    private TextInputLayout lytSectionsAuto;
 
     private MaterialCardView cardError;
     private TextView txtError;
@@ -42,12 +47,18 @@ public class ContactFragment extends Fragment {
 
     private boolean isJaliscoSelected;
     private boolean isStateValid;
+    private boolean isSectionValid;
+    private boolean isLocal;
 
     private Volunteer volunteer;
 
-    public ContactFragment(Volunteer volunteer)
+    private ArrayList<Section> sections;
+
+
+    public ContactFragment(Volunteer volunteer, MainActivity mainActivity)
     {
         this.volunteer = volunteer;
+        sections = mainActivity.getSections();
     }
 
     @Nullable
@@ -60,7 +71,7 @@ public class ContactFragment extends Fragment {
         lytPhone = view.findViewById(R.id.fcvbs_phone_lyt);
 
         lytStates = view.findViewById(R.id.fcvbs_states_lyt);
-        lytSections = view.findViewById(R.id.fcvbs_sections_lyt);
+        lytSectionsAuto = view.findViewById(R.id.fcvbs_sections_auto_lyt);
 
         cardError = view.findViewById(R.id.card_error);
         txtError = view.findViewById(R.id.fcvbs_cardError_txt);
@@ -68,6 +79,15 @@ public class ContactFragment extends Fragment {
 
         states = State.getStates(getContext());
         addStates();
+        addSections();
+        sections.clear();
+        if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
+            isLocal = true;
+            showCardError2();
+        } else {
+            isLocal = false;
+            showCardError1();
+        }
 
         lytStates.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -80,16 +100,43 @@ public class ContactFragment extends Fragment {
                 if ( isValidState(lytStates.getEditText().getText().toString().trim()) ) {
                     isStateValid = true;
                     if ( lytStates.getEditText().getText().toString().equals(State.STATE_JALISCO) ) {
-                        lytSections.setVisibility(View.VISIBLE);
+                        if ( !isLocal ) {
+                            lytSectionsAuto.setVisibility(View.VISIBLE);
+                        }
                         isJaliscoSelected = true;
-                        showCardError1();
                     } else {
-                        lytSections.setVisibility(View.GONE);
+                        lytSectionsAuto.setVisibility(View.GONE);
+                        if ( !isLocal )
                         isJaliscoSelected = false;
-                        showCardError2();
                     }
                 } else {
                     isStateValid = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        lytSectionsAuto.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    int section = Integer.parseInt(lytSectionsAuto.getEditText().getText().toString().trim());
+                    if ( isValidSection(section) ) {
+                        isSectionValid = true;
+                    } else {
+                        isSectionValid = false;
+                    }
+                } catch (Exception ex) {
+                    isSectionValid = false;
                 }
             }
 
@@ -120,6 +167,15 @@ public class ContactFragment extends Fragment {
         txtError.setTextColor(getContext().getResources().getColor(R.color.error_r_text));
     }
 
+    private void addSections() {
+        List<String> stringsSections = new ArrayList<>();
+        for ( Section section : sections ) {
+            stringsSections.add("" + section.getSection());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringsSections);
+        ((AutoCompleteTextView) lytSectionsAuto.getEditText()).setAdapter(adapter);
+    }
+
     private void addStates() {
         List<String> stringStates = new ArrayList<>();
         for ( State state : states ) {
@@ -144,11 +200,9 @@ public class ContactFragment extends Fragment {
         if (!TextInputLayoutUtils.isValid(lytElectorKey, getString(R.string.fcvbs_key_error))
                 | !TextInputLayoutUtils.isValid(lytEmail, getString(R.string.fcvbs_email_error))
                 | !TextInputLayoutUtils.isValid(lytPhone, getString(R.string.fcvbs_phone_error))
-                | !isStateSelected() ) {
+                | !isStateSelected()
+                | ( isJaliscoSelected && !isLocal && !isSectionSelected()) ) {
             return false;
-        }
-        if ( isJaliscoSelected ) {
-            //TODO Validar la seccion seleccionada
         }
         return true;
     }
@@ -157,6 +211,25 @@ public class ContactFragment extends Fragment {
         volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
         volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
         volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
+        volunteer.setLocal(isLocal);
+        if ( isJaliscoSelected && !isLocal ) {
+            int s = Integer.parseInt(lytSectionsAuto.getEditText().getText().toString().trim());
+            for ( Section section : sections ) {
+                if ( section.getSection() ==  s) {
+                    volunteer.setSectionObject(section);
+                    break;
+                }
+            }
+        }
+    }
+
+    private boolean isSectionSelected() {
+        if ( lytSectionsAuto.getEditText().getText().length() == 0 || !isSectionValid ) {
+            lytSectionsAuto.setError("Ingrese una sección valida");
+            return false;
+        }
+        lytSectionsAuto.setError(null);
+        return true;
     }
 
     private boolean isStateSelected() {
@@ -166,6 +239,15 @@ public class ContactFragment extends Fragment {
         }
         lytStates.setError(null);
         return true;
+    }
+
+    private boolean isValidSection(int mySection) {
+        for ( Section section : sections ) {
+            if ( section.getSection() == mySection ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isValidState(String myState) {

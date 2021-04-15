@@ -1,17 +1,25 @@
 package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.futuro.futuroapp.MainActivity;
+import com.rld.futuro.futuroapp.Models.LocalDistrict;
+import com.rld.futuro.futuroapp.Models.Municipality;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
+import com.rld.futuro.futuroapp.Request.AppConfig;
 import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
+
+import java.util.ArrayList;
 
 public class SectionFragment extends Fragment {
 
@@ -28,9 +36,16 @@ public class SectionFragment extends Fragment {
 
     private Volunteer volunteer;
 
-    public SectionFragment(Volunteer volunteer)
+    private ArrayList<Municipality> municipalities;
+    private ArrayList<LocalDistrict> localDistricts;
+
+    private boolean isLocal;
+
+    public SectionFragment(Volunteer volunteer, MainActivity mainActivity)
     {
         this.volunteer = volunteer;
+        municipalities = mainActivity.getMunipalities();
+        localDistricts = mainActivity.getLocalDistricts();
     }
 
     @Nullable
@@ -52,19 +67,63 @@ public class SectionFragment extends Fragment {
         return view;
     }
 
-    public void setVolunter() {
-        volunteer.setSector(lytSector.getEditText().getText().toString().trim());
+    public void setInfo() {
+        if ( !volunteer.isLocal() ) {
+            if ( municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
+                    || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE ) {
+                isLocal = true;
+            } else {
+                isLocal = false;
+            }
+        } else {
+            isLocal = true;
+        }
+        if ( !isLocal && volunteer.isJalisco() ) {
+            for ( Municipality municipality : municipalities ) {
+                if ( municipality.getMunicipalityNumber() == volunteer.getSectionObject().getNumberMunicipality() ) {
+                    lytMunicipioName.getEditText().setText("" + municipality.getMunicipality());
+                    lytMunicipioName.getEditText().setEnabled(false);
+                    lytMunicipioNumber.getEditText().setText("" + municipality.getMunicipalityNumber());
+                    lytMunicipioNumber.getEditText().setEnabled(false);
+                    break;
+                }
+            }
+            for ( LocalDistrict localDistrict : localDistricts ) {
+                if ( localDistrict.getNumberLocalDistrict() == volunteer.getSectionObject().getNumberLocalDistrict() ) {
+                    lytDistritoLocalName.getEditText().setText("" + localDistrict.getLocalDistrict());
+                    lytDistritoLocalName.getEditText().setEnabled(false);
+                    lytDistritoLocalNumber.getEditText().setText("" + localDistrict.getNumberLocalDistrict());
+                    lytDistritoLocalNumber.getEditText().setEnabled(false);
+                    break;
+                }
+            }
+        }
         if ( !volunteer.isJalisco() ) {
-            volunteer.setSection(lytSection.getEditText().getText().toString().trim());
-            volunteer.setMunicipality(lytMunicipioName.getEditText().getText().toString().trim());
-            volunteer.setNumberMunicipality(lytMunicipioNumber.getEditText().getText().toString().trim());
-            volunteer.setLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
-            volunteer.setNumberLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
+            lytSection.getEditText().setText("");
+            lytSection.getEditText().setEnabled(true);
+            lytSection.getEditText().requestFocus();
+            lytMunicipioName.getEditText().setText("");
+            lytMunicipioName.getEditText().setEnabled(true);
+            lytMunicipioNumber.getEditText().setText("");
+            lytMunicipioNumber.getEditText().setEnabled(true);
+            lytDistritoLocalName.getEditText().setText("");
+            lytDistritoLocalName.getEditText().setEnabled(true);
+            lytDistritoLocalNumber.getEditText().setText("");
+            lytDistritoLocalNumber.getEditText().setEnabled(true);
         }
     }
 
+    public void setVolunter() {
+        volunteer.setSector(lytSector.getEditText().getText().toString().trim());
+        volunteer.setSection(lytSection.getEditText().getText().toString().trim());
+        volunteer.setMunicipality(lytMunicipioName.getEditText().getText().toString().trim());
+        volunteer.setNumberMunicipality(lytMunicipioNumber.getEditText().getText().toString().trim());
+        volunteer.setLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
+        volunteer.setNumberLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
+    }
+
     public boolean isComplete() {
-        if ( volunteer.isJalisco() ) {
+        if ( volunteer.isJalisco() && !isLocal ) {
             return TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error));
         }
         return  !(!TextInputLayoutUtils.isValid(lytSection, getString(R.string.fSvbs_section_error))
@@ -81,13 +140,24 @@ public class SectionFragment extends Fragment {
         lytStateName.getEditText().setText("" + volunteer.getState());
         lytStateNumber.getEditText().setText("" + volunteer.getStateNumber());
         if ( volunteer.isJalisco() ) {
-            lytSection.getEditText().setEnabled(false);
-            lytSection.getEditText().setText("1234");
-            lytSector.getEditText().requestFocus();
+            if ( volunteer.isLocal() ) {
+                lytSection.getEditText().requestFocus();
+            } else {
+                lytSection.getEditText().setEnabled(false);
+                lytSection.getEditText().setText("" + volunteer.getSectionObject().getSection());
+                lytSector.getEditText().requestFocus();
+            }
         } else {
-            lytSection.getEditText().requestFocus();
-            lytSection.getEditText().setEnabled(true);
             lytSection.getEditText().setText("");
+            lytSection.getEditText().requestFocus();
+            lytMunicipioName.getEditText().setText("");
+            lytMunicipioName.getEditText().setEnabled(true);
+            lytMunicipioNumber.getEditText().setText("");
+            lytMunicipioNumber.getEditText().setEnabled(true);
+            lytDistritoLocalName.getEditText().setText("");
+            lytDistritoLocalName.getEditText().setEnabled(true);
+            lytDistritoLocalNumber.getEditText().setText("");
+            lytDistritoLocalNumber.getEditText().setEnabled(true);
         }
     }
 }
