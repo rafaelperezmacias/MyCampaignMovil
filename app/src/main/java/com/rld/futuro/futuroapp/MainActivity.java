@@ -143,10 +143,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (resultCode == MenuVolunteerActivity.CAPTURE_MANUAL) {
                 VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
-                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         }
     }
-
 
 }
