@@ -10,18 +10,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
-import com.rld.futuro.futuroapp.Models.JSONManager;
+
 import com.rld.futuro.futuroapp.Models.LocalDistrict;
 import com.rld.futuro.futuroapp.Models.Municipality;
 import com.rld.futuro.futuroapp.Models.Section;
+import com.rld.futuro.futuroapp.Models.FileManager;
+
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.Request.AppConfig;
 import com.rld.futuro.futuroapp.Utils.DataTrasform;
@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Volunteer> volunteers;
     private Volunteer volunteer;
-    private JSONManager jsonManager;
     private TextView text;
+    private FileManager fileManager;
 
     private static final int CODE_INTENT_MENU = 100;
 
@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         ((Button) findViewById(R.id.btnTest))
-                .setOnClickListener( v -> {
-                    startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
+                .setOnClickListener(v -> {
+                    // startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
                     /*volunteer = new Volunteer();
                     volunteer.setNames("Luis");
                     volunteer.setLastNames("Rayas");
@@ -137,13 +137,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ( requestCode == CODE_INTENT_MENU ) {
-            if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
-                Toast.makeText(this, "TOMAR FOTO", Toast.LENGTH_SHORT).show();
-            } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
+        if (requestCode == CODE_INTENT_MENU) {
+            if (resultCode == MenuVolunteerActivity.TAKE_PHOTO) {
+                Intent intent = new Intent(this, CameraPreview.class);
+                startActivity(intent);
+            } else if (resultCode == MenuVolunteerActivity.CAPTURE_MANUAL) {
                 VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         }
     }
+
+
 }

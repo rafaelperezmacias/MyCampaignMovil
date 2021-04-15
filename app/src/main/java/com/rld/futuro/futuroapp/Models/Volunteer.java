@@ -1,6 +1,7 @@
 package com.rld.futuro.futuroapp.Models;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -12,7 +13,7 @@ public class Volunteer {
 
     // TODO Modelado de la clase voluntario
     private String names;
-    private String lastNames;
+    private String lastNames; // Fragmentar
     private String addressName;
     private String addressNumExt;
     private String addressNumInt;
@@ -24,6 +25,7 @@ public class Volunteer {
 
     private String imgString;
     private Bitmap img;
+    private String pathPhoto;
 
     // Casillas
     private String state;
@@ -34,8 +36,6 @@ public class Volunteer {
     private String sector;
     private String localDistrict;
     private String numberLocalDistrict;
-    private String federalDistrict;
-    private String numberFederalDistrict;
 
     private String notes;
     private int typeUser;
@@ -58,6 +58,7 @@ public class Volunteer {
 
         this.imgString = "";
         this.img = null;
+        this.pathPhoto = "";
 
         // Casillas
         this.state = "";
@@ -65,7 +66,6 @@ public class Volunteer {
         this.municipality = "";
         this.sector = "";
         this.localDistrict = "";
-        this.federalDistrict = "";
 
         this.notes = "";
     }
@@ -76,6 +76,14 @@ public class Volunteer {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public String getPathPhoto() {
+        return pathPhoto;
+    }
+
+    public void setPathPhoto(String pathPhoto) {
+        this.pathPhoto = pathPhoto;
     }
 
     public String getNotes() {
@@ -100,14 +108,6 @@ public class Volunteer {
 
     public void setNumberLocalDistrict(String numberLocalDistrict) {
         this.numberLocalDistrict = numberLocalDistrict;
-    }
-
-    public String getNumberFederalDistrict() {
-        return numberFederalDistrict;
-    }
-
-    public void setNumberFederalDistrict(String numberFederalDistrict) {
-        this.numberFederalDistrict = numberFederalDistrict;
     }
 
     public int getTypeUser() {
@@ -218,8 +218,8 @@ public class Volunteer {
         return imgString;
     }
 
-    public void setImgString(Bitmap image) {
-        this.imgString = convertImageToString(image);
+    public void setImgString(String strImage) {
+        this.imgString = strImage;
     }
 
     public Bitmap getImg() {
@@ -228,6 +228,7 @@ public class Volunteer {
 
     public void setImg(Bitmap img) {
         this.img = img;
+        this.imgString = convertImageToString(img);
     }
 
     public String getState() {
@@ -270,14 +271,6 @@ public class Volunteer {
         this.localDistrict = localDistrict;
     }
 
-    public String getFederalDistrict() {
-        return federalDistrict;
-    }
-
-    public void setFederalDistrict(String federalDistrict) {
-        this.federalDistrict = federalDistrict;
-    }
-
     public boolean isCasillaLocal() {
         return isCasillaLocal;
     }
@@ -309,8 +302,6 @@ public class Volunteer {
                 ", sector='" + sector + '\'' +
                 ", localDistrict='" + localDistrict + '\'' +
                 ", numberLocalDistrict='" + numberLocalDistrict + '\'' +
-                ", federalDistrict='" + federalDistrict + '\'' +
-                ", numberFederalDistrict='" + numberFederalDistrict + '\'' +
                 ", notes='" + notes + '\'' +
                 ", typeUser=" + typeUser +
                 ", isCasillaLocal=" + isCasillaLocal +

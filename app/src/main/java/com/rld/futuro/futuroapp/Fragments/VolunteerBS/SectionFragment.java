@@ -1,7 +1,6 @@
 package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +60,6 @@ public class SectionFragment extends Fragment {
             volunteer.setNumberMunicipality(lytMunicipioNumber.getEditText().getText().toString().trim());
             volunteer.setLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
             volunteer.setNumberLocalDistrict(lytDistritoLocalName.getEditText().getText().toString().trim());
-            volunteer.setFederalDistrict(lytDistritoFederalName.getEditText().getText().toString().trim());
-            volunteer.setNumberFederalDistrict(lytDistritoFederalNumber.getEditText().getText().toString().trim());
         }
     }
 
