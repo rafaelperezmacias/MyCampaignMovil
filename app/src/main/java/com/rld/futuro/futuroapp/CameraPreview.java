@@ -58,6 +58,7 @@ public class CameraPreview extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
 
+
         volunteer = (Volunteer) getIntent().getSerializableExtra("voluntario");
         if ( volunteer != null ) {
             Log.e("voluntario", "" + volunteer.toString());
