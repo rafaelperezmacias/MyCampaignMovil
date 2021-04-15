@@ -226,6 +226,9 @@ public class FileManager {
                 obj.put("phone", volunteers.get(cont).getPhone());
                 obj.put("imgString", volunteers.get(cont).getImgString());
                 obj.put("stateNumber", volunteers.get(cont).getStateNumber());
+                obj.put("section", volunteers.get(cont).getSection());
+                obj.put("municipality", volunteers.get(cont).getMunicipality());
+                obj.put("localDistrict", volunteers.get(cont).getLocalDistrict());
                 obj.put("section", Integer.parseInt(volunteers.get(cont).getSection()));
                 obj.put("sector", volunteers.get(cont).getSector());
                 obj.put("notes", volunteers.get(cont).getNotes());
@@ -269,7 +272,7 @@ public class FileManager {
                     volunteer.setElectorKey(object.getString("electorKey"));
                     volunteer.setEmail(object.getString("email"));
                     volunteer.setPhone(object.getString("phone"));
-                    volunteer.setPhone(object.getString("imgString"));
+                    volunteer.setImgString(object.getString("imgString"));
                     volunteer.setState(object.getString("stateNumber"));
                     volunteer.setSection(object.getString("section"));
                     volunteer.setMunicipality(object.getString("municipality"));
@@ -279,6 +282,7 @@ public class FileManager {
                     volunteers.add(volunteer);
                     cont++;
                 } catch (JSONException e) {
+                    Log.e("" , "" + e.getMessage());
                     return new ArrayList<>();
                 }
             }
@@ -343,13 +347,14 @@ public class FileManager {
                 stringBuilder.append(lineaTexto);
             }
         }catch (Exception e){
+            Log.e("", "" + e.getMessage());
             return new ArrayList<>();
         }finally {
             if(fileInputStream !=null){
                 try {
                     fileInputStream.close();
                 }catch (Exception e){
-
+                    Log.e("", "" + e.getMessage());
                 }
             }
         }

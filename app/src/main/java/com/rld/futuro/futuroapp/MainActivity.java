@@ -39,11 +39,20 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     private RequestQueue requestQueue;
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         volunteers = new ArrayList<>();
         fileManager = new FileManager(MainActivity.this);
         volunteers = fileManager.readFile(getApplicationContext());
+        for ( Volunteer volunteer : volunteers ) {
+            Log.e("a", "" + volunteer.toString());
+        }
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         CameraPreview.setLISTENER(MainActivity.this);
@@ -52,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
         ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
         if ( municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
-            || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
-            || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE ) {
+                || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
+                || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE ) {
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
                 try {
                     if ( response.getInt("code") == 205) {
@@ -69,17 +78,6 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
             });
             requestQueue.add(request);
         }
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         ( (Button) findViewById(R.id.btnCarga))
                 .setOnClickListener(v -> {
@@ -121,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         fileManager.saveFile(volunteers, getApplicationContext());
         createSnackBar(getString(R.string.fbs_snackbar));
         for ( Volunteer v : volunteers ) {
-            Log.e("Rafa", "" + v.toString());
+            v.deleteImage();
         }
     }
 

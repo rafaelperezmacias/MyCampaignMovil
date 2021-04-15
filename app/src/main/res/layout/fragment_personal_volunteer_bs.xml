@@ -45,7 +45,6 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="textCapCharacters"
-                android:digits="@string/input_only_leters_to_upper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -68,7 +67,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:inputType="textCapCharacters"
-            android:digits="@string/input_only_leters_to_upper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>
@@ -89,7 +87,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:inputType="textCapCharacters"
-            android:digits="@string/input_only_leters_to_upper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>
@@ -140,7 +137,6 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="textCapCharacters"
-                android:digits="@string/input_only_leters_to_upper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -217,7 +213,6 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:inputType="textCapCharacters"
-            android:digits="@string/input_only_leters_to_upper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>

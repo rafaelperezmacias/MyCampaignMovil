@@ -44,8 +44,6 @@ import static android.app.Activity.RESULT_CANCELED;
 
 public class CameraPreview extends AppCompatActivity {
 
-    private ImageView imageView;
-    private Button btn;
     private Volunteer volunteer;
 
     private final int REQUEST_IMAGE_CAPTURE = 0;
@@ -60,14 +58,6 @@ public class CameraPreview extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_preview);
-
-        imageView = findViewById(R.id.imageView);
-        btn = findViewById(R.id.btnTomarFoto);
-        btn.setOnClickListener(v -> {
-            Toast.makeText(this, volunteer.getPathPhoto(), Toast.LENGTH_LONG);
-            volunteer.deleteImage();
-        });
-
 
         Bundle bundle = getIntent().getBundleExtra("data");
         volunteer = (Volunteer) bundle.getSerializable("volutario");
@@ -84,7 +74,9 @@ public class CameraPreview extends AppCompatActivity {
                 //imageView.setImageBitmap(image);
                 setPic();
                 break;
-            case RESULT_CANCELED:
+            default:
+                LISTENER.saveVolunteer(volunteer);
+                finish();
                 break;
         }
     }
@@ -111,7 +103,6 @@ public class CameraPreview extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
         volunteer.setImg(bitmap);
-        imageView.setImageBitmap(volunteer.getImg());
         LISTENER.saveVolunteer(volunteer);
         finish();
     }

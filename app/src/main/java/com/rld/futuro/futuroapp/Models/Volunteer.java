@@ -316,13 +316,12 @@ public class Volunteer implements Serializable {
     public void deleteImage(){
         File file = new File(this.pathPhoto);
         if (file.exists()){
-            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
+            Log.e("TAG1", "archivo a borrar" + file.getAbsolutePath());
             file.delete();
-            imgString = "";
             img = null;
             pathPhoto = "";
         } else {
-            Log.d("TAG1", "archivo no existente");
+            Log.e("TAG1", "archivo no existente");
         }
     }
 
