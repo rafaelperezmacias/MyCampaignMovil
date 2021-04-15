@@ -290,6 +290,9 @@ public class Volunteer implements Serializable {
         if (file.exists()){
             Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
             file.delete();
+            imgString = "";
+            img = null;
+            pathPhoto = "";
         } else {
             Log.d("TAG1", "archivo no existente");
         }
