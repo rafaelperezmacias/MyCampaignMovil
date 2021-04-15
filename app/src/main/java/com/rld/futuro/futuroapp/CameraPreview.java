@@ -63,6 +63,7 @@ public class CameraPreview extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         btn = findViewById(R.id.btnTomarFoto);
         btn.setOnClickListener(v -> {
+            Toast.makeText(this, volunteer.getPathPhoto(), Toast.LENGTH_LONG);
             volunteer.deleteImage();
         });
 

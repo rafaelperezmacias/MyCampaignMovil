@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 .setOnClickListener(v -> {
                     //VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                     //volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                    Volunteer vol = new Volunteer();
+                    vol.setElectorKey("1234");
+                    addVolunteerWithImage(vol);
                 });
 
     }
@@ -121,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if ( requestCode == CODE_TAKE_IMAGE ) {
             if ( resultCode == CameraPreview.RESULT_CAMERA_NOT_PERMISSON ) {
-
+                //No se tomo la foto, permiso denegado de la camara
             } else {
-
+                // Se tomo la foto y se guardo
             }
             saveVolunteers();
         }
