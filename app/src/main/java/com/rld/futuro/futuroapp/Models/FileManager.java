@@ -2,6 +2,7 @@ package com.rld.futuro.futuroapp.Models;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -39,7 +40,8 @@ public class FileManager {
             obj = new JSONObject();
             try {
                 obj.put("names", volunteers.get(cont).getNames());
-                obj.put("lastName", volunteers.get(cont).getLastNames());
+                obj.put("lastName1", volunteers.get(cont).getLastName1());
+                obj.put("lastName2", volunteers.get(cont).getLastName2());
                 obj.put("addressName", volunteers.get(cont).getAddressName());
                 obj.put("addressNumExt", volunteers.get(cont).getAddressNumExt());
                 obj.put("addressNumInt", volunteers.get(cont).getAddressNumInt());
@@ -50,7 +52,7 @@ public class FileManager {
                 obj.put("phone", volunteers.get(cont).getPhone());
 
                 obj.put("stateNumber", volunteers.get(cont).getStateNumber());
-                obj.put("section", 2716);
+                obj.put("section", Integer.parseInt(volunteers.get(cont).getSection()));
                 obj.put("sector", volunteers.get(cont).getSector());
                 obj.put("notes", volunteers.get(cont).getNotes());
                 obj.put("typeUser", 1);
@@ -83,7 +85,8 @@ public class FileManager {
                 try {
                     object = user.getJSONObject(cont);
                     volunteer.setNames(object.getString("names"));
-                    volunteer.setLastNames(object.getString("lastName"));
+                    volunteer.setLastName1(object.getString("lastName1"));
+                    volunteer.setLastName2(object.getString("lastName2"));
                     volunteer.setAddressName(object.getString("addressName"));
                     volunteer.setAddressNumExt(object.getString("addressNumExt"));
                     volunteer.setAddressNumInt(object.getString("addressNumInt"));
@@ -92,8 +95,6 @@ public class FileManager {
                     volunteer.setElectorKey(object.getString("electorKey"));
                     volunteer.setEmail(object.getString("email"));
                     volunteer.setPhone(object.getString("phone"));
-
-                    volunteer.setImgString(object.getString("image"));
 
                     volunteer.setState(object.getString("stateNumber"));
                     volunteer.setSection(object.getString("section"));

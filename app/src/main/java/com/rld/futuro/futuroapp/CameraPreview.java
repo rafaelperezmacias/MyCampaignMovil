@@ -66,6 +66,7 @@ public class CameraPreview extends AppCompatActivity {
             volunteer.deleteImage();
         });
 
+
         volunteer = (Volunteer) getIntent().getSerializableExtra("voluntario");
         if ( volunteer != null ) {
             Log.e("voluntario", "" + volunteer.toString());
