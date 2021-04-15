@@ -7,6 +7,7 @@ public class AppConfig {
     private static final String URL_SERVER = "http://" + HOST + ":" + PORT + "/";
 
     public static final String GET_SECTIONS = URL_SERVER + "api/v1/section/appSetup";
+    public static final String INSERT_VOLUNTER = URL_SERVER + "api/v1/volunteer/";
 
     public static final int MUNICIPALITIES_SIZE = 125;
     public static final int LOCAL_DISTRICTS_SIZE = 20;
