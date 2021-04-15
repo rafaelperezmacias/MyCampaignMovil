@@ -1,6 +1,8 @@
 package com.rld.futuro.futuroapp.Models;
 
-public class Municipality {
+import java.io.Serializable;
+
+public class Municipality implements Serializable  {
 
     private int municipalityNumber;
     private String municipality;

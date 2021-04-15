@@ -342,6 +342,7 @@ public class Volunteer implements Serializable {
                 ", phone='" + phone + '\'' +
                 ", imgString='" + imgString + '\'' +
                 ", img=" + img +
+                ", pathPhoto='" + pathPhoto + '\'' +
                 ", state='" + state + '\'' +
                 ", stateNumber=" + stateNumber +
                 ", section='" + section + '\'' +
@@ -354,6 +355,8 @@ public class Volunteer implements Serializable {
                 ", typeUser=" + typeUser +
                 ", isCasillaLocal=" + isCasillaLocal +
                 ", isJalisco=" + isJalisco +
+                ", sectionObject=" + sectionObject +
+                ", isLocal=" + isLocal +
                 '}';
     }
 }

@@ -1,6 +1,8 @@
 package com.rld.futuro.futuroapp.Models;
 
-public class Section {
+import java.io.Serializable;
+
+public class Section implements Serializable {
 
     private int section;
     private int numberMunicipality;

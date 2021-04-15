@@ -224,12 +224,12 @@ public class FileManager {
                 obj.put("electorKey", volunteers.get(cont).getElectorKey());
                 obj.put("email", volunteers.get(cont).getEmail());
                 obj.put("phone", volunteers.get(cont).getPhone());
-
+                obj.put("imgString", volunteers.get(cont).getImgString());
                 obj.put("stateNumber", volunteers.get(cont).getStateNumber());
                 obj.put("section", Integer.parseInt(volunteers.get(cont).getSection()));
                 obj.put("sector", volunteers.get(cont).getSector());
                 obj.put("notes", volunteers.get(cont).getNotes());
-                obj.put("typeUser", 1);
+                obj.put("typeUser", volunteers.get(cont).getTypeUser());
                 cont++;
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -269,7 +269,7 @@ public class FileManager {
                     volunteer.setElectorKey(object.getString("electorKey"));
                     volunteer.setEmail(object.getString("email"));
                     volunteer.setPhone(object.getString("phone"));
-
+                    volunteer.setPhone(object.getString("imgString"));
                     volunteer.setState(object.getString("stateNumber"));
                     volunteer.setSection(object.getString("section"));
                     volunteer.setMunicipality(object.getString("municipality"));

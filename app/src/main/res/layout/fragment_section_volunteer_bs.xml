@@ -219,7 +219,7 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:inputType="textCapWords"
+            android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </com.google.android.material.textfield.TextInputEditText>
@@ -289,89 +289,6 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fsvbs_dlocal_number_lyt"
                 app:layout_constraintLeft_toLeftOf="@id/guideline502"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="@string/fsvbs_number"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </com.google.android.material.textfield.TextInputEditText>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingStart="56dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="10dp"
-        android:text="@string/fsvbs_dfederal_title"
-        android:textColor="@android:color/black"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
-
-    <!-- Field with image -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:id="@+id/space2"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="16dp"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_toEndOf="@id/space2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline504"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent=".55"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fsvbs_dfederal_name_lyt"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="@id/guideline504"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="@string/fsvbs_name"
-                android:paddingStart="16dp"
-                app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:inputType="textCapCharacters"
-                    android:digits="@string/input_only_leters_to_upper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </com.google.android.material.textfield.TextInputEditText>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fsvbs_dfederal_number_lyt"
-                app:layout_constraintLeft_toLeftOf="@id/guideline504"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

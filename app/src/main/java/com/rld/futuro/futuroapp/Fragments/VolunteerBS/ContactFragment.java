@@ -3,7 +3,6 @@ package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +18,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.futuro.futuroapp.MainActivity;
-import com.rld.futuro.futuroapp.Models.FileManager;
 import com.rld.futuro.futuroapp.Models.Section;
+import com.rld.futuro.futuroapp.Models.State;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
-import com.rld.futuro.futuroapp.Models.State;
 import com.rld.futuro.futuroapp.Request.AppConfig;
 import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
 
@@ -80,7 +78,6 @@ public class ContactFragment extends Fragment {
         states = State.getStates(getContext());
         addStates();
         addSections();
-        sections.clear();
         if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
             isLocal = true;
             showCardError2();

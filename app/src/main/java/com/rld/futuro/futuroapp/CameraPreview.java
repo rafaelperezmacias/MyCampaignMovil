@@ -48,12 +48,13 @@ public class CameraPreview extends AppCompatActivity {
     private Button btn;
     private Volunteer volunteer;
 
-
     private final int REQUEST_IMAGE_CAPTURE = 0;
     private final int REQUEST_TAKE_PHOTO = 1;
     private static final int CAMERA_PERMISSION_CODE = 100;
 
     public static final int RESULT_CAMERA_NOT_PERMISSON = 6666;
+
+    private static onTakePhotoFinish LISTENER;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,10 +69,8 @@ public class CameraPreview extends AppCompatActivity {
         });
 
 
-        volunteer = (Volunteer) getIntent().getSerializableExtra("voluntario");
-        if ( volunteer != null ) {
-            Log.e("voluntario", "" + volunteer.toString());
-        }
+        Bundle bundle = getIntent().getBundleExtra("data");
+        volunteer = (Volunteer) bundle.getSerializable("volutario");
 
         checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
     }
@@ -113,9 +112,9 @@ public class CameraPreview extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
         volunteer.setImg(bitmap);
         imageView.setImageBitmap(volunteer.getImg());
+        LISTENER.saveVolunteer(volunteer);
+        finish();
     }
-
-
 
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
@@ -132,6 +131,12 @@ public class CameraPreview extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        LISTENER.saveVolunteer(volunteer);
+        super.onBackPressed();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -141,6 +146,7 @@ public class CameraPreview extends AppCompatActivity {
         } else {
             Toast.makeText(CameraPreview.this, "Permiso de Camara Denegado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_CAMERA_NOT_PERMISSON);
+            LISTENER.saveVolunteer(volunteer);
             finish();
         }
     }
@@ -181,5 +187,13 @@ public class CameraPreview extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         volunteer.setPathPhoto(image.getAbsolutePath());
         return image;
+    }
+
+    public interface onTakePhotoFinish {
+        void saveVolunteer(Volunteer volunteer);
+    }
+
+    public static void setLISTENER(onTakePhotoFinish listener) {
+        LISTENER = listener;
     }
 }

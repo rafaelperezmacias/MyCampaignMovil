@@ -1,12 +1,10 @@
 package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -31,8 +29,6 @@ public class SectionFragment extends Fragment {
     private TextInputLayout lytSector;
     private TextInputLayout lytDistritoLocalName;
     private TextInputLayout lytDistritoLocalNumber;
-    private TextInputLayout lytDistritoFederalName;
-    private TextInputLayout lytDistritoFederalNumber;
 
     private Volunteer volunteer;
 
@@ -61,8 +57,6 @@ public class SectionFragment extends Fragment {
         lytSector = view.findViewById(R.id.fsvbs_sector_lyt);
         lytDistritoLocalName = view.findViewById(R.id.fsvbs_dlocal_name_lyt);
         lytDistritoLocalNumber = view.findViewById(R.id.fsvbs_dlocal_number_lyt);
-        lytDistritoFederalName = view.findViewById(R.id.fsvbs_dfederal_name_lyt);
-        lytDistritoFederalNumber = view.findViewById(R.id.fsvbs_dfederal_number_lyt);
 
         return view;
     }
@@ -131,9 +125,7 @@ public class SectionFragment extends Fragment {
                 | !TextInputLayoutUtils.isValid(lytMunicipioNumber, getString(R.string.fSvbs_municipio_number_error))
                 | !TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error))
                 | !TextInputLayoutUtils.isValid(lytDistritoLocalName, getString(R.string.fSvbs_municipio_name_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoFederalName, getString(R.string.fSvbs_municipio_name_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoFederalNumber, getString(R.string.fSvbs_municipio_number_error)) );
+                | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error)) );
     }
 
     public void setState() {

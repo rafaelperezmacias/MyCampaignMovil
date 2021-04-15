@@ -4,10 +4,11 @@ import android.content.Context;
 
 import com.rld.futuro.futuroapp.R;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class State {
+public class State implements Serializable {
 
     public static final String STATE_JALISCO = "JALISCO";
 

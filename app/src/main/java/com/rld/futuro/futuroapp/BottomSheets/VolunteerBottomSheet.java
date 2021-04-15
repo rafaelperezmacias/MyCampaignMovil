@@ -179,7 +179,6 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                             dismiss();
                         })
                         .show();
-                // dismiss();
             }
 
         });

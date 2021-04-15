@@ -24,7 +24,7 @@
     <string name="fpvbs_lastName2_error">Ingrese el apellido materno</string>
     <string name="fpvbs_street">Calle</string>
     <string name="fpvbs_street_error">Ingrese la calle</string>
-    <string name="fpvbs_complement">Complemento</string>
+    <string name="fpvbs_complement">Número Interior</string>
     <string name="fpvbs_out_number">Número Exterior</string>
     <string name="fpvbs_out_number_error">Ingrese el número exterior</string>
     <string name="fpvbs_cp">Código Postal</string>

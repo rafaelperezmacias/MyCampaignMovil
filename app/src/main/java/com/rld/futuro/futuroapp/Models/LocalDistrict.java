@@ -1,6 +1,8 @@
 package com.rld.futuro.futuroapp.Models;
 
-public class LocalDistrict {
+import java.io.Serializable;
+
+public class LocalDistrict implements Serializable {
 
     private int numberLocalDistrict;
     private String localDistrict;

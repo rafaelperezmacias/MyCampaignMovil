@@ -1,6 +1,5 @@
 package com.rld.futuro.futuroapp;
 
-import android.app.NativeActivity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -9,10 +8,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -28,16 +24,12 @@ import com.rld.futuro.futuroapp.Models.Municipality;
 import com.rld.futuro.futuroapp.Models.Section;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.Request.AppConfig;
-import com.rld.futuro.futuroapp.Request.RequestManager;
-import com.rld.futuro.futuroapp.Utils.Internet;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CameraPreview.onTakePhotoFinish {
 
     private Toolbar toolbar;
 
@@ -46,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private FileManager fileManager;
     private RequestQueue requestQueue;
 
-    public static final int CODE_TAKE_IMAGE = 1234;
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -55,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         fileManager = new FileManager(MainActivity.this);
         volunteers = fileManager.readFile(getApplicationContext());
         requestQueue = Volley.newRequestQueue(MainActivity.this);
+
+        CameraPreview.setLISTENER(MainActivity.this);
 
         ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
         ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
@@ -109,8 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void addVolunteerWithImage(Volunteer volunteer) {
         Intent intent = new Intent(MainActivity.this, CameraPreview.class);
-        intent.putExtra("voluntario", volunteer);
-        startActivityForResult(intent, CODE_TAKE_IMAGE);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("volutario", volunteer);
+        intent.putExtra("data", bundle);
+        startActivity(intent);
     }
 
     public void createSnackBar(String text) {
@@ -126,18 +120,8 @@ public class MainActivity extends AppCompatActivity {
     public void saveVolunteers() {
         fileManager.saveFile(volunteers, getApplicationContext());
         createSnackBar(getString(R.string.fbs_snackbar));
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ( requestCode == CODE_TAKE_IMAGE ) {
-            if ( resultCode == CameraPreview.RESULT_CAMERA_NOT_PERMISSON ) {
-                //No se tomo la foto, permiso denegado de la camara
-            } else {
-                // Se tomo la foto y se guardo
-            }
-            saveVolunteers();
+        for ( Volunteer v : volunteers ) {
+            Log.e("Rafa", "" + v.toString());
         }
     }
 
@@ -152,4 +136,11 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<LocalDistrict> getLocalDistricts() {
         return fileManager.readJSONLocalDistricts(MainActivity.this);
     }
+
+    @Override
+    public void saveVolunteer(Volunteer volunteer) {
+        volunteers.add(volunteer);
+        saveVolunteers();
+    }
+
 }
