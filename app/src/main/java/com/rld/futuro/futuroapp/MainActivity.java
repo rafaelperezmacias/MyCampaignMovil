@@ -1,32 +1,17 @@
 package com.rld.futuro.futuroapp;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
-
-import com.rld.futuro.futuroapp.Models.LocalDistrict;
-import com.rld.futuro.futuroapp.Models.Municipality;
-import com.rld.futuro.futuroapp.Models.Section;
 import com.rld.futuro.futuroapp.Models.FileManager;
-
 import com.rld.futuro.futuroapp.Models.Volunteer;
-import com.rld.futuro.futuroapp.Request.AppConfig;
-import com.rld.futuro.futuroapp.Utils.DataTrasform;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -35,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     private ArrayList<Volunteer> volunteers;
-    private TextView text;
+
     private FileManager fileManager;
 
     @Override
@@ -49,11 +34,31 @@ public class MainActivity extends AppCompatActivity {
 
         volunteers = new ArrayList<>();
 
+        /*
+            RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+            RequestManager rm = new RequestManager();
+            JSONObject jsonBD = new JSONObject();
+
+            fileManager.readFile(MainActivity.this);
+            jsonBD=fileManager.getJson();
+            try {
+                JSONArray ja_data = jsonBD.getJSONArray("users");
+                int arraySize = ja_data.length();
+
+                for (int i = 0; i < arraySize; i++) {
+                    requestQueue.add(rm.request(ja_data.getJSONObject(i)));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("Error: ", e.getMessage());
+            } */
+
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener(v -> {
                     VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                     volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
                 });
+
     }
 
     public void addVolunteer(Volunteer volunteer) {
