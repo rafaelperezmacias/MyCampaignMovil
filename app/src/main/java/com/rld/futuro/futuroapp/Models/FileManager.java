@@ -27,7 +27,10 @@ public class FileManager {
     public FileManager(Activity activity){
         json = null;
         fileNameJSON = "data";
-        checkExternalStoragePermission(activity);
+        File folderImage = new File(activity.getApplicationContext().getFilesDir() + "/Images");
+        if (!folderImage.exists()){
+            folderImage.mkdir();
+        }
     }
 
     private void createJSON(ArrayList<Volunteer> volunteers) {
@@ -142,8 +145,18 @@ public class FileManager {
         }
     }
 
-    public void deleteFile(Context context){
+    public void deleteFileJSON(Context context){
         File file = new File(context.getFilesDir() + "/" + fileNameJSON + ".json");
+        if (file.exists()){
+            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
+            file.delete();
+        } else {
+            Log.d("TAG1", "archivo no existente");
+        }
+    }
+
+    public void deleteFile(String path){
+        File file = new File(path);
         if (file.exists()){
             Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
             file.delete();
@@ -177,18 +190,6 @@ public class FileManager {
         }
         return readJSON(stringBuilder.toString());
     }
-
-    private void checkExternalStoragePermission(Activity activity) {
-        int permissionCheck = ContextCompat.checkSelfPermission(
-                activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            Log.i("Mensaje", "No se tiene permiso para leer.");
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 225);
-        } else {
-            Log.i("Mensaje", "Se tiene permiso para leer!");
-        }
-    }
-
 
     public String getFileName() {
         return fileNameJSON;

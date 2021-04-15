@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         text = findViewById(R.id.txt);
 
         ((Button) findViewById(R.id.btnTest))
-                .setOnClickListener( v -> {
+                .setOnClickListener(v -> {
                     startActivityForResult(new Intent(MainActivity.this, MenuVolunteerActivity.class), CODE_INTENT_MENU);
 
                 });
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ( requestCode == CODE_INTENT_MENU ) {
-            if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
+        if (requestCode == CODE_INTENT_MENU) {
+            if (resultCode == MenuVolunteerActivity.TAKE_PHOTO) {
                 Intent intent = new Intent(this, CameraPreview.class);
                 startActivity(intent);
-            } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
+            } else if (resultCode == MenuVolunteerActivity.CAPTURE_MANUAL) {
                 VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }

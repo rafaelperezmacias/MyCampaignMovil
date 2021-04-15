@@ -1,6 +1,7 @@
 package com.rld.futuro.futuroapp.Models;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,7 @@ public class Volunteer {
 
     private String imgString;
     private Bitmap img;
+    private String pathPhoto;
 
     // Casillas
     private String state;
@@ -56,6 +58,7 @@ public class Volunteer {
 
         this.imgString = "";
         this.img = null;
+        this.pathPhoto = "";
 
         // Casillas
         this.state = "";
@@ -73,6 +76,14 @@ public class Volunteer {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public String getPathPhoto() {
+        return pathPhoto;
+    }
+
+    public void setPathPhoto(String pathPhoto) {
+        this.pathPhoto = pathPhoto;
     }
 
     public String getNotes() {
@@ -217,6 +228,7 @@ public class Volunteer {
 
     public void setImg(Bitmap img) {
         this.img = img;
+        this.imgString = convertImageToString(img);
     }
 
     public String getState() {
