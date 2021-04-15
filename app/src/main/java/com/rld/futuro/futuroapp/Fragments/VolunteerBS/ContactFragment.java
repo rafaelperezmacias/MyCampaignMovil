@@ -123,7 +123,7 @@ public class ContactFragment extends Fragment {
     private void addStates() {
         List<String> stringStates = new ArrayList<>();
         for ( State state : states ) {
-            stringStates.add(state.getName());
+            stringStates.add(state.getState());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringStates);
         ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter);
@@ -131,10 +131,10 @@ public class ContactFragment extends Fragment {
 
     public void getState() {
         for ( State state : states ) {
-            if ( state.getName().equals(lytStates.getEditText().getText().toString().trim()) ) {
-                volunteer.setJalisco(state.getName().equals(State.STATE_JALISCO));
-                volunteer.setState(state.getName());
-                volunteer.setStateNumber(state.getNumber());
+            if ( state.getState().equals(lytStates.getEditText().getText().toString().trim()) ) {
+                volunteer.setJalisco(state.getState().equals(State.STATE_JALISCO));
+                volunteer.setState(state.getState());
+                volunteer.setStateNumber(state.getStateNumber());
                 break;
             }
         }
@@ -170,7 +170,7 @@ public class ContactFragment extends Fragment {
 
     private boolean isValidState(String myState) {
         for ( State state : states ) {
-            if ( state.getName().equals(myState) ) {
+            if ( state.getState().equals(myState) ) {
                 return true;
             }
         }

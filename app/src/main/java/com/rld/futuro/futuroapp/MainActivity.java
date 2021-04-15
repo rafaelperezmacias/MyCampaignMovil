@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +16,15 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
 import com.rld.futuro.futuroapp.Models.JSONManager;
-import com.rld.futuro.futuroapp.Request.RequestExample;
+import com.rld.futuro.futuroapp.Models.LocalDistrict;
+import com.rld.futuro.futuroapp.Models.Municipality;
+import com.rld.futuro.futuroapp.Models.Section;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.Request.AppConfig;
+import com.rld.futuro.futuroapp.Utils.DataTrasform;
 
 import org.json.JSONException;
 
@@ -49,23 +50,46 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String url =  AppConfig.URL_SERVER + "api/v1/section/appSetup";
-        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
-            Log.e("Respuesta", response);
-        }, error -> {
-            Log.e("Error", error.getMessage());
-        });
-
-        RequestExample requestExample = new RequestExample();
-        requestExample.setNombres("Rafael");
-        requestExample.setApaterno("Android");
-        requestExample.setAmaterno("Es lo maximo");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
+            Log.e("Response", response.toString());
             try {
-                Log.e("Response", response.get("municipios").toString());
+                ArrayList<Municipality> municipalities = DataTrasform.getMunicipalities(response.getJSONArray("municipalities"));
+                if ( municipalities.size() == AppConfig.MUNICIPALITIES_SIZE ) {
+                    Log.e("Error", "AS: " + municipalities.size());
+                } else {
+                    Log.e("Error", "" + municipalities.size());
+                }
+                for ( Municipality municipality : municipalities ) {
+                    Log.e("m", "" + municipality.toString());
+                }
             } catch (JSONException e) {
-
+                e.printStackTrace();
+            }
+            try {
+                ArrayList<LocalDistrict> localDistricts = DataTrasform.getLocalDistricts(response.getJSONArray("localDistricts"));
+                if ( localDistricts.size() == AppConfig.LOCAL_DISTRICTS_SIZE ) {
+                    Log.e("Error", "AD: " + localDistricts.size());
+                } else {
+                    Log.e("Error", "AD: " + localDistricts.size());
+                }
+                for ( LocalDistrict localDistrict : localDistricts ) {
+                    Log.e("l", "" + localDistrict.toString());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                ArrayList<Section> sections = DataTrasform.getSections(response.getJSONArray("sections"));
+                if ( sections.size() == AppConfig.SECTIONS_SIZE ) {
+                    Log.e("Error", "AF: " + sections.size());
+                } else {
+                    Log.e("Error", "AF: " + sections.size());
+                }
+                for ( Section section : sections ) {
+                    Log.e("2", "" + section.toString());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }, error -> {
             if ( error == null ) {

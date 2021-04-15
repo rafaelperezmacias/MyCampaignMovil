@@ -11,42 +11,34 @@ public class State {
 
     public static final String STATE_JALISCO = "JALISCO";
 
-    private int number;
-    private String name;
+    private int stateNumber;
+    private String state;
 
     public State()
     {
 
     }
 
-    public State(int number, String name)
+    public State(int stateNumber, String state)
     {
-        this.number = number;
-        this.name = name;
+        this.stateNumber = stateNumber;
+        this.state = state;
     }
 
-    public int getNumber() {
-        return number;
+    public int getStateNumber() {
+        return stateNumber;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setStateNumber(int stateNumber) {
+        this.stateNumber = stateNumber;
     }
 
-    public String getName() {
-        return name;
+    public String getState() {
+        return state;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "State{" +
-                "number=" + number +
-                ", name='" + name + '\'' +
-                '}';
+    public void setState(String state) {
+        this.state = state;
     }
 
     public static List<State> getStates(Context context) {
@@ -57,8 +49,8 @@ public class State {
         for (String data : dataStates) {
             state = new State();
             tmp = data.split("-");
-            state.setNumber(Integer.parseInt(tmp[0]));
-            state.setName(tmp[1]);
+            state.setStateNumber(Integer.parseInt(tmp[0]));
+            state.setState(tmp[1]);
             states.add(state);
         }
         return states;
