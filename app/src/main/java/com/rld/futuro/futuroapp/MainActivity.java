@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import com.rld.futuro.futuroapp.Models.JSONManager;
 import com.rld.futuro.futuroapp.Request.RequestExample;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.Request.AppConfig;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        String url =  AppConfig.URL_SERVER + "api/v1/volunteer";
+        String url =  AppConfig.URL_SERVER + "api/v1/section/appSetup";
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             Log.e("Respuesta", response);
         }, error -> {
@@ -57,18 +61,26 @@ public class MainActivity extends AppCompatActivity {
         requestExample.setApaterno("Android");
         requestExample.setAmaterno("Es lo maximo");
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestExample.getJSON(), response -> {
-            Log.e("Response", response.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            try {
+                Log.e("Response", response.get("municipios").toString());
+            } catch (JSONException e) {
+
+            }
         }, error -> {
-            Log.e("Error", error.getMessage());
+            if ( error == null ) {
+                return;
+            }
+            Log.e("Error", "" + error.getMessage());
         });
 
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(jsonObjectRequest);
-
         /* volunteers = new ArrayList<>();
 
-        text = findViewById(R.id.txt);
+        text = findViewById(R.id.txt); */
+
+
 
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener( v -> {
@@ -94,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     jsonManager = new JSONManager();
                     jsonManager.createJSON(volunteers);
                     text.setText(jsonManager.getJson().toString());
-                }); */
+                    */
+                });
     }
 
     @Override

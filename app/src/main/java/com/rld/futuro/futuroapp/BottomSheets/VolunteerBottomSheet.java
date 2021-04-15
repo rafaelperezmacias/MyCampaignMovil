@@ -165,7 +165,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 otherFragment.setVolunteer();
                 Toast.makeText(getContext(), "" + volunteer.toString(), Toast.LENGTH_LONG).show();
                 Log.e("Volunter", "" + volunteer.toString());
-                volunteers.add(volunteer);
+                // volunteers.add(volunteer);
                 dismiss();
                 SpannableStringBuilder snackbarText = new SpannableStringBuilder();
                 snackbarText.append(getString(R.string.fbs_snackbar));

@@ -88,6 +88,7 @@
 
     <!-- Estados de Mexico -->
     <string-array name="states">
+        <item>14-JALISCO</item>
         <item>1-AGUASCALIENTES</item>
         <item>2-BAJA CALIFORNIA</item>
         <item>3-BAJA CALIFORNIA SUR</item>
@@ -101,7 +102,6 @@
         <item>11-GUANAJUATO</item>
         <item>12-GUERRERO</item>
         <item>13-HIDALGO</item>
-        <item>14-JALISCO</item>
         <item>15-MÉXICO</item>
         <item>16-MICHOACÁN</item>
         <item>17-MORELOS</item>
