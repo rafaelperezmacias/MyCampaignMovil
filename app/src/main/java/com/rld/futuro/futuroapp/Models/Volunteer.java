@@ -1,11 +1,16 @@
 package com.rld.futuro.futuroapp.Models;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Volunteer implements Serializable {
 
@@ -73,10 +78,10 @@ public class Volunteer implements Serializable {
 
     public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, array);
+        image.compress(Bitmap.CompressFormat.JPEG, 80, array);
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
-        return imgString;
+        return imgString.trim();
     }
 
     public void setNotes(String notes) {
@@ -278,6 +283,16 @@ public class Volunteer implements Serializable {
 
     public void setCasillaLocal(boolean casillaLocal) {
         isCasillaLocal = casillaLocal;
+    }
+
+    public void deleteImage(){
+        File file = new File(this.pathPhoto);
+        if (file.exists()){
+            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
+            file.delete();
+        } else {
+            Log.d("TAG1", "archivo no existente");
+        }
     }
 
     @Override

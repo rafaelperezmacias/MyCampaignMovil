@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,9 +40,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 public class CameraPreview extends AppCompatActivity {
 
     private ImageView imageView;
+    private Button btn;
     private Volunteer volunteer;
 
 
@@ -57,6 +61,10 @@ public class CameraPreview extends AppCompatActivity {
         setContentView(R.layout.activity_camera_preview);
 
         imageView = findViewById(R.id.imageView);
+        btn = findViewById(R.id.btnTomarFoto);
+        btn.setOnClickListener(v -> {
+            volunteer.deleteImage();
+        });
 
         volunteer = (Volunteer) getIntent().getSerializableExtra("voluntario");
         if ( volunteer != null ) {
@@ -110,7 +118,7 @@ public class CameraPreview extends AppCompatActivity {
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(CameraPreview.this, permission)
-                == PackageManager.PERMISSION_DENIED) {
+                != PackageManager.PERMISSION_GRANTED) {
             // Requesting the permission
             ActivityCompat.requestPermissions(CameraPreview.this,
                     new String[]{permission},
@@ -160,7 +168,7 @@ public class CameraPreview extends AppCompatActivity {
 
     private File createImageFile(Volunteer volunteer) throws IOException {
         // Create an image file name
-        String imageFileName = volunteer.getElectorKey() + "_";
+        String imageFileName = "IMG_" +  volunteer.getElectorKey() + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */

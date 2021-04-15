@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
 
         ( (Button) findViewById(R.id.btnCarga))
                 .setOnClickListener(v -> {
-                    JSONObject jsonBD = new JSONObject();
+                    /*JSONObject jsonBD = new JSONObject();
 
                     fileManager.readFile(MainActivity.this);
                     jsonBD = fileManager.getJson();
@@ -83,13 +83,13 @@ public class MainActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.e("Error: ", e.getMessage());
-                    }
+                    }*/
                 });
 
         ((Button) findViewById(R.id.btnTest))
                 .setOnClickListener(v -> {
-                    VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
-                    volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                    //VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
+                    //volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
                 });
 
     }
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addVolunteerWithImage(Volunteer volunteer) {
-        volunteers.add(volunteer);
         Intent intent = new Intent(MainActivity.this, CameraPreview.class);
         intent.putExtra("voluntario", volunteer);
         startActivityForResult(intent, CODE_TAKE_IMAGE);
