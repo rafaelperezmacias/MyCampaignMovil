@@ -18,8 +18,10 @@
     <!-- Fragment Datos personales Volunteer BottomSheet  -->
     <string name="fpvbs_names">Nombre(s)</string>
     <string name="fpvbs_names_error">Ingrese el nombre</string>
-    <string name="fpvbs_lastNames">Apellido(s)</string>
-    <string name="fpvbs_lastNames_error">Ingrese los apellidos</string>
+    <string name="fpvbs_lastName1">Apellido paterno</string>
+    <string name="fpvbs_lastName2">Apellido materno</string>
+    <string name="fpvbs_lastName1_error">Ingrese el apellido paterno</string>
+    <string name="fpvbs_lastName2_error">Ingrese el apellido materno</string>
     <string name="fpvbs_street">Calle</string>
     <string name="fpvbs_street_error">Ingrese la calle</string>
     <string name="fpvbs_complement">Complemento</string>

@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addVolunteerWithImage(Volunteer volunteer) {
-        volunteers.add(volunteer);
         Intent intent = new Intent(MainActivity.this, CameraPreview.class);
         intent.putExtra("voluntario", volunteer);
         startActivityForResult(intent, CODE_TAKE_IMAGE);
@@ -134,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if ( requestCode == CODE_TAKE_IMAGE ) {
             if ( resultCode == CameraPreview.RESULT_CAMERA_NOT_PERMISSON ) {
-
+                //No se tomo la foto, permiso denegado de la camara
             } else {
-
+                // Se tomo la foto y se guardo
             }
             saveVolunteers();
         }

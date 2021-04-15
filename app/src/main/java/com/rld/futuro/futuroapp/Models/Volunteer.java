@@ -1,11 +1,16 @@
 package com.rld.futuro.futuroapp.Models;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Volunteer implements Serializable {
 
@@ -14,7 +19,8 @@ public class Volunteer implements Serializable {
 
     // TODO Modelado de la clase voluntario
     private String names;
-    private String lastNames; // Fragmentar
+    private String lastName1; // Fragmentar
+    private String lastName2;
     private String addressName;
     private String addressNumExt;
     private String addressNumInt;
@@ -49,7 +55,8 @@ public class Volunteer implements Serializable {
 
     public Volunteer() {
         this.names = "";
-        this.lastNames = "";
+        this.lastName1 = "";
+        this.lastName2 = "";
         this.addressName = "";
         this.addressNumExt = "";
         this.addressNumInt = "";
@@ -75,10 +82,10 @@ public class Volunteer implements Serializable {
 
     public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, array);
+        image.compress(Bitmap.CompressFormat.JPEG, 80, array);
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
-        return imgString;
+        return imgString.trim();
     }
 
     public Section getSectionObject() {
@@ -161,12 +168,20 @@ public class Volunteer implements Serializable {
         this.names = names;
     }
 
-    public String getLastNames() {
-        return lastNames;
+    public String getLastName1() {
+        return lastName1;
     }
 
-    public void setLastNames(String lastNames) {
-        this.lastNames = lastNames;
+    public String getLastName2() {
+        return lastName2;
+    }
+
+    public void setLastName1(String lastName1) {
+        this.lastName1 = lastName1;
+    }
+
+    public void setLastName2(String lastName2) {
+        this.lastName2 = lastName2;
     }
 
     public String getAddressName() {
@@ -298,11 +313,25 @@ public class Volunteer implements Serializable {
         isCasillaLocal = casillaLocal;
     }
 
+    public void deleteImage(){
+        File file = new File(this.pathPhoto);
+        if (file.exists()){
+            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
+            file.delete();
+            imgString = "";
+            img = null;
+            pathPhoto = "";
+        } else {
+            Log.d("TAG1", "archivo no existente");
+        }
+    }
+
     @Override
     public String toString() {
         return "Volunteer{" +
                 "names='" + names + '\'' +
-                ", lastNames='" + lastNames + '\'' +
+                ", lastName1='" + lastName1 + '\'' +
+                ", lastName2='" + lastName2 + '\'' +
                 ", addressName='" + addressName + '\'' +
                 ", addressNumExt='" + addressNumExt + '\'' +
                 ", addressNumInt='" + addressNumInt + '\'' +

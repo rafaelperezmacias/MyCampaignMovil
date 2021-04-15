@@ -16,7 +16,8 @@ import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
 public class PersonalFragment extends Fragment {
 
     private TextInputLayout lytNames;
-    private TextInputLayout lytLastNames;
+    private TextInputLayout lytLastName1;
+    private TextInputLayout lytLastName2;
     private TextInputLayout lytStreet;
     private TextInputLayout lytOutNumber;
     private TextInputLayout lytComplement;
@@ -36,7 +37,8 @@ public class PersonalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_personal_volunteer_bs, container, false);
 
         lytNames = view.findViewById(R.id.fpvbs_names_lyt);
-        lytLastNames = view.findViewById(R.id.fpvbs_lastNames_lyt);
+        lytLastName1 = view.findViewById(R.id.fpvbs_lastName1_lyt);
+        lytLastName2 = view.findViewById(R.id.fpvbs_lastName2_lyt);
         lytStreet = view.findViewById(R.id.fpvbs_street_lyt);
         lytOutNumber = view.findViewById(R.id.fpvbs_outNumber_lyt);
         lytComplement = view.findViewById(R.id.fpvbs_complement_lyt);
@@ -47,7 +49,8 @@ public class PersonalFragment extends Fragment {
     }
 
     public void setVolunteer() {
-        volunteer.setLastNames(lytLastNames.getEditText().getText().toString().trim());
+        volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
+        volunteer.setLastName2(lytLastName2.getEditText().getText().toString().trim());
         volunteer.setNames(lytNames.getEditText().getText().toString().trim());
         volunteer.setAddressName(lytStreet.getEditText().getText().toString().trim());
         volunteer.setAddressNumExt(lytOutNumber.getEditText().getText().toString().trim());
@@ -60,7 +63,8 @@ public class PersonalFragment extends Fragment {
 
     public boolean isComplete() {
         return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
-            | !TextInputLayoutUtils.isValid(lytLastNames, getString(R.string.fpvbs_lastNames_error))
+            | !TextInputLayoutUtils.isValid(lytLastName1, getString(R.string.fpvbs_lastName1_error))
+            | !TextInputLayoutUtils.isValid(lytLastName2, getString(R.string.fpvbs_lastName2_error))
             | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
             | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
             | !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))
