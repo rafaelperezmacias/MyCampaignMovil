@@ -5,8 +5,9 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 
-public class Volunteer {
+public class Volunteer implements Serializable {
 
     public static final int TYPE_RC = 344;
     public static final int TYPE_RG = 356;
@@ -76,6 +77,10 @@ public class Volunteer {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public String getPathPhoto() {

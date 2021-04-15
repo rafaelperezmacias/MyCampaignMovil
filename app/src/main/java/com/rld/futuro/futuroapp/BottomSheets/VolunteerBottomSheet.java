@@ -1,6 +1,7 @@
 package com.rld.futuro.futuroapp.BottomSheets;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -23,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.rld.futuro.futuroapp.CameraPreview;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
@@ -162,16 +164,21 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
 
             } else if ( currentFragment == otherFragment ) {
+                btnSave.setEnabled(false);
                 otherFragment.setVolunteer();
-                mainActivity.addVolunteer(volunteer);
-                dismiss();
-                SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-                snackbarText.append(getString(R.string.fbs_snackbar));
-                snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Snackbar.make(mainActivity.findViewById(R.id.am_main_lyt), snackbarText, Snackbar.LENGTH_LONG)
-                        .setBackgroundTint(getResources().getColor(R.color.dark_orange_liane))
-                        .setTextColor(getResources().getColor(R.color.white))
+                new MaterialAlertDialogBuilder(mainActivity)
+                        .setTitle("Alerta")
+                        .setMessage("¿Desea tomar una fotografia de la INE (Parte frontral)?")
+                        .setNegativeButton("No", (dialog, which) -> {
+                            mainActivity.addVoluteerWithoutImage(volunteer);
+                            dismiss();
+                        })
+                        .setPositiveButton("Si, tomar foto", (dialog, which) -> {
+                            mainActivity.addVolunteerWithImage(volunteer);
+                            dismiss();
+                        })
                         .show();
+                // dismiss();
             }
 
         });

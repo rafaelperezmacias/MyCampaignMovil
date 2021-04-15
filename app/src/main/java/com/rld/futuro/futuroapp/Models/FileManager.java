@@ -1,13 +1,8 @@
 package com.rld.futuro.futuroapp.Models;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,14 +16,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class FileManager {
+
     private final String fileNameJSON;
     private JSONObject json;
 
-    public FileManager(Activity activity){
+    public FileManager(Activity activity)
+    {
         json = null;
         fileNameJSON = "data";
         File folderImage = new File(activity.getApplicationContext().getFilesDir() + "/Images");
-        if (!folderImage.exists()){
+        if ( !folderImage.exists() ){
             folderImage.mkdir();
         }
     }
@@ -41,26 +38,22 @@ public class FileManager {
         while (cont < volunteers.size()) {
             obj = new JSONObject();
             try {
-                obj.put("name", volunteers.get(cont).getNames());
-                obj.put("lastNames", volunteers.get(cont).getLastNames());
+                obj.put("names", volunteers.get(cont).getNames());
+                obj.put("lastName", volunteers.get(cont).getLastNames());
                 obj.put("addressName", volunteers.get(cont).getAddressName());
                 obj.put("addressNumExt", volunteers.get(cont).getAddressNumExt());
                 obj.put("addressNumInt", volunteers.get(cont).getAddressNumInt());
                 obj.put("suburb", volunteers.get(cont).getSuburb());
                 obj.put("zipCode", volunteers.get(cont).getZipCode());
-                obj.put("electoralKey", volunteers.get(cont).getElectorKey());
+                obj.put("electorKey", volunteers.get(cont).getElectorKey());
                 obj.put("email", volunteers.get(cont).getEmail());
                 obj.put("phone", volunteers.get(cont).getPhone());
 
-                obj.put("image", volunteers.get(cont).getImgString());
-
-                obj.put("state", volunteers.get(cont).getState());
-                obj.put("section", volunteers.get(cont).getSection());
-                obj.put("municipality", volunteers.get(cont).getMunicipality());
+                obj.put("stateNumber", volunteers.get(cont).getStateNumber());
+                obj.put("section", 2716);
                 obj.put("sector", volunteers.get(cont).getSector());
-                obj.put("localDistrict", volunteers.get(cont).getLocalDistrict());
-
                 obj.put("notes", volunteers.get(cont).getNotes());
+                obj.put("typeUser", 1);
                 cont++;
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
@@ -81,31 +74,28 @@ public class FileManager {
         try {
             JSONObject root = new JSONObject(data);
             this.json = root;
-            //Log.d("TAG1", "Info: " + data);
-            //Log.d("TAG1", "JSON data: " + root.toString());
 
             JSONArray user = root.getJSONArray("users");
-            //Log.d("TAG1", "Objeto User: " + user.toString());
             int cont = 0;
             while (cont < user.length()) {
                 Volunteer volunteer = new Volunteer();
                 JSONObject object = null;
                 try {
                     object = user.getJSONObject(cont);
-                    volunteer.setNames(object.getString("name"));
-                    volunteer.setLastNames(object.getString("lastNames"));
+                    volunteer.setNames(object.getString("names"));
+                    volunteer.setLastNames(object.getString("lastName"));
                     volunteer.setAddressName(object.getString("addressName"));
                     volunteer.setAddressNumExt(object.getString("addressNumExt"));
                     volunteer.setAddressNumInt(object.getString("addressNumInt"));
                     volunteer.setSuburb(object.getString("suburb"));
                     volunteer.setZipCode(object.getString("zipCode"));
-                    volunteer.setElectorKey(object.getString("electoralKey"));
+                    volunteer.setElectorKey(object.getString("electorKey"));
                     volunteer.setEmail(object.getString("email"));
                     volunteer.setPhone(object.getString("phone"));
 
                     volunteer.setImgString(object.getString("image"));
 
-                    volunteer.setState(object.getString("state"));
+                    volunteer.setState(object.getString("stateNumber"));
                     volunteer.setSection(object.getString("section"));
                     volunteer.setMunicipality(object.getString("municipality"));
                     volunteer.setSector(object.getString("sector"));
@@ -114,12 +104,12 @@ public class FileManager {
                     volunteers.add(volunteer);
                     cont++;
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    return new ArrayList<>();
                 }
             }
         }
         catch(JSONException e){
-            e.printStackTrace();
+            return new ArrayList<>();
         }
 
         return volunteers;
@@ -178,13 +168,13 @@ public class FileManager {
                 stringBuilder.append(lineaTexto);
             }
         }catch (Exception e){
-            Log.d("TAG1", "archivo no existente");
+            return new ArrayList<>();
         }finally {
             if(fileInputStream !=null){
                 try {
                     fileInputStream.close();
                 }catch (Exception e){
-                    e.printStackTrace();
+
                 }
             }
         }

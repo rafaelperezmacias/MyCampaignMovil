@@ -4,33 +4,36 @@ import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.rld.futuro.futuroapp.Models.FileManager;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RequestManager {
-    //private FileManager fileManager;
 
-    /*public RequestManager(FileManager fileManager) {
-        this.fileManager = fileManager;
-    }*/
+    public static JsonObjectRequest request(JSONObject json) {
+        String url =  AppConfig.INSERT_VOLUNTER;
 
-    //private JSONObject json = new JSONObject();
+        JSONObject myJson = new JSONObject();
+        try {
+            myJson.put("volunteer", json);
+            myJson.put("key", AppConfig.KEY_INSERT);
+        } catch (JSONException e) {
+            return null;
+        }
 
-    /*public RequestManager(JSONObject json) {
-        this.json = json;
-    }*/
-
-    public JsonObjectRequest request(JSONObject json) {
-        String url =  AppConfig.URL_SERVER + "api/v1/volunteer";
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, json, response -> {
-            Log.e("Response", response.toString());
+        return new JsonObjectRequest(Request.Method.POST, url, myJson, response -> {
+            try {
+                if ( response.getInt("code") == 110 ) {
+                    Log.e("Error", "Si se inserto bien");
+                } else {
+                    Log.e("code", "" + response.get("code"));
+                    Log.e("Error", "No se inserto la el voluntario");
+                }
+            } catch (JSONException e) {
+                Log.e("Error", "No se inserto la el voluntario por error");
+            }
         }, error -> {
             Log.e("Error", error.getMessage());
         });
-
-        return jsonObjectRequest;
     }
 }

@@ -49,6 +49,7 @@ public class CameraPreview extends AppCompatActivity {
     private final int REQUEST_TAKE_PHOTO = 1;
     private static final int CAMERA_PERMISSION_CODE = 100;
 
+    public static final int RESULT_CAMERA_NOT_PERMISSON = 6666;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,8 +58,10 @@ public class CameraPreview extends AppCompatActivity {
 
         imageView = findViewById(R.id.imageView);
 
-        volunteer = new Volunteer();
-        volunteer.setElectorKey("123567890");
+        volunteer = (Volunteer) getIntent().getSerializableExtra("voluntario");
+        if ( volunteer != null ) {
+            Log.e("voluntario", "" + volunteer.toString());
+        }
 
         checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
     }
@@ -127,7 +130,8 @@ public class CameraPreview extends AppCompatActivity {
             takePhoto();
         } else {
             Toast.makeText(CameraPreview.this, "Permiso de Camara Denegado", Toast.LENGTH_SHORT).show();
-            this.finish();
+            setResult(RESULT_CAMERA_NOT_PERMISSON);
+            finish();
         }
     }
 

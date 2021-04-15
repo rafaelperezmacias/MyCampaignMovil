@@ -1,7 +1,7 @@
 package com.rld.futuro.futuroapp.Request;
 
 public class AppConfig {
-    
+
     private static final String HOST = "192.168.1.64";
     private static final String PORT = "3000";
     private static final String URL_SERVER = "http://" + HOST + ":" + PORT + "/";
@@ -12,6 +12,8 @@ public class AppConfig {
     public static final int MUNICIPALITIES_SIZE = 125;
     public static final int LOCAL_DISTRICTS_SIZE = 20;
     public static final int SECTIONS_SIZE = 3602;
+
+    protected static final String KEY_INSERT = "myKey";
 
     public static boolean isInternetConnected;
 
