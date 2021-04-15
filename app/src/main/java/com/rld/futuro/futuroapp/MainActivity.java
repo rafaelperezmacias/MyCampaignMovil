@@ -17,6 +17,13 @@ import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
 import com.rld.futuro.futuroapp.Models.FileManager;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import com.android.volley.toolbox.Volley;
+import com.rld.futuro.futuroapp.Request.RequestManager;
+import com.android.volley.RequestQueue;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -100,6 +107,29 @@ public class MainActivity extends AppCompatActivity {
 
             fileManager.saveFile(volunteers, getApplicationContext());
         });
+
+        btnUploadLocalBD = findViewById(R.id.btnUploadLocalBD);
+        btnGuardar.setOnClickListener(v -> {
+            //TODO: Falta validar el estado de la red, para seguir o dar mensaje de error
+
+            RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+            RequestManager rm = new RequestManager();
+            JSONObject jsonBD = new JSONObject();
+
+            fileManager.readFile(MainActivity.this);
+            jsonBD=fileManager.getJson();
+            try {
+                JSONArray ja_data = jsonBD.getJSONArray("users");
+                int arraySize = ja_data.length();
+
+                for (int i = 0; i < arraySize; i++) {
+                    requestQueue.add(rm.request(ja_data.getJSONObject(i)));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("Error: ", e.getMessage());
+            }
+        });
     }
 
     @Override
@@ -109,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             if ( resultCode == MenuVolunteerActivity.TAKE_PHOTO ) {
                 Toast.makeText(this, "TOMAR FOTO", Toast.LENGTH_SHORT).show();
             } else if ( resultCode == MenuVolunteerActivity.CAPTURE_MANUAL ) {
-                VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers);
+                VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteers, MainActivity.this);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         }

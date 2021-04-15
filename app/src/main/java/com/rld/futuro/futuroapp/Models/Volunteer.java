@@ -82,10 +82,6 @@ public class Volunteer {
         return notes;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
     public String getNumberMunicipality() {
         return numberMunicipality;
     }
