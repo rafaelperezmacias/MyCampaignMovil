@@ -1,5 +1,6 @@
 package com.rld.futuro.futuroapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.rld.futuro.futuroapp.Models.Section;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.Request.AppConfig;
 import com.rld.futuro.futuroapp.Request.RequestManager;
+import com.rld.futuro.futuroapp.Utils.Internet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     private RequestQueue requestQueue;
 
     private AlertDialog alertDialog;
+
     private int peticiones;
     private int cont_peticiones;
     private int cont_peticiones_pos;
@@ -83,56 +86,68 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
         ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
         ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-        if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
-                || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
-                || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
-                try {
-                    if (response.getInt("code") == 205) {
-                        fileManager.createJSONFromDB(response.getJSONArray("municipalities"), "data-municipalities.json", "municipalities", MainActivity.this);
-                        fileManager.createJSONFromDB(response.getJSONArray("localDistricts"), "data-localDistricts.json", "localDistricts", MainActivity.this);
-                        fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
+        if ( Internet.isNetDisponible(MainActivity.this) && Internet.isOnlineNet() ) {
+            if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
+                    || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
+                    || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
+                    try {
+                        if (response.getInt("code") == 205) {
+                            fileManager.createJSONFromDB(response.getJSONArray("municipalities"), "data-municipalities.json", "municipalities", MainActivity.this);
+                            fileManager.createJSONFromDB(response.getJSONArray("localDistricts"), "data-localDistricts.json", "localDistricts", MainActivity.this);
+                            fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
+                        }
+                    } catch (JSONException ignored) {
+                        Log.e("e", "Error en responder :v");
                     }
-                } catch (JSONException ignored) {
-                    Log.e("e", "Error en responder :v");
-                }
-            }, error -> {
-                Log.e("e", "Error en error");
-            });
-            requestQueue.add(request);
+                }, error -> {
+                    Log.e("e", "Error en error");
+                });
+                requestQueue.add(request);
+            }
         }
 
         btnCarga.setOnClickListener(v -> {
-            JSONObject jsonBD = new JSONObject();
-            alertDialog = new MaterialAlertDialogBuilder(MainActivity.this)
+            btnCarga.setEnabled(false);
+            AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
                     .setTitle("Alerta")
                     .setMessage("Subiendo datos al servidor. Favor de no cerrar la aplicación.")
-                    .setCancelable(false)
-                    .show();
-            fileManager.readFile(MainActivity.this);
-            jsonBD = fileManager.getJson();
-            if (jsonBD == null) {
-                return;
-            }
-            try {
-                JSONArray ja_data = jsonBD.getJSONArray("users");
-                int arraySize = ja_data.length();
-                peticiones = arraySize;
-                for (int i = 0; i < arraySize; i++) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ignored) {
-
-                    }
-                    JsonObjectRequest request = RequestManager.request(ja_data.getJSONObject(i), MainActivity.this);
-                    if (request == null) {
-                        continue;
-                    }
-                    requestQueue.add(request);
+                    .setCancelable(false);
+            alertDialog = alertDialogBuilder.create();
+            alertDialog.setOnShowListener(dialog -> {
+                if ( !Internet.isNetDisponible(MainActivity.this) || !Internet.isOnlineNet() ) {
+                    createSnackBar("Sin acceso a internet, verifique su conexión.");
+                    btnCarga.setEnabled(true);
+                    alertDialog.dismiss();
+                    return;
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                JSONObject jsonBD = new JSONObject();
+                fileManager.readFile(MainActivity.this);
+                jsonBD = fileManager.getJson();
+                if (jsonBD == null) {
+                    return;
+                }
+                try {
+                    JSONArray ja_data = jsonBD.getJSONArray("users");
+                    int arraySize = ja_data.length();
+                    peticiones = arraySize;
+                    for (int i = 0; i < arraySize; i++) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ignored) {
+
+                        }
+                        JsonObjectRequest request = RequestManager.request(ja_data.getJSONObject(i), MainActivity.this);
+                        if (request == null) {
+                            continue;
+                        }
+                        requestQueue.add(request);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            });
+            alertDialog.show();
         });
 
         btnCrear.setOnClickListener(v -> {
