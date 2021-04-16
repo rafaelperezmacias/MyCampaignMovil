@@ -53,6 +53,7 @@ public class OtherFragment extends Fragment {
             noOPC.setSelected(true);
         });
 
+        rcOPC.setSelected(true);
         rcOPC.setOnClickListener(v -> {
             if ( rgOPC.isSelected() ) {
                 rgOPC.setSelected(false);

@@ -28,6 +28,7 @@ import com.rld.futuro.futuroapp.CameraPreview;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.ContactFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.OtherFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PersonalFragment;
+import com.rld.futuro.futuroapp.Fragments.VolunteerBS.PolicyFragment;
 import com.rld.futuro.futuroapp.Fragments.VolunteerBS.SectionFragment;
 import com.rld.futuro.futuroapp.MainActivity;
 import com.rld.futuro.futuroapp.Models.FileManager;
@@ -84,6 +85,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         ContactFragment contactFragment = new ContactFragment(volunteer, mainActivity);
         OtherFragment otherFragment = new OtherFragment(volunteer);
         SectionFragment sectionFragment = new SectionFragment(volunteer, mainActivity);
+        PolicyFragment policyFragment = new PolicyFragment();
         currentFragment = personalFragment;
         txtSubtitle.setText(getString(R.string.fbs_step1));
 
@@ -92,6 +94,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
         btnClose.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {
@@ -119,9 +122,13 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
             } else if ( currentFragment == otherFragment ) {
 
-                btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step3));
                 showFragment(sectionFragment, fragmentManager);
+
+            } else if ( currentFragment == policyFragment ) {
+                btnSave.setText(getString(R.string.fbs_continue));
+                txtSubtitle.setText(getString(R.string.fbs_step4));
+                showFragment(otherFragment, fragmentManager);
             }
 
         });
@@ -162,24 +169,32 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 showFragment(otherFragment, fragmentManager);
                 sectionFragment.setVolunter();
                 txtSubtitle.setText(getString(R.string.fbs_step4));
-                btnSave.setText(getString(R.string.fbs_finish));
+                btnSave.setText(getString(R.string.fbs_continue));
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
 
             } else if ( currentFragment == otherFragment ) {
-                btnSave.setEnabled(false);
                 otherFragment.setVolunteer();
-                new MaterialAlertDialogBuilder(mainActivity)
-                        .setTitle("Alerta")
-                        .setMessage("¿Desea tomar una fotografia de la INE (Parte frontral)?")
-                        .setNegativeButton("No", (dialog, which) -> {
-                            mainActivity.addVoluteerWithoutImage(volunteer);
-                            dismiss();
-                        })
-                        .setPositiveButton("Si, tomar foto", (dialog, which) -> {
-                            mainActivity.addVolunteerWithImage(volunteer);
-                            dismiss();
-                        })
-                        .show();
+                showFragment(policyFragment, fragmentManager);
+                btnSave.setText(getString(R.string.fbs_finish));
+
+            } else if ( currentFragment == policyFragment ) {
+                if ( policyFragment.isComplete() ) {
+                    Toast.makeText(mainActivity, "Confirme las politicas de privacidad", Toast.LENGTH_SHORT).show();
+                } else {
+                    btnSave.setEnabled(false);
+                    new MaterialAlertDialogBuilder(mainActivity)
+                            .setTitle("Alerta")
+                            .setMessage("¿Desea tomar una fotografia de la INE (Parte frontral)?")
+                            .setNegativeButton("No", (dialog, which) -> {
+                                mainActivity.addVoluteerWithoutImage(volunteer);
+                                dismiss();
+                            })
+                            .setPositiveButton("Si, tomar foto", (dialog, which) -> {
+                                mainActivity.addVolunteerWithImage(volunteer);
+                                dismiss();
+                            })
+                            .show();
+                }
             }
 
         });

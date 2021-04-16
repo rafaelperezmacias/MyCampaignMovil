@@ -279,6 +279,7 @@ public class FileManager {
                     volunteer.setSector(object.getString("sector"));
                     volunteer.setLocalDistrict(object.getString("localDistrict"));
                     volunteer.setNotes(object.getString("notes"));
+                    volunteer.setTypeUser(object.getInt("typeUser"));
                     volunteers.add(volunteer);
                     cont++;
                 } catch (JSONException e) {

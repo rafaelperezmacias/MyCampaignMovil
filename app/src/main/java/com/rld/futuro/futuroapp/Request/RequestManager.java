@@ -25,7 +25,7 @@ public class RequestManager {
                 if ( response.getInt("code") == 110 ) {
                     JSONObject jsonObject = response.getJSONObject("volunteer");
                     String electorKey = jsonObject.getString("electorKey");
-                    if ( electorKey != null || electorKey.isEmpty() ) {
+                    if ( !electorKey.isEmpty() ) {
                         mainActivity.deleteFromServer(electorKey, true);
                     } else {
                         mainActivity.deleteFromServer("", false);

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:text="AVISO DE PRIVACIDAD INTEGRAL DEL PARTIDO POLÍTICO ESTATAL FUTURO"/>
+
+    <com.rld.futuro.futuroapp.Utils.JustifyTextView
+        android:id="@+id/textview"
+        android:gravity="fill_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:buttonTint="@color/orange_liane"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="He leído y acepto los términos y condiciones de uso."/>
+
+</LinearLayout>

@@ -108,6 +108,7 @@ public class SectionFragment extends Fragment {
     }
 
     public void setVolunter() {
+        volunteer.setStateNumber(Integer.parseInt(lytStateNumber.getEditText().getText().toString().trim()));
         volunteer.setSector(lytSector.getEditText().getText().toString().trim());
         volunteer.setSection(lytSection.getEditText().getText().toString().trim());
         volunteer.setMunicipality(lytMunicipioName.getEditText().getText().toString().trim());

@@ -67,9 +67,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         cont_peticiones = 0;
 
         volunteers = new ArrayList<>();
-        for ( Volunteer volunteer : volunteers ) {
-            Log.e("a", "" + volunteer.toString());
-        }
+
         fileManager = new FileManager(MainActivity.this);
         volunteers = fileManager.readFile(getApplicationContext());
         requestQueue = Volley.newRequestQueue(MainActivity.this);
@@ -121,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                 int arraySize = ja_data.length();
                 peticiones = arraySize;
                 for (int i = 0; i < arraySize; i++) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignored) {
+
+                    }
                     JsonObjectRequest request = RequestManager.request(ja_data.getJSONObject(i), MainActivity.this);
                     if (request == null) {
                         continue;
@@ -170,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                 createSnackBar("Datos actualizados con exito");
             } else {
                 createSnackBar("No todos los registros fueron cargados, intentelo más tarde");
+                ArrayList<Volunteer> tmp = new ArrayList<>(volunteers);
+                fileManager.saveFile(tmp, getApplicationContext());
+                volunteers = fileManager.readFile(MainActivity.this);
             }
             cont_peticiones = 0;
             cont_peticiones_pos = 0;

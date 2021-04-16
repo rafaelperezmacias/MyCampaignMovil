@@ -17,6 +17,7 @@
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
     <TextView
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="56dp"
@@ -25,6 +26,7 @@
         android:textColor="@android:color/black"/>
 
     <RadioGroup
+        android:visibility="gone"
         android:paddingStart="56dp"
         android:paddingEnd="16dp"
         android:layout_width="match_parent"

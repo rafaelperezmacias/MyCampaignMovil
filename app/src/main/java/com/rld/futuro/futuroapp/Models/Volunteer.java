@@ -77,6 +77,9 @@ public class Volunteer implements Serializable {
         this.sector = "";
         this.localDistrict = "";
 
+        this.stateNumber = 14;
+        this.typeUser = 344;
+
         this.notes = "";
     }
 

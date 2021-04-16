@@ -217,6 +217,8 @@ public class ContactFragment extends Fragment {
                     break;
                 }
             }
+        } else {
+
         }
     }
 
