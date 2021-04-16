@@ -3,6 +3,7 @@ package com.rld.futuro.futuroapp.Models;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.util.Base64;
 import android.util.Log;
 
@@ -85,10 +86,11 @@ public class Volunteer implements Serializable {
 
     public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 80, array);
+        Log.e("image", "" + image.getByteCount());
+        image.compress(Bitmap.CompressFormat.JPEG, 50, array);
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
-        return imgString.trim();
+        return imgString;
     }
 
     public Section getSectionObject() {

@@ -94,10 +94,10 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                         fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
                     }
                 } catch (JSONException ignored) {
-
+                    Log.e("e", "Error en responder :v");
                 }
             }, error -> {
-
+                Log.e("e", "Error en error");
             });
             requestQueue.add(request);
         }

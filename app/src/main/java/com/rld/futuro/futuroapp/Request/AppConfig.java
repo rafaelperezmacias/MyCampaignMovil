@@ -2,7 +2,7 @@ package com.rld.futuro.futuroapp.Request;
 
 public class AppConfig {
 
-    private static final String HOST = "192.168.1.64";
+    private static final String HOST = "192.168.0.20";
     private static final String PORT = "3000";
     private static final String URL_SERVER = "http://" + HOST + ":" + PORT + "/";
 
