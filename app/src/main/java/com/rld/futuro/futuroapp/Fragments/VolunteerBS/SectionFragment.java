@@ -125,7 +125,9 @@ public class SectionFragment extends Fragment {
                 | !TextInputLayoutUtils.isValid(lytMunicipioNumber, getString(R.string.fSvbs_municipio_number_error))
                 | !TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error))
                 | !TextInputLayoutUtils.isValid(lytDistritoLocalName, getString(R.string.fSvbs_municipio_name_error))
-                | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error)) );
+                | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error))
+                | !TextInputLayoutUtils.isValisMayus(lytDistritoLocalName, "Ingrese solo letras en mayuscula")
+                | !TextInputLayoutUtils.isValisMayus(lytMunicipioName, "Ingrese solo letras en mayuscula"));
     }
 
     public void setState() {

@@ -12,4 +12,16 @@ public class TextInputLayoutUtils {
         lyt.setError(null);
         return true;
     }
+
+    public static boolean isValisMayus(TextInputLayout lyt, String error) {
+        if ( lyt.getEditText().getText().length() == 0  ) {
+            return false;
+        }
+        if ( !lyt.getEditText().getText().toString().matches("[A-Z| ]*") ) {
+            lyt.setError(error);
+            return false;
+        }
+        lyt.setError(null);
+        return true;
+    }
 }

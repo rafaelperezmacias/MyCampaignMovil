@@ -3,6 +3,7 @@ package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class PersonalFragment extends Fragment {
         return view;
     }
 
+
     public void setVolunteer() {
         volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
         volunteer.setLastName2(lytLastName2.getEditText().getText().toString().trim());
@@ -71,7 +73,12 @@ public class PersonalFragment extends Fragment {
             | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
             | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
             | !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))
-            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error)) );
+            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
+            | !TextInputLayoutUtils.isValisMayus(lytNames, "Ingrese solo letras en mayuscula")
+            | !TextInputLayoutUtils.isValisMayus(lytLastName1, "Ingrese solo letras en mayuscula")
+            | !TextInputLayoutUtils.isValisMayus(lytLastName2, "Ingrese solo letras en mayuscula")
+            | !TextInputLayoutUtils.isValisMayus(lytStreet, "Ingrese solo letras en mayuscula")
+            | !TextInputLayoutUtils.isValisMayus(lytSuburb, "Ingrese solo letras en mayuscula"));
     }
 
 

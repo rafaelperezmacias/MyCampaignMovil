@@ -115,6 +115,7 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:maxLength="4"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -171,6 +172,7 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:maxLength="30"
                     android:inputType="textCapCharacters"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -193,6 +195,7 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:maxLength="50"
                     android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -216,6 +219,7 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:maxLength="30"
             android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

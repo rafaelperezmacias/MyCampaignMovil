@@ -91,6 +91,7 @@
     <!-- Estados de Mexico -->
     <string-array name="states">
         <item>14-JALISCO</item>
+        <!--
         <item>1-AGUASCALIENTES</item>
         <item>2-BAJA CALIFORNIA</item>
         <item>3-BAJA CALIFORNIA SUR</item>
@@ -121,7 +122,7 @@
         <item>29-TLAXCALA</item>
         <item>30-VERACRUZ</item>
         <item>31-YUCATÁN</item>
-        <item>32-ZACATECAS</item>
+        <item>32-ZACATECAS</item> -->
     </string-array>
 
 </resources>

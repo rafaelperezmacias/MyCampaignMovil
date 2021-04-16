@@ -102,6 +102,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
                         })
                         .setPositiveButton("Si", (dialog, which) -> {
+                            mainActivity.enableBtnCarga();
                             dismiss();
                         })
                         .show();

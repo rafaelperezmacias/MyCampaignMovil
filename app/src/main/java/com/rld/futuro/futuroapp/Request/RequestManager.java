@@ -1,16 +1,15 @@
 package com.rld.futuro.futuroapp.Request;
 
-import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.rld.futuro.futuroapp.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RequestManager {
 
-    public static JsonObjectRequest request(JSONObject json) {
+    public static JsonObjectRequest request(JSONObject json, MainActivity mainActivity) {
         String url =  AppConfig.INSERT_VOLUNTER;
 
         JSONObject myJson = new JSONObject();
@@ -24,16 +23,21 @@ public class RequestManager {
         return new JsonObjectRequest(Request.Method.POST, url, myJson, response -> {
             try {
                 if ( response.getInt("code") == 110 ) {
-                    Log.e("Error", "Si se inserto bien");
+                    JSONObject jsonObject = response.getJSONObject("volunteer");
+                    String electorKey = jsonObject.getString("electorKey");
+                    if ( electorKey != null || electorKey.isEmpty() ) {
+                        mainActivity.deleteFromServer(electorKey, true);
+                    } else {
+                        mainActivity.deleteFromServer("", false);
+                    }
                 } else {
-                    Log.e("code", "" + response.get("code"));
-                    Log.e("Error", "No se inserto la el voluntario");
+                    mainActivity.deleteFromServer("", false);
                 }
             } catch (JSONException e) {
-                Log.e("Error", "No se inserto la el voluntario por error");
+                mainActivity.deleteFromServer("", false);
             }
         }, error -> {
-            Log.e("Error", error.getMessage());
+            mainActivity.deleteFromServer("", false);
         });
     }
 }

@@ -55,30 +55,23 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
             <Button
                 android:id="@+id/btnCarga"
                 android:layout_margin="10dp"
                 android:backgroundTint="@color/dark_orange_liane"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Carga"
+                android:text="Carga al servidor"
                 android:textStyle="bold"
-                app:icon="@drawable/ic_baseline_add_24"
+                app:icon="@drawable/ic_baseline_file_upload_24"
                 style="@style/Widget.MaterialComponents.Button.Icon"/>
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btnBorrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Borrar" />
-
-        <Button
-            android:id="@+id/btnGuardar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Guardar" />
 
     </LinearLayout>
 
