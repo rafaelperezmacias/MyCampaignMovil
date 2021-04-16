@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
         ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
         ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-        if ( Internet.isNetDisponible(MainActivity.this) && Internet.isOnlineNet() ) {
+        if ( Internet.isNetDisponible(MainActivity.this) && Internet.isOnlineNet()) {
             if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
                     || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
                     || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {

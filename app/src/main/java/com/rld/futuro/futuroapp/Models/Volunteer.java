@@ -87,11 +87,10 @@ public class Volunteer implements Serializable {
     public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         Log.e("image", "" + image.getByteCount());
-        if (image.getByteCount()/8/1000/1000 > 5){
-            image.compress(Bitmap.CompressFormat.JPEG, 50, array);
-        } else {
-            image.compress(Bitmap.CompressFormat.JPEG, 80, array);
-        }
+        int mb=image.getByteCount()/8/1000/1000;
+        int quality = 100/mb;
+        image.compress(Bitmap.CompressFormat.JPEG, quality, array);
+
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
