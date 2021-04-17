@@ -224,7 +224,9 @@ public class FileManager {
                 obj.put("electorKey", volunteers.get(cont).getElectorKey());
                 obj.put("email", volunteers.get(cont).getEmail());
                 obj.put("phone", volunteers.get(cont).getPhone());
+
                 obj.put("imgString", volunteers.get(cont).getImgString());
+
                 obj.put("stateNumber", volunteers.get(cont).getStateNumber());
                 obj.put("section", volunteers.get(cont).getSection());
                 obj.put("municipality", volunteers.get(cont).getMunicipality());
