@@ -173,6 +173,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
 
             } else if ( currentFragment == otherFragment ) {
+
+                if ( !otherFragment.isComplete() ) {
+                    return;
+                }
+
                 otherFragment.setVolunteer();
                 showFragment(policyFragment, fragmentManager);
                 btnSave.setText(getString(R.string.fbs_finish));
@@ -193,6 +198,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                                 mainActivity.addVolunteerWithImage(volunteer);
                                 dismiss();
                             })
+                            .setCancelable(false)
                             .show();
                 }
             }

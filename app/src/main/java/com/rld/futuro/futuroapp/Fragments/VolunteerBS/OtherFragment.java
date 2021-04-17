@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
+import com.rld.futuro.futuroapp.Utils.TextInputLayoutUtils;
 
 public class OtherFragment extends Fragment {
 
@@ -87,6 +88,13 @@ public class OtherFragment extends Fragment {
         }
         volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
         volunteer.setCasillaLocal(yesOPC.isSelected());
+    }
+
+    public boolean isComplete() {
+        if ( !TextInputLayoutUtils.isValisNotes(lytNotes, "Por favor eliminar los caracteres extraños") ) {
+            return false;
+        }
+        return true;
     }
 
 }

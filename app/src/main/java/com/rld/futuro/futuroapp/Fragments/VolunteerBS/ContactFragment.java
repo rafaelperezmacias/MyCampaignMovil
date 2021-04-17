@@ -2,6 +2,7 @@ package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,8 @@ public class ContactFragment extends Fragment {
         lytElectorKey = view.findViewById(R.id.fcvbs_electorKey_lyt);
         lytEmail = view.findViewById(R.id.fcvbs_email_lyt);
         lytPhone = view.findViewById(R.id.fcvbs_phone_lyt);
+
+        lytElectorKey.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         lytStates = view.findViewById(R.id.fcvbs_states_lyt);
         lytSectionsAuto = view.findViewById(R.id.fcvbs_sections_auto_lyt);
@@ -195,6 +198,7 @@ public class ContactFragment extends Fragment {
 
     public boolean isComplete() {
         if (!TextInputLayoutUtils.isValid(lytElectorKey, getString(R.string.fcvbs_key_error))
+                // | !TextInputLayoutUtils.isValiKeyElector(lytElectorKey, "Ingrese una clave de elector valida")
                 | !TextInputLayoutUtils.isValid(lytEmail, getString(R.string.fcvbs_email_error))
                 | !TextInputLayoutUtils.isValid(lytPhone, getString(R.string.fcvbs_phone_error))
                 | !isStateSelected()

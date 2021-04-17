@@ -49,6 +49,13 @@ public class PersonalFragment extends Fragment {
         lytCP = view.findViewById(R.id.fpvbs_cp_lyt);
         lytSuburb = view.findViewById(R.id.fpvbs_suburb_lyt);
 
+        lytNames.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        lytLastName1.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        lytLastName2.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        lytSuburb.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        lytStreet.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        lytComplement.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+
         return view;
     }
 
@@ -68,17 +75,18 @@ public class PersonalFragment extends Fragment {
 
     public boolean isComplete() {
         return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
+            | !TextInputLayoutUtils.isVali40(lytNames, "Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytLastName1, getString(R.string.fpvbs_lastName1_error))
+            | !TextInputLayoutUtils.isVali50(lytLastName1, "Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytLastName2, getString(R.string.fpvbs_lastName2_error))
+            | !TextInputLayoutUtils.isVali50(lytLastName2, "Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
+            | !TextInputLayoutUtils.isVali70(lytStreet,"Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
+            | !TextInputLayoutUtils.isVali10_1(lytComplement, "Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))
             | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
-            | !TextInputLayoutUtils.isValisMayus(lytNames, "Ingrese solo letras en mayuscula")
-            | !TextInputLayoutUtils.isValisMayus(lytLastName1, "Ingrese solo letras en mayuscula")
-            | !TextInputLayoutUtils.isValisMayus(lytLastName2, "Ingrese solo letras en mayuscula")
-            | !TextInputLayoutUtils.isValisMayus(lytStreet, "Ingrese solo letras en mayuscula")
-            | !TextInputLayoutUtils.isValisMayus(lytSuburb, "Ingrese solo letras en mayuscula"));
+            | !TextInputLayoutUtils.isVali40(lytSuburb, "Error, revise la información de este campo"));
     }
 
 

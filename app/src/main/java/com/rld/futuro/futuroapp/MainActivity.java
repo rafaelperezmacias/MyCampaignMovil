@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
 
         if (volunteers.size() > 0) {
             btnCarga.setVisibility(View.VISIBLE);
+            btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
         } else {
             btnCarga.setVisibility(View.GONE);
         }
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
         ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
         ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-        if ( Internet.isNetDisponible(MainActivity.this) && Internet.isOnlineNet() ) {
+        if ( Internet.isNetDisponible(MainActivity.this) ) {
             if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
                     || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
                     || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                     .setCancelable(false);
             alertDialog = alertDialogBuilder.create();
             alertDialog.setOnShowListener(dialog -> {
-                if ( !Internet.isNetDisponible(MainActivity.this) || !Internet.isOnlineNet() ) {
+                if ( !Internet.isNetDisponible(MainActivity.this) ) {
                     createSnackBar("Sin acceso a internet, verifique su conexión.");
                     btnCarga.setEnabled(true);
                     alertDialog.dismiss();
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         saveVolunteers();
         if ( volunteers.size() > 0 ) {
             btnCarga.setVisibility(View.VISIBLE);
+            btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
         } else {
             btnCarga.setVisibility(View.GONE);
         }
@@ -185,8 +187,10 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         if ( cont_peticiones == peticiones ) {
             alertDialog.dismiss();
             if ( cont_peticiones_pos == peticiones ) {
+                btnCarga.setEnabled(true);
                 createSnackBar("Datos actualizados con exito");
             } else {
+                btnCarga.setEnabled(true);
                 createSnackBar("No todos los registros fueron cargados, intentelo más tarde");
                 ArrayList<Volunteer> tmp = new ArrayList<>(volunteers);
                 fileManager.saveFile(tmp, getApplicationContext());
@@ -223,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     }
 
     public void saveVolunteers() {
+        btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
         fileManager.saveFile(volunteers, getApplicationContext());
         for ( Volunteer v : volunteers ) {
             v.deleteImage();

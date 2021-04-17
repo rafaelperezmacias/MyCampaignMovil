@@ -44,7 +44,6 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="50"
                 android:inputType="textCapCharacters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -67,7 +66,6 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:maxLength="50"
             android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -88,7 +86,6 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:maxLength="40"
             android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -139,7 +136,6 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="50"
                 android:inputType="textCapCharacters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -198,7 +194,6 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:maxLength="10"
             android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -218,7 +213,6 @@
         app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:maxLength="40"
             android:inputType="textCapCharacters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

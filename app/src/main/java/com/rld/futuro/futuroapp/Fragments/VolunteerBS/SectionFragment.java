@@ -1,6 +1,7 @@
 package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public class SectionFragment extends Fragment {
         lytSector = view.findViewById(R.id.fsvbs_sector_lyt);
         lytDistritoLocalName = view.findViewById(R.id.fsvbs_dlocal_name_lyt);
         lytDistritoLocalNumber = view.findViewById(R.id.fsvbs_dlocal_number_lyt);
+
+        lytSector.getEditText().setFilters(new InputFilter[] {new InputFilter.AllCaps()});
 
         return view;
     }
