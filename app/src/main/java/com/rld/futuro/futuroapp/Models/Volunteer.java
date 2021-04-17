@@ -88,7 +88,12 @@ public class Volunteer implements Serializable {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         Log.e("image", "" + image.getByteCount());
         int mb=image.getByteCount()/8/1000/1000;
-        int quality = 100/mb;
+        int quality;
+        if(mb>=1){
+            quality=100/mb;
+        } else{
+            quality=100;
+        }
         image.compress(Bitmap.CompressFormat.JPEG, quality, array);
 
         byte[] bytes = array.toByteArray();
