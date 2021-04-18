@@ -1,7 +1,9 @@
 package com.rld.futuro.futuroapp.Request;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.rld.futuro.futuroapp.MainActivity;
 
 import org.json.JSONException;
@@ -20,7 +22,7 @@ public class RequestManager {
             return null;
         }
 
-        return new JsonObjectRequest(Request.Method.POST, url, myJson, response -> {
+        JsonObjectRequest request =  new JsonObjectRequest(Request.Method.POST, url, myJson, response -> {
             try {
                 if ( response.getInt("code") == 110 ) {
                     JSONObject jsonObject = response.getJSONObject("volunteer");
@@ -39,5 +41,7 @@ public class RequestManager {
         }, error -> {
             mainActivity.deleteFromServer("", false);
         });
+        request.setRetryPolicy(new DefaultRetryPolicy(10000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        return request;
     }
 }

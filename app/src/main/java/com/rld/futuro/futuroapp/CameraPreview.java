@@ -68,16 +68,20 @@ public class CameraPreview extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case RESULT_OK:
-                //Bitmap image = (Bitmap) data.getExtras().get("data");
-                //imageView.setImageBitmap(image);
-                setPic();
-                break;
-            default:
-                LISTENER.saveVolunteer(volunteer);
-                finish();
-                break;
+        try {
+            switch (resultCode) {
+                case RESULT_OK:
+                    //Bitmap image = (Bitmap) data.getExtras().get("data");
+                    //imageView.setImageBitmap(image);
+                    setPic();
+                    break;
+                default:
+                    LISTENER.saveVolunteer(volunteer);
+                    finish();
+                    break;
+            }
+        } catch ( Exception ex ) {
+
         }
     }
 
@@ -101,9 +105,13 @@ public class CameraPreview extends AppCompatActivity {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;*/
 
-        Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
-        volunteer.setImg(bitmap);
-        LISTENER.saveVolunteer(volunteer);
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
+            volunteer.setImg(bitmap);
+            LISTENER.saveVolunteer(volunteer);
+        } catch (Exception ex) {
+
+        }
         finish();
     }
 
@@ -152,7 +160,7 @@ public class CameraPreview extends AppCompatActivity {
                 photoFile = createImageFile(this.volunteer);
             } catch (IOException ex) {
                 // Error occurred while creating the File
-                ex.printStackTrace();
+
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
