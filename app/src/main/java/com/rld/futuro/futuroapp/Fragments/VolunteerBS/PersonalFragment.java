@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.futuro.futuroapp.Models.Volunteer;
 import com.rld.futuro.futuroapp.R;
@@ -22,6 +23,7 @@ public class PersonalFragment extends Fragment {
     private TextInputLayout lytNames;
     private TextInputLayout lytLastName1;
     private TextInputLayout lytLastName2;
+    private TextInputLayout lytAge;
     private TextInputLayout lytStreet;
     private TextInputLayout lytOutNumber;
     private TextInputLayout lytComplement;
@@ -43,6 +45,7 @@ public class PersonalFragment extends Fragment {
         lytNames = view.findViewById(R.id.fpvbs_names_lyt);
         lytLastName1 = view.findViewById(R.id.fpvbs_lastName1_lyt);
         lytLastName2 = view.findViewById(R.id.fpvbs_lastName2_lyt);
+        lytAge = view.findViewById(R.id.fpvbs_age_lyt);
         lytStreet = view.findViewById(R.id.fpvbs_street_lyt);
         lytOutNumber = view.findViewById(R.id.fpvbs_outNumber_lyt);
         lytComplement = view.findViewById(R.id.fpvbs_complement_lyt);
@@ -64,6 +67,7 @@ public class PersonalFragment extends Fragment {
         volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
         volunteer.setLastName2(lytLastName2.getEditText().getText().toString().trim());
         volunteer.setNames(lytNames.getEditText().getText().toString().trim());
+        volunteer.setAge(lytAge.getEditText().getText().toString().trim());
         volunteer.setAddressName(lytStreet.getEditText().getText().toString().trim());
         volunteer.setAddressNumExt(lytOutNumber.getEditText().getText().toString().trim());
         if ( !lytComplement.getEditText().getText().toString().isEmpty() ) {

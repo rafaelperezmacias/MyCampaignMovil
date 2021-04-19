@@ -1,6 +1,7 @@
 package com.rld.futuro.futuroapp.Fragments.VolunteerBS;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class OtherFragment extends Fragment {
     private RadioButton noOPC;
     private RadioButton rcOPC;
     private RadioButton rgOPC;
+    private RadioButton voOPC;
 
     public OtherFragment(Volunteer volunteer)
     {
@@ -39,7 +41,9 @@ public class OtherFragment extends Fragment {
         noOPC = view.findViewById(R.id.fovbs_no_rb);
         rcOPC = view.findViewById(R.id.fovbs_rc_rb);
         rgOPC = view.findViewById(R.id.fovbs_rg_rb);
+        voOPC = view.findViewById(R.id.fovbs_vo_rb);
 
+        yesOPC.setSelected(true);
         yesOPC.setOnClickListener(v -> {
             if (noOPC.isSelected()) {
                 noOPC.setSelected(false);
@@ -56,17 +60,27 @@ public class OtherFragment extends Fragment {
 
         rcOPC.setSelected(true);
         rcOPC.setOnClickListener(v -> {
-            if ( rgOPC.isSelected() ) {
+            if (!rcOPC.isSelected() ) {
                 rgOPC.setSelected(false);
+                voOPC.setSelected(false);
             }
             rcOPC.setSelected(true);
         });
 
         rgOPC.setOnClickListener(v ->{
-            if ( rcOPC.isSelected() ) {
+            if (!rgOPC.isSelected() ) {
                 rcOPC.setSelected(false);
+                voOPC.setSelected(false);
             }
             rgOPC.setSelected(true);
+        });
+
+        voOPC.setOnClickListener(v ->{
+            if (!voOPC.isSelected() ) {
+                rcOPC.setSelected(false);
+                rgOPC.setSelected(false);
+            }
+            voOPC.setSelected(true);
         });
 
         lytNotes.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
@@ -86,7 +100,19 @@ public class OtherFragment extends Fragment {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-        volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
+//        volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
+
+        if (rcOPC.isSelected())         {
+            Log.e("rcOPC",""+rcOPC.isSelected());
+            volunteer.setTypeUser(Volunteer.TYPE_RC);
+        } else if (rgOPC.isSelected())  {
+            Log.e("rgOPC",""+rgOPC.isSelected());
+            volunteer.setTypeUser(Volunteer.TYPE_RG);
+        } else if (voOPC.isSelected())  {
+            Log.e("voOPC",""+voOPC.isSelected());
+            volunteer.setTypeUser(Volunteer.TYPE_VO);
+        }
+
         volunteer.setCasillaLocal(yesOPC.isSelected());
     }
 

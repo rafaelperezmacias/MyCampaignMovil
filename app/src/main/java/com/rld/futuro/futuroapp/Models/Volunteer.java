@@ -17,11 +17,13 @@ public class Volunteer implements Serializable {
 
     public static final int TYPE_RC = 344;
     public static final int TYPE_RG = 356;
+    public static final int TYPE_VO = 400;
 
     // TODO Modelado de la clase voluntario
     private String names;
     private String lastName1; // Fragmentar
     private String lastName2;
+    private String age;
     private String addressName;
     private String addressNumExt;
     private String addressNumInt;
@@ -30,6 +32,7 @@ public class Volunteer implements Serializable {
     private String electorKey;
     private String email;
     private String phone;
+    private String question1;
 
     private String imgString;
     private Bitmap img;
@@ -58,6 +61,7 @@ public class Volunteer implements Serializable {
         this.names = "";
         this.lastName1 = "";
         this.lastName2 = "";
+        this.age = "";
         this.addressName = "";
         this.addressNumExt = "";
         this.addressNumInt = "";
@@ -66,6 +70,8 @@ public class Volunteer implements Serializable {
         this.electorKey = "";
         this.email = "";
         this.phone = "";
+        this.question1 = "";
+        this.isCasillaLocal = true;
 
         this.imgString = "";
         this.img = null;
@@ -99,6 +105,22 @@ public class Volunteer implements Serializable {
         byte[] bytes = array.toByteArray();
         String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
         return imgString;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getQuestion1() {
+        return question1;
+    }
+
+    public void setQuestion1(String question1) {
+        this.question1 = question1;
     }
 
     public Section getSectionObject() {
@@ -344,6 +366,7 @@ public class Volunteer implements Serializable {
                 "names='" + names + '\'' +
                 ", lastName1='" + lastName1 + '\'' +
                 ", lastName2='" + lastName2 + '\'' +
+                ", age='" + age + '\'' +
                 ", addressName='" + addressName + '\'' +
                 ", addressNumExt='" + addressNumExt + '\'' +
                 ", addressNumInt='" + addressNumInt + '\'' +
@@ -352,6 +375,7 @@ public class Volunteer implements Serializable {
                 ", electorKey='" + electorKey + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", question1='" + question1 + '\'' +
                 ", imgString='" + imgString + '\'' +
                 ", img=" + img +
                 ", pathPhoto='" + pathPhoto + '\'' +
