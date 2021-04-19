@@ -17,40 +17,40 @@
         style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
     <TextView
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="56dp"
         android:paddingEnd="16dp"
-        android:text="@string/fovbs_question_one"
-        android:textColor="@android:color/black"/>
+        android:text="¿Va a cuidar la casilla en la sección donde esta su credencial de elector?"
+        android:textColor="@android:color/black"
+        android:visibility="visible" />
 
     <RadioGroup
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:paddingStart="56dp"
         android:paddingEnd="16dp"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:visibility="visible">
 
         <RadioButton
             android:id="@+id/fovbs_yes_rb"
-            android:checked="true"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:buttonTint="@color/orange_liane"
-            android:text="@string/fovbs_yes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/orange_liane"
+            android:checked="true"
+            android:gravity="center_vertical"
+            android:text="@string/fovbs_yes" />
 
         <RadioButton
             android:id="@+id/fovbs_no_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/fovbs_no"
             android:buttonTint="@color/orange_liane"
             android:gravity="center_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="@string/fovbs_no" />
 
     </RadioGroup>
 
@@ -63,31 +63,40 @@
         android:textColor="@android:color/black"/>
 
     <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="167dp"
+        android:orientation="vertical"
         android:paddingStart="56dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:paddingBottom="16dp">
 
         <RadioButton
             android:id="@+id/fovbs_rc_rb"
-            android:checked="true"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:buttonTint="@color/orange_liane"
-            android:text="RC (Representante de casilla)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/orange_liane"
+            android:checked="true"
+            android:gravity="center_vertical"
+            android:text="Representante de Casilla" />
 
         <RadioButton
             android:id="@+id/fovbs_rg_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:buttonTint="@color/orange_liane"
-            android:text="RG (Representante general)"
             android:gravity="center_vertical"
+            android:text="Representante General" />
+
+        <RadioButton
+            android:id="@+id/fovbs_vo_rb"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/orange_liane"
+            android:gravity="center_vertical"
+            android:text="Voluntario" />
 
     </RadioGroup>
 

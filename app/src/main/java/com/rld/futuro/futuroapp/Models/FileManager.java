@@ -216,6 +216,7 @@ public class FileManager {
                 obj.put("names", volunteers.get(cont).getNames());
                 obj.put("lastName1", volunteers.get(cont).getLastName1());
                 obj.put("lastName2", volunteers.get(cont).getLastName2());
+                obj.put("age", volunteers.get(cont).getAge());
                 obj.put("addressName", volunteers.get(cont).getAddressName());
                 obj.put("addressNumExt", volunteers.get(cont).getAddressNumExt());
                 obj.put("addressNumInt", volunteers.get(cont).getAddressNumInt());
@@ -224,6 +225,7 @@ public class FileManager {
                 obj.put("electorKey", volunteers.get(cont).getElectorKey());
                 obj.put("email", volunteers.get(cont).getEmail());
                 obj.put("phone", volunteers.get(cont).getPhone());
+                obj.put("question1", volunteers.get(cont).isCasillaLocal());
 
                 obj.put("imgString", volunteers.get(cont).getImgString());
 
@@ -266,6 +268,7 @@ public class FileManager {
                     volunteer.setNames(object.getString("names"));
                     volunteer.setLastName1(object.getString("lastName1"));
                     volunteer.setLastName2(object.getString("lastName2"));
+                    volunteer.setAge(object.getString("age"));
                     volunteer.setAddressName(object.getString("addressName"));
                     volunteer.setAddressNumExt(object.getString("addressNumExt"));
                     volunteer.setAddressNumInt(object.getString("addressNumInt"));
@@ -274,6 +277,7 @@ public class FileManager {
                     volunteer.setElectorKey(object.getString("electorKey"));
                     volunteer.setEmail(object.getString("email"));
                     volunteer.setPhone(object.getString("phone"));
+                    volunteer.setCasillaLocal(object.getBoolean( "question1"));
                     volunteer.setImgString(object.getString("imgString"));
                     volunteer.setState(object.getString("stateNumber"));
                     volunteer.setSection(object.getString("section"));
