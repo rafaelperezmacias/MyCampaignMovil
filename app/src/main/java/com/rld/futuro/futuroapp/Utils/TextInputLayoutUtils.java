@@ -17,7 +17,7 @@ public class TextInputLayoutUtils {
         if ( lyt.getEditText().getText().length() == 0  ) {
             return false;
         }
-        if ( !lyt.getEditText().getText().toString().matches("([A-ZÑ]| )+") ) {
+        if ( !lyt.getEditText().getText().toString().matches("([A-Z]|[a-z]|[ ñÑ(),.-]|[0-9]|[\\n\\r]|[Á-Úá-ú])*") ) {
             lyt.setError(error);
             return false;
         }
