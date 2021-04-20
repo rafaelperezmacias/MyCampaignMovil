@@ -18,6 +18,7 @@ public class Volunteer implements Serializable {
     public static final int TYPE_RC = 344;
     public static final int TYPE_RG = 356;
     public static final int TYPE_VO = 400;
+    public static final int TYPE_SC = 401;
 
     // TODO Modelado de la clase voluntario
     private String names;

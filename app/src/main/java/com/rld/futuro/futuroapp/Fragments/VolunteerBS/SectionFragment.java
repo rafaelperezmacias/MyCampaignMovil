@@ -122,12 +122,13 @@ public class SectionFragment extends Fragment {
 
     public boolean isComplete() {
         if ( volunteer.isJalisco() && !isLocal ) {
-            return TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error));
+            //return TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error));
+            return true;
         }
         return  !(!TextInputLayoutUtils.isValid(lytSection, getString(R.string.fSvbs_section_error))
                 | !TextInputLayoutUtils.isValid(lytMunicipioName, getString(R.string.fSvbs_municipio_name_error))
                 | !TextInputLayoutUtils.isValid(lytMunicipioNumber, getString(R.string.fSvbs_municipio_number_error))
-                | !TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error))
+                /*| !TextInputLayoutUtils.isValid(lytSector, getString(R.string.fSvbs_sector_error))*/
                 | !TextInputLayoutUtils.isValid(lytDistritoLocalName, getString(R.string.fSvbs_municipio_name_error))
                 | !TextInputLayoutUtils.isValid(lytDistritoLocalNumber, getString(R.string.fSvbs_municipio_number_error))
                 | !TextInputLayoutUtils.isValisMayus(lytDistritoLocalName, "Ingrese solo letras en mayuscula")

@@ -98,6 +98,15 @@
             android:gravity="center_vertical"
             android:text="Voluntario" />
 
+        <RadioButton
+            android:id="@+id/fovbs_sc_rb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="@color/orange_liane"
+            android:gravity="center_vertical"
+            android:text="Simpatizante / Contacto" />
+
     </RadioGroup>
 
     <View

@@ -198,7 +198,7 @@ public class ContactFragment extends Fragment {
 
     public boolean isComplete() {
         if (!TextInputLayoutUtils.isValid(lytElectorKey, getString(R.string.fcvbs_key_error))
-                | !TextInputLayoutUtils.isValid(lytEmail, getString(R.string.fcvbs_email_error))
+                /*| !TextInputLayoutUtils.isValid(lytEmail, getString(R.string.fcvbs_email_error))*/
                 | !TextInputLayoutUtils.isValid(lytPhone, getString(R.string.fcvbs_phone_error))
                 | !isStateSelected()
                 | ( isJaliscoSelected && !isLocal && !isSectionSelected()) ) {

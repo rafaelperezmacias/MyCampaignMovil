@@ -25,6 +25,7 @@ public class OtherFragment extends Fragment {
     private RadioButton rcOPC;
     private RadioButton rgOPC;
     private RadioButton voOPC;
+    private RadioButton scOPC;
 
     public OtherFragment(Volunteer volunteer)
     {
@@ -42,6 +43,7 @@ public class OtherFragment extends Fragment {
         rcOPC = view.findViewById(R.id.fovbs_rc_rb);
         rgOPC = view.findViewById(R.id.fovbs_rg_rb);
         voOPC = view.findViewById(R.id.fovbs_vo_rb);
+        scOPC = view.findViewById(R.id.fovbs_sc_rb);
 
         yesOPC.setSelected(true);
         yesOPC.setOnClickListener(v -> {
@@ -63,6 +65,7 @@ public class OtherFragment extends Fragment {
             if (!rcOPC.isSelected() ) {
                 rgOPC.setSelected(false);
                 voOPC.setSelected(false);
+                scOPC.setSelected(false);
             }
             rcOPC.setSelected(true);
         });
@@ -71,6 +74,7 @@ public class OtherFragment extends Fragment {
             if (!rgOPC.isSelected() ) {
                 rcOPC.setSelected(false);
                 voOPC.setSelected(false);
+                scOPC.setSelected(false);
             }
             rgOPC.setSelected(true);
         });
@@ -79,8 +83,18 @@ public class OtherFragment extends Fragment {
             if (!voOPC.isSelected() ) {
                 rcOPC.setSelected(false);
                 rgOPC.setSelected(false);
+                scOPC.setSelected(false);
             }
             voOPC.setSelected(true);
+        });
+
+        scOPC.setOnClickListener(v ->{
+            if (!scOPC.isSelected() ) {
+                rcOPC.setSelected(false);
+                rgOPC.setSelected(false);
+                voOPC.setSelected(false);
+            }
+            scOPC.setSelected(true);
         });
 
         lytNotes.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
@@ -111,6 +125,9 @@ public class OtherFragment extends Fragment {
         } else if (voOPC.isSelected())  {
             Log.e("voOPC",""+voOPC.isSelected());
             volunteer.setTypeUser(Volunteer.TYPE_VO);
+        }  else if (scOPC.isSelected()) {
+            Log.e("scOPC", "" + scOPC.isSelected());
+            volunteer.setTypeUser(Volunteer.TYPE_SC);
         }
 
         volunteer.setCasillaLocal(yesOPC.isSelected());
