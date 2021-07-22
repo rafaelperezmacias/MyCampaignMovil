@@ -105,7 +105,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
                         })
                         .setPositiveButton("Si", (dialog, which) -> {
-                            mainActivity.enableBtnCarga();
+                            // mainActivity.enableBtnCarga();
                             dismiss();
                         })
                         .show();
@@ -191,11 +191,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                             .setTitle("Alerta")
                             .setMessage("¿Desea tomar una fotografia de la INE (Parte frontral)?")
                             .setNegativeButton("No", (dialog, which) -> {
-                                mainActivity.addVoluteerWithoutImage(volunteer);
+                                // mainActivity.addVoluteerWithoutImage(volunteer);
                                 dismiss();
                             })
                             .setPositiveButton("Si, tomar foto", (dialog, which) -> {
-                                mainActivity.addVolunteerWithImage(volunteer);
+                                // mainActivity.addVolunteerWithImage(volunteer);
                                 dismiss();
                             })
                             .setCancelable(false)

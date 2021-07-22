@@ -1,6 +1,5 @@
 package com.rld.futuro.futuroapp;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.rld.futuro.futuroapp.Adapters.VolunteerAdapter;
 import com.rld.futuro.futuroapp.BottomSheets.VolunteerBottomSheet;
 import com.rld.futuro.futuroapp.Models.FileManager;
 import com.rld.futuro.futuroapp.Models.LocalDistrict;
@@ -40,10 +42,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements CameraPreview.onTakePhotoFinish {
 
-    private Toolbar toolbar;
-
+    // Listado de voluntarios a mostrar/manipular dentro del Activity
     private ArrayList<Volunteer> volunteers;
+    // RecyclerView (Para mostrar el listado de los voluntarios)
+    private RecyclerView rcvVolunteers;
+    // Adaptador del RecyclerView, de la clase que creamos dentro de Adapters
+    private VolunteerAdapter volunteerAdapter;
 
+    /*
     private FileManager fileManager;
     private RequestQueue requestQueue;
 
@@ -52,27 +58,54 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     private int peticiones;
     private int cont_peticiones;
     private int cont_peticiones_pos;
+    */
 
+    // * Elementos del UI
+    // Boton para cargar la informacion local al servidor
     private Button btnCarga;
+    // Boton para crear un nuevo "VolunteerBottomSheet, formulario encargado de crear un nuevo objeto Voluntario"
     private Button btnCrear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // * Configuracion del Activity
         setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        toolbar = findViewById(R.id.toolbar);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        // Toolbar personalizada el activity
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        btnCarga = findViewById(R.id.btnCarga);
-        btnCrear = findViewById(R.id.btnTest);
-
-        cont_peticiones = 0;
-
+        // # Inicialización de los elementos
         volunteers = new ArrayList<>();
 
-        fileManager = new FileManager(MainActivity.this);
+        // * Casteo de elementos del UI
+        btnCarga = findViewById(R.id.btnCarga);
+        btnCrear = findViewById(R.id.btnTest);
+        rcvVolunteers = findViewById(R.id.rcv_volunteers);
+
+        // # Configurando el RecyclerView
+        // Establecemos el layout controlador, en este caso uno lineal
+        rcvVolunteers.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        // Damos la propiedad que pueda cambiar de tamaño, esto en caso de modificar algun registro y que modifique
+        // el componenete, que adapte el tamaño.
+        rcvVolunteers.setHasFixedSize(true);
+
+        // *** Test de uso ***
+        // A la lista principal le agregamos tres objetos de tipo Voluntario y creamos el adaptador y lo establecemos al RecyclerView.
+        Volunteer volunteer1 = new Volunteer();
+        volunteer1.setNames("Rafael");
+        volunteers.add(volunteer1);
+        Volunteer volunteer2 = new Volunteer();
+        volunteer2.setNames("Luis");
+        volunteers.add(volunteer2);
+        Volunteer volunteer3 = new Volunteer();
+        volunteer3.setNames("Daniel");
+        volunteers.add(volunteer3);
+        volunteerAdapter = new VolunteerAdapter(MainActivity.this, volunteers);
+        rcvVolunteers.setAdapter(volunteerAdapter);
+
+        /* fileManager = new FileManager(MainActivity.this);
         volunteers = fileManager.readFile(getApplicationContext());
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
@@ -83,12 +116,12 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
             btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
         } else {
             btnCarga.setVisibility(View.GONE);
-        }
+        } */
 
-        ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
-        ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
-        ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-        if ( Internet.isNetDisponible(MainActivity.this) ) {
+        // ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
+        // ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
+        // ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
+        /* if ( Internet.isNetDisponible(MainActivity.this) ) {
             if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
                     || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
                     || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
@@ -108,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                 request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                 requestQueue.add(request);
             }
-        }
+        } */
 
         btnCarga.setOnClickListener(v -> {
-            btnCarga.setEnabled(false);
+            /* btnCarga.setEnabled(false);
             AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
                     .setTitle("Alerta")
                     .setMessage("Subiendo datos al servidor. Favor de no cerrar la aplicación.")
@@ -151,15 +184,17 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
                 }
             });
             alertDialog.show();
+             */
         });
 
         btnCrear.setOnClickListener(v -> {
-            btnCrear.setEnabled(false);
-            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(MainActivity.this);
-            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+            // btnCrear.setEnabled(false);
+            // VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(MainActivity.this);
+            // volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
         });
     }
 
+    /*
     public void enableBtnCarga() {
         btnCrear.setEnabled(true);
     }
@@ -252,13 +287,14 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     public ArrayList<LocalDistrict> getLocalDistricts() {
         return fileManager.readJSONLocalDistricts(MainActivity.this);
     }
+    */
 
     @Override
     public void saveVolunteer(Volunteer volunteer) {
-        volunteers.add(volunteer);
-        saveVolunteers();
-        createSnackBar(getString(R.string.fbs_snackbar));
-        btnCrear.setEnabled(true);
+        // volunteers.add(volunteer);
+        // saveVolunteers();
+        // createSnackBar(getString(R.string.fbs_snackbar));
+        // btnCrear.setEnabled(true);
     }
 
 }

@@ -57,7 +57,7 @@ public class ContactFragment extends Fragment {
     public ContactFragment(Volunteer volunteer, MainActivity mainActivity)
     {
         this.volunteer = volunteer;
-        sections = mainActivity.getSections();
+        // sections = mainActivity.getSections();
     }
 
     @Nullable

@@ -20,9 +20,8 @@ public class Volunteer implements Serializable {
     public static final int TYPE_VO = 400;
     public static final int TYPE_SC = 401;
 
-    // TODO Modelado de la clase voluntario
     private String names;
-    private String lastName1; // Fragmentar
+    private String lastName1;
     private String lastName2;
     private String age;
     private String addressName;
@@ -39,7 +38,6 @@ public class Volunteer implements Serializable {
     private Bitmap img;
     private String pathPhoto;
 
-    // Casillas
     private String state;
     private int stateNumber;
     private String section;
@@ -53,7 +51,6 @@ public class Volunteer implements Serializable {
     private int typeUser;
     private boolean isCasillaLocal;
 
-    //
     private boolean isJalisco;
     private Section sectionObject;
     private boolean isLocal;
@@ -78,7 +75,6 @@ public class Volunteer implements Serializable {
         this.img = null;
         this.pathPhoto = "";
 
-        // Casillas
         this.state = "";
         this.section = "";
         this.municipality = "";
