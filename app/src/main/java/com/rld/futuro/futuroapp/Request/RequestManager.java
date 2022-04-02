@@ -1,5 +1,7 @@
 package com.rld.futuro.futuroapp.Request;
 
+import android.util.Log;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -24,22 +26,23 @@ public class RequestManager {
 
         JsonObjectRequest request =  new JsonObjectRequest(Request.Method.POST, url, myJson, response -> {
             try {
+                Log.e("CHINGATUMADRE", response.toString());
                 if ( response.getInt("code") == 110 ) {
                     JSONObject jsonObject = response.getJSONObject("volunteer");
                     String electorKey = jsonObject.getString("electorKey");
                     if ( !electorKey.isEmpty() ) {
-                        // mainActivity.deleteFromServer(electorKey, true);
+                         mainActivity.deleteFromServer(electorKey, true);
                     } else {
-                        // mainActivity.deleteFromServer("", false);
+                         mainActivity.deleteFromServer("", false);
                     }
                 } else {
-                    // mainActivity.deleteFromServer("", false);
+                    mainActivity.deleteFromServer("", false);
                 }
             } catch (JSONException e) {
-                // mainActivity.deleteFromServer("", false);
+                mainActivity.deleteFromServer("", false);
             }
         }, error -> {
-            // mainActivity.deleteFromServer("", false);
+             mainActivity.deleteFromServer("", false);
         });
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         return request;

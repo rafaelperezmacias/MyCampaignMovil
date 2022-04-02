@@ -114,7 +114,7 @@ public class OtherFragment extends Fragment {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-//        volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
+//       volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
 
         if (rcOPC.isSelected())         {
             Log.e("rcOPC",""+rcOPC.isSelected());

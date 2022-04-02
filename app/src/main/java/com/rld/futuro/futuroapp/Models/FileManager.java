@@ -16,6 +16,13 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+/**
+ *
+ * Manejador de archivos e imagen
+ *
+ * @version 1.0.0
+ * @author Rafael-PM
+ */
 public class FileManager {
 
     private final String fileNameJSON;
@@ -244,6 +251,7 @@ public class FileManager {
             }
             jsonArray.put(obj);
         }
+
         try {
             this.json.put("users", jsonArray);
         } catch (JSONException e) {

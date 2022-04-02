@@ -41,8 +41,8 @@ public class SectionFragment extends Fragment {
     public SectionFragment(Volunteer volunteer, MainActivity mainActivity)
     {
         this.volunteer = volunteer;
-        // municipalities = mainActivity.getMunipalities();
-        // localDistricts = mainActivity.getLocalDistricts();
+        municipalities = mainActivity.getMunipalities();
+        localDistricts = mainActivity.getLocalDistricts();
     }
 
     @Nullable
