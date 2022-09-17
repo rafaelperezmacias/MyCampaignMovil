@@ -14,7 +14,7 @@ import org.json.JSONObject;
 public class RequestManager {
 
     public static JsonObjectRequest request(JSONObject json, MainActivity mainActivity) {
-        String url =  AppConfig.INSERT_VOLUNTER;
+        String url =  AppConfig.INSERT_VOLUNTEER;
 
         JSONObject myJson = new JSONObject();
         try {
