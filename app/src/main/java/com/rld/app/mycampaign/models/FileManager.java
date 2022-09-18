@@ -15,13 +15,6 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-/**
- *
- * Manejador de archivos e imagen
- *
- * @version 1.0.0
- * @author Rafael-PM
- */
 public class FileManager {
 
     private final String fileNameJSON;
@@ -212,9 +205,9 @@ public class FileManager {
     }
 
     private void createJSON(ArrayList<Volunteer> volunteers) {
-        this.json = new JSONObject(); //Root
-        JSONArray jsonArray = new JSONArray(); //Array
-        JSONObject obj = null; // Objet
+        this.json = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        JSONObject obj = null;
         int cont = 0;
         while (cont < volunteers.size()) {
             obj = new JSONObject();
@@ -314,7 +307,6 @@ public class FileManager {
         try {
             fileOutputStream = context.openFileOutput(fileNameJSON + ".json", context.MODE_PRIVATE);
             fileOutputStream.write(this.json.toString().getBytes());
-            //Log.d("TAG1", "Fichero Salvado en: " + context.getFilesDir() + "/" + fileNameJSON);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

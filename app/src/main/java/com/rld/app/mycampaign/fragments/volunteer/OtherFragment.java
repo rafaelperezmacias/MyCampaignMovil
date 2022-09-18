@@ -114,19 +114,14 @@ public class OtherFragment extends Fragment {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-//       volunteer.setTypeUser(rcOPC.isSelected() ? Volunteer.TYPE_RC : Volunteer.TYPE_RG);
 
         if (rcOPC.isSelected())         {
-            Log.e("rcOPC",""+rcOPC.isSelected());
             volunteer.setTypeUser(Volunteer.TYPE_RC);
         } else if (rgOPC.isSelected())  {
-            Log.e("rgOPC",""+rgOPC.isSelected());
             volunteer.setTypeUser(Volunteer.TYPE_RG);
         } else if (voOPC.isSelected())  {
-            Log.e("voOPC",""+voOPC.isSelected());
             volunteer.setTypeUser(Volunteer.TYPE_VO);
         }  else if (scOPC.isSelected()) {
-            Log.e("scOPC", "" + scOPC.isSelected());
             volunteer.setTypeUser(Volunteer.TYPE_SC);
         }
 

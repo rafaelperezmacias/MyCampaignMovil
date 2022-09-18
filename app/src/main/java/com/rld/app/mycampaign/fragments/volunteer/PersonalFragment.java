@@ -84,7 +84,6 @@ public class PersonalFragment extends Fragment {
             | !TextInputLayoutUtils.isVali70(lytStreet,"Error, revise la información de este campo")
             | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
             | !TextInputLayoutUtils.isVali10_1(lytComplement, "Error, revise la información de este campo")
-            /*| !TextInputLayoutUtils.isValid(lytCP, getString(R.string.fpvbs_cp_error))*/
             | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
             | !TextInputLayoutUtils.isVali40(lytSuburb, "Error, revise la información de este campo"));
     }

@@ -80,11 +80,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         txtSubtitle.setText(getString(R.string.fbs_step1));
 
         fragmentManager = getChildFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
+//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
+//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
+//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
+//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
+//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
         btnClose.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {

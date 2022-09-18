@@ -107,7 +107,7 @@ public class ContactFragment extends Fragment {
                     } else {
                         lytSectionsAuto.setVisibility(View.GONE);
                         if ( !isLocal )
-                        isJaliscoSelected = false;
+                            isJaliscoSelected = false;
                     }
                 } else {
                     isStateValid = false;

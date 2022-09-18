@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,96 +66,96 @@ public class MainActivity extends AppCompatActivity implements CameraPreview.onT
         btnCarga = findViewById(R.id.btnCarga);
         btnCrear = findViewById(R.id.btnTest);
 
-        cont_peticiones = 0;
-
-        volunteers = new ArrayList<>();
-
-        fileManager = new FileManager(MainActivity.this);
-        volunteers = fileManager.readFile(getApplicationContext());
-        requestQueue = Volley.newRequestQueue(MainActivity.this);
-
-        CameraPreview.setLISTENER(MainActivity.this);
-
-        if (volunteers.size() > 0) {
-            btnCarga.setVisibility(View.VISIBLE);
-            btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
-        } else {
-            btnCarga.setVisibility(View.GONE);
-        }
-
-        ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
-        ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
-        ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-        if ( Internet.isNetDisponible(MainActivity.this) ) {
-            if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
-                    || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
-                    || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
-                    try {
-                        if (response.getInt("code") == 205) {
-                            fileManager.createJSONFromDB(response.getJSONArray("municipalities"), "data-municipalities.json", "municipalities", MainActivity.this);
-                            fileManager.createJSONFromDB(response.getJSONArray("localDistricts"), "data-localDistricts.json", "localDistricts", MainActivity.this);
-                            fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
-                        }
-                    } catch (JSONException ignored) {
-                        Log.e("e", "Error en responder :v");
-                    }
-                }, error -> {
-                    Log.e("e", "Error en error");
-                });
-                request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                requestQueue.add(request);
-            }
-        }
-
-        btnCarga.setOnClickListener(v -> {
-            btnCarga.setEnabled(false);
-            AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
-                    .setTitle("Alerta")
-                    .setMessage("Subiendo datos al servidor. Favor de no cerrar la aplicación.")
-                    .setCancelable(false);
-            alertDialog = alertDialogBuilder.create();
-            alertDialog.setOnShowListener(dialog -> {
-                if ( !Internet.isNetDisponible(MainActivity.this) ) {
-                    createSnackBar("Sin acceso a internet, verifique su conexión.");
-                    btnCarga.setEnabled(true);
-                    alertDialog.dismiss();
-                    return;
-                }
-                JSONObject jsonBD = new JSONObject();
-                fileManager.readFile(MainActivity.this);
-                jsonBD = fileManager.getJson();
-                if (jsonBD == null) {
-                    return;
-                }
-                try {
-                    JSONArray ja_data = jsonBD.getJSONArray("users");
-                    int arraySize = ja_data.length();
-                    peticiones = arraySize;
-                    for (int i = 0; i < arraySize; i++) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ignored) {
-
-                        }
-                        JsonObjectRequest request = RequestManager.request(ja_data.getJSONObject(i), MainActivity.this);
-                        if (request == null) {
-                            continue;
-                        }
-                        requestQueue.add(request);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            });
-            alertDialog.show();
-        });
-
-        btnCrear.setOnClickListener(v -> {
-            btnCrear.setEnabled(false);
-            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(MainActivity.this);
-            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
-        });
+//        cont_peticiones = 0;
+//
+//        volunteers = new ArrayList<>();
+//
+//        fileManager = new FileManager(MainActivity.this);
+//        volunteers = fileManager.readFile(getApplicationContext());
+//        requestQueue = Volley.newRequestQueue(MainActivity.this);
+//
+//        CameraPreview.setLISTENER(MainActivity.this);
+//
+//        if (volunteers.size() > 0) {
+//            btnCarga.setVisibility(View.VISIBLE);
+//            btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
+//        } else {
+//            btnCarga.setVisibility(View.GONE);
+//        }
+//
+//        ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
+//        ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
+//        ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
+//        if ( Internet.isNetDisponible(MainActivity.this) ) {
+//            if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
+//                    || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
+//                    || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
+//                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
+//                    try {
+//                        if (response.getInt("code") == 205) {
+//                            fileManager.createJSONFromDB(response.getJSONArray("municipalities"), "data-municipalities.json", "municipalities", MainActivity.this);
+//                            fileManager.createJSONFromDB(response.getJSONArray("localDistricts"), "data-localDistricts.json", "localDistricts", MainActivity.this);
+//                            fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
+//                        }
+//                    } catch (JSONException ignored) {
+//                        Log.e("e", "Error en responder :v");
+//                    }
+//                }, error -> {
+//                    Log.e("e", "Error en error");
+//                });
+//                request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//                requestQueue.add(request);
+//            }
+//        }
+//
+//        btnCarga.setOnClickListener(v -> {
+//            btnCarga.setEnabled(false);
+//            AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
+//                    .setTitle("Alerta")
+//                    .setMessage("Subiendo datos al servidor. Favor de no cerrar la aplicación.")
+//                    .setCancelable(false);
+//            alertDialog = alertDialogBuilder.create();
+//            alertDialog.setOnShowListener(dialog -> {
+//                if ( !Internet.isNetDisponible(MainActivity.this) ) {
+//                    createSnackBar("Sin acceso a internet, verifique su conexión.");
+//                    btnCarga.setEnabled(true);
+//                    alertDialog.dismiss();
+//                    return;
+//                }
+//                JSONObject jsonBD = new JSONObject();
+//                fileManager.readFile(MainActivity.this);
+//                jsonBD = fileManager.getJson();
+//                if (jsonBD == null) {
+//                    return;
+//                }
+//                try {
+//                    JSONArray ja_data = jsonBD.getJSONArray("users");
+//                    int arraySize = ja_data.length();
+//                    peticiones = arraySize;
+//                    for (int i = 0; i < arraySize; i++) {
+//                        try {
+//                            Thread.sleep(100);
+//                        } catch (InterruptedException ignored) {
+//
+//                        }
+//                        JsonObjectRequest request = RequestManager.request(ja_data.getJSONObject(i), MainActivity.this);
+//                        if (request == null) {
+//                            continue;
+//                        }
+//                        requestQueue.add(request);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//            alertDialog.show();
+//        });
+//
+//        btnCrear.setOnClickListener(v -> {
+//            btnCrear.setEnabled(false);
+//            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(MainActivity.this);
+//            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+//        });
     }
 
     public void enableBtnCarga() {
