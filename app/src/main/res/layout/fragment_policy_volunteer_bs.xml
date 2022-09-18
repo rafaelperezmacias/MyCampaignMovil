@@ -16,7 +16,7 @@
         android:layout_marginBottom="10dp"
         android:text="AVISO DE PRIVACIDAD INTEGRAL DEL PARTIDO POLÍTICO ESTATAL FUTURO"/>
 
-    <com.rld.futuro.futuroapp.Utils.JustifyTextView
+    <com.rld.app.mycampaign.utils.JustifyTextView
         android:id="@+id/textview"
         android:layout_marginStart="15dp"
         android:gravity="fill_horizontal"

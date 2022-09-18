@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BottomSheets.VolunteerBottomSheet">
+    tools:context=".bottomsheets.VolunteerBottomSheet">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/volunter_bs_toolbar"
@@ -26,7 +26,6 @@
                 android:paddingEnd="16dp"
                 android:background="@color/white"
                 android:src="@drawable/ic_sharp_close_24"
-                android:tint="@color/black"
                 android:contentDescription="@string/icon" />
 
             <LinearLayout
