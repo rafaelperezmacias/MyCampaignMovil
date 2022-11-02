@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Volunteer;
@@ -38,11 +38,11 @@ public class SectionFragment extends Fragment {
 
     private boolean isLocal;
 
-    public SectionFragment(Volunteer volunteer, MainActivity mainActivity)
+    public SectionFragment(Volunteer volunteer, Main2Activity mainActivity)
     {
         this.volunteer = volunteer;
-        municipalities = mainActivity.getMunipalities();
-        localDistricts = mainActivity.getLocalDistricts();
+//        municipalities = mainActivity.getMunipalities();
+//        localDistricts = mainActivity.getLocalDistricts();
     }
 
     @Nullable

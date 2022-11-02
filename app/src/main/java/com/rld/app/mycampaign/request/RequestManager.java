@@ -3,14 +3,14 @@ package com.rld.app.mycampaign.request;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.Main2Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RequestManager {
 
-    public static JsonObjectRequest request(JSONObject json, MainActivity mainActivity) {
+    public static JsonObjectRequest request(JSONObject json, Main2Activity mainActivity) {
         String url =  AppConfig.INSERT_VOLUNTEER;
 
         JSONObject myJson = new JSONObject();

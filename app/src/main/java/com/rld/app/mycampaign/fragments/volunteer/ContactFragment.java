@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
-import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
@@ -54,10 +54,10 @@ public class ContactFragment extends Fragment {
     private ArrayList<Section> sections;
 
 
-    public ContactFragment(Volunteer volunteer, MainActivity mainActivity)
+    public ContactFragment(Volunteer volunteer, Main2Activity mainActivity)
     {
         this.volunteer = volunteer;
-        sections = mainActivity.getSections();
+//        sections = mainActivity.getSections();
     }
 
     @Nullable
@@ -81,7 +81,7 @@ public class ContactFragment extends Fragment {
         states = State.getStates(getContext());
         addStates();
         addSections();
-        if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
+        if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE ) {
             isLocal = true;
             showCardError2();
         } else {

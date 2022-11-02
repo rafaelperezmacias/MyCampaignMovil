@@ -23,7 +23,7 @@ import com.rld.app.mycampaign.fragments.volunteer.OtherFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PersonalFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PolicyFragment;
 import com.rld.app.mycampaign.fragments.volunteer.SectionFragment;
-import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
 
@@ -36,9 +36,9 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private Volunteer volunteer;
 
-    private MainActivity mainActivity;
+    private Main2Activity mainActivity;
 
-    public VolunteerBottomSheet(MainActivity mainActivity)
+    public VolunteerBottomSheet(Main2Activity mainActivity)
     {
         volunteer = new Volunteer();
         this.mainActivity = mainActivity;
