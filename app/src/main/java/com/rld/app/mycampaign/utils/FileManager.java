@@ -1,8 +1,13 @@
-package com.rld.app.mycampaign.models;
+package com.rld.app.mycampaign.utils;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+
+import com.rld.app.mycampaign.models.LocalDistrict;
+import com.rld.app.mycampaign.models.Municipality;
+import com.rld.app.mycampaign.models.Section;
+import com.rld.app.mycampaign.models.Volunteer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +59,7 @@ public class FileManager {
     }
 
     public ArrayList<LocalDistrict> readJSONLocalDistricts(Context context){
-        ArrayList<LocalDistrict> localDistricts = new ArrayList<>();
+        /* ArrayList<LocalDistrict> localDistricts = new ArrayList<>();
         FileInputStream fileInputStream = null;
         StringBuilder stringBuilder = new StringBuilder();
         try{
@@ -100,11 +105,12 @@ public class FileManager {
             return new ArrayList<>();
         }
 
-        return localDistricts;
+        return localDistricts; */
+        return null;
     }
 
     public ArrayList<Municipality> readJSONMunicipalities(Context context){
-        ArrayList<Municipality> municipalities = new ArrayList<>();
+        /* ArrayList<Municipality> municipalities = new ArrayList<>();
         FileInputStream fileInputStream = null;
         StringBuilder stringBuilder = new StringBuilder();
         try{
@@ -150,10 +156,12 @@ public class FileManager {
             return new ArrayList<>();
         }
 
-        return municipalities;
+        return municipalities; */
+        return null;
     }
 
     public ArrayList<Section> readJSONSections(Context context){
+        /*
         ArrayList<Section> sections = new ArrayList<>();
         FileInputStream fileInputStream = null;
         StringBuilder stringBuilder = new StringBuilder();
@@ -201,10 +209,12 @@ public class FileManager {
             return new ArrayList<>();
         }
 
-        return sections;
+        return sections; */
+        return null;
     }
 
     private void createJSON(ArrayList<Volunteer> volunteers) {
+        /*
         this.json = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         JSONObject obj = null;
@@ -248,10 +258,11 @@ public class FileManager {
             this.json.put("users", jsonArray);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        } */
     }
 
     private ArrayList<Volunteer> readJSON(String data){
+        /*
         ArrayList<Volunteer> volunteers = new ArrayList<>();
 
         try {
@@ -299,6 +310,8 @@ public class FileManager {
         }
 
         return volunteers;
+        */
+        return null;
     }
 
     public void saveFile(ArrayList<Volunteer> volunteers, Context context) {

@@ -98,12 +98,9 @@ public class CameraPreview extends AppCompatActivity {
 
     // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(CameraPreview.this, permission)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(CameraPreview.this, permission) != PackageManager.PERMISSION_GRANTED) {
             // Requesting the permission
-            ActivityCompat.requestPermissions(CameraPreview.this,
-                    new String[]{permission},
-                    requestCode);
+            ActivityCompat.requestPermissions(CameraPreview.this, new String[]{ permission }, requestCode);
         } else {
             //Toast.makeText(CameraPreview.this, "Permiso de camara concedido", Toast.LENGTH_SHORT).show();
             takePhoto();

@@ -1,254 +1,87 @@
 package com.rld.app.mycampaign.models;
 
-import android.graphics.Bitmap;
-import android.util.Base64;
-import android.util.Log;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.Serializable;
+import java.util.Date;
 
 public class Volunteer implements Serializable {
 
-    public static final int TYPE_RC = 344;
-    public static final int TYPE_RG = 356;
-    public static final int TYPE_VO = 400;
-    public static final int TYPE_SC = 401;
+    private static final int TYPE_GENERAL_REPRESENTATIVE = 0;
+    private static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 1;
+    private static final int TYPE_OTHER = 2;
 
-    private String names;
-    private String lastName1;
-    private String lastName2;
-    private String age;
-    private String addressName;
-    private String addressNumExt;
-    private String addressNumInt;
-    private String suburb;
-    private String zipCode;
+    private int id;
+    private String name;
+    private String fathersLastname;
+    private String mothersLastname;
+    private Date birthdate;
+
+    private Address address;
+
     private String electorKey;
     private String email;
     private String phone;
-    private String question1;
 
-    private String imgString;
-    private Bitmap img;
-    private String pathPhoto;
+    private Section section;
 
-    private String state;
-    private int stateNumber;
-    private String section;
-    private String municipality;
-    private String numberMunicipality;
     private String sector;
-    private String localDistrict;
-    private String numberLocalDistrict;
-
     private String notes;
-    private int typeUser;
-    private boolean isCasillaLocal;
+    private int type;
+    private boolean localVotingBooth;
 
-    private boolean isJalisco;
-    private Section sectionObject;
-    private boolean isLocal;
+    private Image imageFirm;
+    private Image imageCredential;
 
-    public Volunteer() {
-        this.names = "";
-        this.lastName1 = "";
-        this.lastName2 = "";
-        this.age = "";
-        this.addressName = "";
-        this.addressNumExt = "";
-        this.addressNumInt = "";
-        this.suburb = "";
-        this.zipCode = "";
-        this.electorKey = "";
-        this.email = "";
-        this.phone = "";
-        this.question1 = "";
-        this.isCasillaLocal = true;
+    public Volunteer()
+    {
 
-        this.imgString = "";
-        this.img = null;
-        this.pathPhoto = "";
-
-        this.state = "";
-        this.section = "";
-        this.municipality = "";
-        this.sector = "";
-        this.localDistrict = "";
-
-        this.stateNumber = 14;
-        this.typeUser = 344;
-
-        this.notes = "";
     }
 
-    public String convertImageToString(Bitmap image) {
-        ByteArrayOutputStream array = new ByteArrayOutputStream();
-        Log.e("image", "" + image.getByteCount());
-        int mb=image.getByteCount()/8/1000/1000;
-        int quality;
-        if(mb>=1){
-            quality=100/mb;
-        } else{
-            quality=100;
-        }
-        image.compress(Bitmap.CompressFormat.JPEG, quality, array);
-
-        byte[] bytes = array.toByteArray();
-        String imgString = Base64.encodeToString(bytes, Base64.DEFAULT);
-        return imgString;
+    public int getId() {
+        return id;
     }
 
-    public String getAge() {
-        return age;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public String getName() {
+        return name;
     }
 
-    public String getQuestion1() {
-        return question1;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setQuestion1(String question1) {
-        this.question1 = question1;
+    public String getFathersLastname() {
+        return fathersLastname;
     }
 
-    public Section getSectionObject() {
-        return sectionObject;
+    public void setFathersLastname(String fathersLastname) {
+        this.fathersLastname = fathersLastname;
     }
 
-    public void setSectionObject(Section sectionObject) {
-        this.sectionObject = sectionObject;
+    public String getMothersLastname() {
+        return mothersLastname;
     }
 
-    public boolean isLocal() {
-        return isLocal;
+    public void setMothersLastname(String mothersLastname) {
+        this.mothersLastname = mothersLastname;
     }
 
-    public void setLocal(boolean local) {
-        isLocal = local;
+    public Date getBirthdate() {
+        return birthdate;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setBirthdate(Date birthdate) {
+        this.birthdate = birthdate;
     }
 
-    public String getPathPhoto() {
-        return pathPhoto;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setPathPhoto(String pathPhoto) {
-        this.pathPhoto = pathPhoto;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public String getNumberMunicipality() {
-        return numberMunicipality;
-    }
-
-    public void setNumberMunicipality(String numberMunicipality) {
-        this.numberMunicipality = numberMunicipality;
-    }
-
-    public String getNumberLocalDistrict() {
-        return numberLocalDistrict;
-    }
-
-    public void setNumberLocalDistrict(String numberLocalDistrict) {
-        this.numberLocalDistrict = numberLocalDistrict;
-    }
-
-    public int getTypeUser() {
-        return typeUser;
-    }
-
-    public void setTypeUser(int typeUser) {
-        this.typeUser = typeUser;
-    }
-
-    public int getStateNumber() {
-        return stateNumber;
-    }
-
-    public void setStateNumber(int stateNumber) {
-        this.stateNumber = stateNumber;
-    }
-
-    public boolean isJalisco() {
-        return isJalisco;
-    }
-
-    public void setJalisco(boolean jalisco) {
-        isJalisco = jalisco;
-    }
-
-    public String getNames() {
-        return names;
-    }
-
-    public void setNames(String names) {
-        this.names = names;
-    }
-
-    public String getLastName1() {
-        return lastName1;
-    }
-
-    public String getLastName2() {
-        return lastName2;
-    }
-
-    public void setLastName1(String lastName1) {
-        this.lastName1 = lastName1;
-    }
-
-    public void setLastName2(String lastName2) {
-        this.lastName2 = lastName2;
-    }
-
-    public String getAddressName() {
-        return addressName;
-    }
-
-    public void setAddressName(String addressName) {
-        this.addressName = addressName;
-    }
-
-    public String getAddressNumExt() {
-        return addressNumExt;
-    }
-
-    public void setAddressNumExt(String addressNumExt) {
-        this.addressNumExt = addressNumExt;
-    }
-
-    public String getAddressNumInt() {
-        return addressNumInt;
-    }
-
-    public void setAddressNumInt(String addressNumInt) {
-        this.addressNumInt = addressNumInt;
-    }
-
-    public String getSuburb() {
-        return suburb;
-    }
-
-    public void setSuburb(String suburb) {
-        this.suburb = suburb;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getElectorKey() {
@@ -275,45 +108,12 @@ public class Volunteer implements Serializable {
         this.phone = phone;
     }
 
-    public String getImgString() {
-        return imgString;
-    }
-
-    public void setImgString(String strImage) {
-        this.imgString = strImage;
-    }
-
-    public Bitmap getImg() {
-        return img;
-    }
-
-    public void setImg(Bitmap img) {
-        this.img = img;
-        this.imgString = convertImageToString(img);
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getSection() {
+    public Section getSection() {
         return section;
     }
 
-    public void setSection(String section) {
+    public void setSection(Section section) {
         this.section = section;
-    }
-
-    public String getMunicipality() {
-        return municipality;
-    }
-
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
     }
 
     public String getSector() {
@@ -324,67 +124,66 @@ public class Volunteer implements Serializable {
         this.sector = sector;
     }
 
-    public String getLocalDistrict() {
-        return localDistrict;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setLocalDistrict(String localDistrict) {
-        this.localDistrict = localDistrict;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
-    public boolean isCasillaLocal() {
-        return isCasillaLocal;
+    public int getType() {
+        return type;
     }
 
-    public void setCasillaLocal(boolean casillaLocal) {
-        isCasillaLocal = casillaLocal;
+    public void setType(int type) {
+        this.type = type;
     }
 
-    public void deleteImage(){
-        File file = new File(this.pathPhoto);
-        if (file.exists()){
-            Log.e("TAG1", "archivo a borrar" + file.getAbsolutePath());
-            file.delete();
-            img = null;
-            pathPhoto = "";
-        } else {
-            Log.e("TAG1", "archivo no existente");
-        }
+    public boolean isLocalVotingBooth() {
+        return localVotingBooth;
+    }
+
+    public void setLocalVotingBooth(boolean localVotingBooth) {
+        this.localVotingBooth = localVotingBooth;
+    }
+
+    public Image getImageFirm() {
+        return imageFirm;
+    }
+
+    public void setImageFirm(Image imageFirm) {
+        this.imageFirm = imageFirm;
+    }
+
+    public Image getImageCredential() {
+        return imageCredential;
+    }
+
+    public void setImageCredential(Image imageCredential) {
+        this.imageCredential = imageCredential;
     }
 
     @Override
     public String toString() {
         return "Volunteer{" +
-                "names='" + names + '\'' +
-                ", lastName1='" + lastName1 + '\'' +
-                ", lastName2='" + lastName2 + '\'' +
-                ", age='" + age + '\'' +
-                ", addressName='" + addressName + '\'' +
-                ", addressNumExt='" + addressNumExt + '\'' +
-                ", addressNumInt='" + addressNumInt + '\'' +
-                ", suburb='" + suburb + '\'' +
-                ", zipCode='" + zipCode + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", fathersLastname='" + fathersLastname + '\'' +
+                ", mothersLastname='" + mothersLastname + '\'' +
+                ", birthdate=" + birthdate +
+                ", address=" + address +
                 ", electorKey='" + electorKey + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
-                ", question1='" + question1 + '\'' +
-                ", imgString='" + imgString + '\'' +
-                ", img=" + img +
-                ", pathPhoto='" + pathPhoto + '\'' +
-                ", state='" + state + '\'' +
-                ", stateNumber=" + stateNumber +
-                ", section='" + section + '\'' +
-                ", municipality='" + municipality + '\'' +
-                ", numberMunicipality='" + numberMunicipality + '\'' +
+                ", section=" + section +
                 ", sector='" + sector + '\'' +
-                ", localDistrict='" + localDistrict + '\'' +
-                ", numberLocalDistrict='" + numberLocalDistrict + '\'' +
                 ", notes='" + notes + '\'' +
-                ", typeUser=" + typeUser +
-                ", isCasillaLocal=" + isCasillaLocal +
-                ", isJalisco=" + isJalisco +
-                ", sectionObject=" + sectionObject +
-                ", isLocal=" + isLocal +
+                ", type=" + type +
+                ", localVotingBooth=" + localVotingBooth +
+                ", imageFirm=" + imageFirm +
+                ", imageCredential=" + imageCredential +
                 '}';
     }
+
 }

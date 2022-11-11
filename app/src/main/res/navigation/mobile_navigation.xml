@@ -10,12 +10,12 @@
         android:id="@+id/nav_volunteer"
         android:name="com.rld.app.mycampaign.fragments.menu.VolunteerFragment"
         android:label="@string/menu_volunteer"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_volunteer" />
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.rld.app.mycampaign.fragments.menu.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>

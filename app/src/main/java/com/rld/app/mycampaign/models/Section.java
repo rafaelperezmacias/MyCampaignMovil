@@ -4,52 +4,86 @@ import java.io.Serializable;
 
 public class Section implements Serializable {
 
-    private int section;
-    private int numberMunicipality;
-    private int numberLocalDistrict;
+    private int id;
+    private String section;
+    private State state;
+    private Municipality municipality;
+    private LocalDistrict localDistrict;
+    private FederalDistrict federalDistrict;
 
     public Section()
     {
 
     }
 
-    public Section(int section, int numberMunicipality, int numberLocalDistrict)
+    public Section(int id, String section, State state, Municipality municipality, LocalDistrict localDistrict, FederalDistrict federalDistrict)
     {
+        this.id = id;
         this.section = section;
-        this.numberMunicipality = numberMunicipality;
-        this.numberLocalDistrict = numberLocalDistrict;
+        this.state = state;
+        this.municipality = municipality;
+        this.localDistrict = localDistrict;
+        this.federalDistrict = federalDistrict;
     }
 
-    public int getSection() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getSection() {
         return section;
     }
 
-    public void setSection(int section) {
+    public void setSection(String section) {
         this.section = section;
     }
 
-    public int getNumberMunicipality() {
-        return numberMunicipality;
+    public State getState() {
+        return state;
     }
 
-    public void setNumberMunicipality(int numberMunicipality) {
-        this.numberMunicipality = numberMunicipality;
+    public void setState(State state) {
+        this.state = state;
     }
 
-    public int getNumberLocalDistrict() {
-        return numberLocalDistrict;
+    public Municipality getMunicipality() {
+        return municipality;
     }
 
-    public void setNumberLocalDistrict(int numberLocalDistrict) {
-        this.numberLocalDistrict = numberLocalDistrict;
+    public void setMunicipality(Municipality municipality) {
+        this.municipality = municipality;
+    }
+
+    public LocalDistrict getLocalDistrict() {
+        return localDistrict;
+    }
+
+    public void setLocalDistrict(LocalDistrict localDistrict) {
+        this.localDistrict = localDistrict;
+    }
+
+    public FederalDistrict getFederalDistrict() {
+        return federalDistrict;
+    }
+
+    public void setFederalDistrict(FederalDistrict federalDistrict) {
+        this.federalDistrict = federalDistrict;
     }
 
     @Override
     public String toString() {
         return "Section{" +
-                "section=" + section +
-                ", numberMunicipality=" + numberMunicipality +
-                ", numberLocalDistrict=" + numberLocalDistrict +
+                "id=" + id +
+                ", section='" + section + '\'' +
+                ", state=" + state +
+                ", municipality=" + municipality +
+                ", localDistrict=" + localDistrict +
+                ", federalDistrict=" + federalDistrict +
                 '}';
     }
+
 }

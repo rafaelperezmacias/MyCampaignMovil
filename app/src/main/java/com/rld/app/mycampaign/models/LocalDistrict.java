@@ -4,41 +4,53 @@ import java.io.Serializable;
 
 public class LocalDistrict implements Serializable {
 
-    private int numberLocalDistrict;
-    private String localDistrict;
+    private int id;
+    private String name;
+    private int number;
 
     public LocalDistrict()
     {
 
     }
 
-    public LocalDistrict(int numberLocalDistrict, String localDistrict)
+    public LocalDistrict(int id, String name, int number)
     {
-        this.numberLocalDistrict = numberLocalDistrict;
-        this.localDistrict = localDistrict;
+        this.id = id;
+        this.name = name;
+        this.number = number;
     }
 
-    public int getNumberLocalDistrict() {
-        return numberLocalDistrict;
+    public int getId() {
+        return id;
     }
 
-    public void setNumberLocalDistrict(int numberLocalDistrict) {
-        this.numberLocalDistrict = numberLocalDistrict;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getLocalDistrict() {
-        return localDistrict;
+    public String getName() {
+        return name;
     }
 
-    public void setLocalDistrict(String localDistrict) {
-        this.localDistrict = localDistrict;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @Override
     public String toString() {
         return "LocalDistrict{" +
-                "numberLocalDistrict=" + numberLocalDistrict +
-                ", localDistrict='" + localDistrict + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", number=" + number +
                 '}';
     }
+
 }

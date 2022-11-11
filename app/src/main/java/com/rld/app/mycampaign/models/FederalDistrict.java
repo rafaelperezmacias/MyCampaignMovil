@@ -2,20 +2,22 @@ package com.rld.app.mycampaign.models;
 
 import java.io.Serializable;
 
-public class State implements Serializable {
+public class FederalDistrict implements Serializable {
 
     private int id;
     private String name;
+    private int number;
 
-    public State()
+    public FederalDistrict()
     {
 
     }
 
-    public State(int id, String name)
+    public FederalDistrict(int id, String name, int number)
     {
         this.id = id;
         this.name = name;
+        this.number = number;
     }
 
     public int getId() {
@@ -34,11 +36,20 @@ public class State implements Serializable {
         this.name = name;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     @Override
     public String toString() {
-        return "State{" +
+        return "FederalDistrict{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", number=" + number +
                 '}';
     }
 

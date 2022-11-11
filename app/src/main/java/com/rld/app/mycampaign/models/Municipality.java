@@ -2,43 +2,55 @@ package com.rld.app.mycampaign.models;
 
 import java.io.Serializable;
 
-public class Municipality implements Serializable  {
+public class Municipality implements Serializable {
 
-    private int municipalityNumber;
-    private String municipality;
+    private int id;
+    private String name;
+    private int number;
 
     public Municipality()
     {
 
     }
 
-    public Municipality(int municipalityNumber, String municipality)
+    public Municipality(int id, String name, int number)
     {
-        this.municipalityNumber = municipalityNumber;
-        this.municipality = municipality;
+        this.id = id;
+        this.name = name;
+        this.number = number;
     }
 
-    public int getMunicipalityNumber() {
-        return municipalityNumber;
+    public int getId() {
+        return id;
     }
 
-    public void setMunicipalityNumber(int municipalityNumber) {
-        this.municipalityNumber = municipalityNumber;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getMunicipality() {
-        return municipality;
+    public String getName() {
+        return name;
     }
 
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @Override
     public String toString() {
         return "Municipality{" +
-                "municipalityNumber=" + municipalityNumber +
-                ", municipality='" + municipality + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", number=" + number +
                 '}';
     }
+
 }
