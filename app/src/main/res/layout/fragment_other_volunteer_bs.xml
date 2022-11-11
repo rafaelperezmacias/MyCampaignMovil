@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:checked="true"
             android:gravity="center_vertical"
             android:text="@string/fovbs_yes" />
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
             android:text="@string/fovbs_no" />
 
@@ -75,40 +75,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:checked="true"
             android:gravity="center_vertical"
             android:minHeight="48dp"
-            android:text="Representante de Casilla" />
+            android:text="Representante de casilla" />
 
         <RadioButton
             android:id="@+id/fovbs_rg_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
             android:minHeight="48dp"
-            android:text="Representante General" />
+            android:text="Representante general" />
 
         <RadioButton
             android:id="@+id/fovbs_vo_rb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
-            android:text="Voluntario" />
-
-        <RadioButton
-            android:id="@+id/fovbs_sc_rb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
-            android:gravity="center_vertical"
-            android:minHeight="48dp"
-            android:text="Simpatizante / Contacto" />
+            android:text="Otro" />
 
     </RadioGroup>
 

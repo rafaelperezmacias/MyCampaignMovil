@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_marginBottom="10dp"
-        android:text="AVISO DE PRIVACIDAD INTEGRAL DEL PARTIDO POLÍTICO ESTATAL FUTURO"/>
+        android:text="AVISO DE PRIVACIDAD"/>
 
     <com.rld.app.mycampaign.utils.JustifyTextView
         android:id="@+id/textview"
@@ -25,7 +25,7 @@
 
     <CheckBox
         android:id="@+id/checkbox"
-        android:buttonTint="@color/orange_liane"
+        android:buttonTint="@color/blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="He leído y acepto los términos y condiciones de uso."/>

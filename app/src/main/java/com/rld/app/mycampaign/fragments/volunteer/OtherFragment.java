@@ -11,13 +11,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.databinding.FragmentOtherVolunteerBsBinding;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 public class OtherFragment extends Fragment {
 
-    private Volunteer volunteer;
+    private FragmentOtherVolunteerBsBinding binding;
 
     private TextInputLayout lytNotes;
     private RadioButton yesOPC;
@@ -27,6 +28,8 @@ public class OtherFragment extends Fragment {
     private RadioButton voOPC;
     private RadioButton scOPC;
 
+    private Volunteer volunteer;
+
     public OtherFragment(Volunteer volunteer)
     {
         this.volunteer = volunteer;
@@ -35,15 +38,15 @@ public class OtherFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_other_volunteer_bs, container, false);
+        binding = FragmentOtherVolunteerBsBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        lytNotes = view.findViewById(R.id.fovbs_notes_lyt);
+        /* lytNotes = view.findViewById(R.id.fovbs_notes_lyt);
         yesOPC = view.findViewById(R.id.fovbs_yes_rb);
         noOPC = view.findViewById(R.id.fovbs_no_rb);
         rcOPC = view.findViewById(R.id.fovbs_rc_rb);
         rgOPC = view.findViewById(R.id.fovbs_rg_rb);
         voOPC = view.findViewById(R.id.fovbs_vo_rb);
-        scOPC = view.findViewById(R.id.fovbs_sc_rb);
 
         yesOPC.setSelected(true);
         yesOPC.setOnClickListener(v -> {
@@ -106,15 +109,15 @@ public class OtherFragment extends Fragment {
                 }
             }
         });
+        */
 
-        return view;
+        return root;
     }
 
     public void setVolunteer() {
-        if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
+        /* if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-        /*
         if (rcOPC.isSelected())         {
             volunteer.setTypeUser(Volunteer.TYPE_RC);
         } else if (rgOPC.isSelected())  {
@@ -129,9 +132,9 @@ public class OtherFragment extends Fragment {
     }
 
     public boolean isComplete() {
-        if ( !TextInputLayoutUtils.isValisNotes(lytNotes, "Por favor eliminar los caracteres extraños") ) {
+        /* if ( !TextInputLayoutUtils.isValisNotes(lytNotes, "Por favor eliminar los caracteres extraños") ) {
             return false;
-        }
+        } */
         return true;
     }
 

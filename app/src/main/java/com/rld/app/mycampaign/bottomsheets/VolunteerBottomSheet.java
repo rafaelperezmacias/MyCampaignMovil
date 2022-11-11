@@ -134,8 +134,6 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 showFragment(sectionFragment);
                 contactFragment.setVolunteer();
-                sectionFragment.setState();
-                sectionFragment.setInfo();
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step3));
             } else if ( currentFragment == sectionFragment ) {
@@ -154,12 +152,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 otherFragment.setVolunteer();
                 showFragment(policyFragment);
-                btnSave.setText(getString(R.string.fbs_finish));
+                btnSave.setText(getString(R.string.fbs_continue));
             } else if ( currentFragment == policyFragment ) {
-                if ( policyFragment.isComplete() ) {
+                if ( !policyFragment.isComplete() ) {
                     Toast.makeText(getActivity(), "Confirme las politicas de privacidad", Toast.LENGTH_SHORT).show();
                 } else {
-                    btnSave.setEnabled(false);
+                    mainActivity.firmActivityForVolunteer();
                 }
             }
         });

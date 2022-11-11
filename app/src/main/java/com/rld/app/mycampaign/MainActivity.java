@@ -23,6 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
+import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
@@ -33,8 +34,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ActivityMainBinding binding;
 
     private ActivityResultLauncher<Intent> startCameraPreviewIntent;
-
+    private ActivityResultLauncher<Intent> startFirmActivityIntent;
+    
     private VolunteerBottomSheet volunteerBottomSheet;
+
+    private Volunteer currentVolunteer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +69,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                         case CameraPreview.RESULT_OK: {
                             if ( result.getData() != null ) {
                                 String path = result.getData().getStringExtra("imagePath");
-                                Volunteer volunteer = initializeVolunteer(path);
-                                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this);
+                                currentVolunteer = new Volunteer();
+                                initializeImageOfVolunteer(currentVolunteer, path, true);
+                                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this);
                                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
                             }
                         } break;
@@ -78,6 +83,27 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                         } break;
                         case CameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
                             Toast.makeText(this, "La fotografia no se pudo crear", Toast.LENGTH_SHORT).show();
+                        } break;
+                    }
+                }
+        );
+
+        startFirmActivityIntent = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    switch ( result.getResultCode() ) {
+                        case FirmActivity.RESULT_ACCEPTED_FIRM: {
+                            if ( result.getData() != null ) {
+                                String path = result.getData().getStringExtra("imageFirmPath");
+                                initializeImageOfVolunteer(currentVolunteer, path, false);
+                                volunteerBottomSheet.dismiss();
+                            }
+                        } break;
+                        case FirmActivity.RESULT_REJECT_FIRM: {
+
+                        } break;
+                        case FirmActivity.RESULT_IMAGE_FILE_NOT_CREATE: {
+                            Toast.makeText(this, "Ocurrion un error, intentlo de nuevo", Toast.LENGTH_SHORT).show();
                         } break;
                     }
                 }
@@ -95,14 +121,19 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
     }
 
-    private Volunteer initializeVolunteer(String path) {
+    private void initializeImageOfVolunteer(Volunteer volunteer, String path, boolean credential) {
         Image image = new Image();
         image.setPath(path);
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         image.setBlob(bitmap);
-        Volunteer volunteer = new Volunteer();
-        volunteer.setImageCredential(image);
-        return volunteer;
+        if ( credential ) {
+            volunteer.setImageCredential(image);
+        } else {
+            volunteer.setImageFirm(image);
+        }
     }
 
+    public void firmActivityForVolunteer() {
+        startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
+    }
 }
