@@ -18,14 +18,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.R;
+import com.rld.app.mycampaign.databinding.FragmentVolunterBottomSheetBinding;
 import com.rld.app.mycampaign.fragments.volunteer.ContactFragment;
 import com.rld.app.mycampaign.fragments.volunteer.OtherFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PersonalFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PolicyFragment;
 import com.rld.app.mycampaign.fragments.volunteer.SectionFragment;
-import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.R;
 
 public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
@@ -35,10 +36,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private Fragment currentFragment;
 
     private Volunteer volunteer;
+    private MainActivity mainActivity;
 
-    public VolunteerBottomSheet(Volunteer volunteer)
+    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity)
     {
         this.volunteer = volunteer;
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -55,8 +58,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     dismiss();
                 }
             }
+            @Override
+            public void onSlide(@NonNull View view, float v) {
 
-            @Override public void onSlide(@NonNull View view, float v) { }
+            }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -69,134 +74,101 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         TextView txtSubtitle = view.findViewById(R.id.fvbs_subtitle);
 
         PersonalFragment personalFragment = new PersonalFragment(volunteer);
-        // ContactFragment contactFragment = new ContactFragment(volunteer, mainActivity);
+        ContactFragment contactFragment = new ContactFragment(volunteer);
+        SectionFragment sectionFragment = new SectionFragment(volunteer);
         OtherFragment otherFragment = new OtherFragment(volunteer);
-        // SectionFragment sectionFragment = new SectionFragment(volunteer, mainActivity);
         PolicyFragment policyFragment = new PolicyFragment();
+
         currentFragment = personalFragment;
         txtSubtitle.setText(getString(R.string.fbs_step1));
 
         fragmentManager = getChildFragmentManager();
-//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
-//        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, contactFragment).hide(contactFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, otherFragment).hide(otherFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
         btnClose.setOnClickListener(v -> {
-            /* if ( currentFragment == personalFragment ) {
-                /* new MaterialAlertDialogBuilder(mainActivity)
+            if ( currentFragment == personalFragment ) {
+                new MaterialAlertDialogBuilder(mainActivity)
                         .setTitle("Alerta")
                         .setMessage("¿Esta seguro de querer cancelar el proceso?")
                         .setNegativeButton("Quedarme", (dialog, which) -> {
-
+                            // Do nothing
                         })
                         .setPositiveButton("Si", (dialog, which) -> {
-                            mainActivity.enableBtnCarga();
                             dismiss();
                         })
                         .show();
             } else if ( currentFragment == contactFragment ) {
-
                 btnClose.setImageResource(R.drawable.ic_sharp_close_24);
                 txtSubtitle.setText(getString(R.string.fbs_step1));
-                showFragment(personalFragment, fragmentManager);
-
+                showFragment(personalFragment);
             } else if ( currentFragment == sectionFragment ) {
-
                 txtSubtitle.setText(getString(R.string.fbs_step2));
-                showFragment(contactFragment, fragmentManager);
-
+                showFragment(contactFragment);
             } else if ( currentFragment == otherFragment ) {
-
                 txtSubtitle.setText(getString(R.string.fbs_step3));
-                showFragment(sectionFragment, fragmentManager);
-
+                showFragment(sectionFragment);
             } else if ( currentFragment == policyFragment ) {
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step4));
-                showFragment(otherFragment, fragmentManager);
-            } */
-
+                showFragment(otherFragment);
+            }
         });
 
         btnSave.setOnClickListener(v -> {
-            /* if ( currentFragment == personalFragment ) {
-
+            if ( currentFragment == personalFragment ) {
                 if ( !personalFragment.isComplete() ) {
                     return;
                 }
-
-                showFragment(contactFragment, fragmentManager);
+                showFragment(contactFragment);
                 personalFragment.setVolunteer();
                 btnSave.setText(getString(R.string.fbs_continue));
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
                 txtSubtitle.setText(getString(R.string.fbs_step2));
-
             } else if ( currentFragment == contactFragment ) {
-
                 if ( !contactFragment.isComplete() ) {
                     return;
                 }
-
-                showFragment(sectionFragment, fragmentManager);
-                contactFragment.getState();
+                showFragment(sectionFragment);
                 contactFragment.setVolunteer();
                 sectionFragment.setState();
                 sectionFragment.setInfo();
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step3));
-
             } else if ( currentFragment == sectionFragment ) {
-
                 if ( !sectionFragment.isComplete() ) {
                     return;
                 }
-
-                showFragment(otherFragment, fragmentManager);
+                showFragment(otherFragment);
                 sectionFragment.setVolunter();
                 txtSubtitle.setText(getString(R.string.fbs_step4));
                 btnSave.setText(getString(R.string.fbs_continue));
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
 
             } else if ( currentFragment == otherFragment ) {
-
                 if ( !otherFragment.isComplete() ) {
                     return;
                 }
-
                 otherFragment.setVolunteer();
-                showFragment(policyFragment, fragmentManager);
+                showFragment(policyFragment);
                 btnSave.setText(getString(R.string.fbs_finish));
-
             } else if ( currentFragment == policyFragment ) {
                 if ( policyFragment.isComplete() ) {
-                    Toast.makeText(mainActivity, "Confirme las politicas de privacidad", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Confirme las politicas de privacidad", Toast.LENGTH_SHORT).show();
                 } else {
                     btnSave.setEnabled(false);
-                    new MaterialAlertDialogBuilder(mainActivity)
-                            .setTitle("Alerta")
-                            .setMessage("¿Desea tomar una fotografia de la INE (Parte frontral)?")
-                            .setNegativeButton("No", (dialog, which) -> {
-                                mainActivity.addVoluteerWithoutImage(volunteer);
-                                dismiss();
-                            })
-                            .setPositiveButton("Si, tomar foto", (dialog, which) -> {
-                                mainActivity.addVolunteerWithImage(volunteer);
-                                dismiss();
-                            })
-                            .setCancelable(false)
-                            .show();
                 }
-            } */
-
+            }
         });
 
         setCancelable(false);
         return bottomSheet;
     }
 
-    private void showFragment(Fragment fragment, FragmentManager fragmentManager) {
+    private void showFragment(Fragment fragment) {
         fragmentManager.beginTransaction().hide(currentFragment).show(fragment).commit();
         currentFragment = fragment;
     }

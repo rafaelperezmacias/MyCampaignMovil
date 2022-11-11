@@ -32,7 +32,7 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fpvbs_lastName1_lyt"
+            android:id="@+id/lyt_fathers_lastname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon"
@@ -55,7 +55,7 @@
 
     <!-- Field without image -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fpvbs_lastName2_lyt"
+        android:id="@+id/lyt_mothers_lastname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -75,7 +75,7 @@
 
     <!-- Field without image -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fpvbs_names_lyt"
+        android:id="@+id/lyt_names"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -99,29 +99,28 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/icon2a"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_numbers_24dp"
+            android:src="@drawable/ic_baseline_calendar_month_24"
             android:tint="@color/black"
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fpvbs_age_lyt"
+            android:id="@+id/lyt_birthdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon2a"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Edad"
+            android:hint="Fecha de nacimiento"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="3"
-                android:inputType="number"
+                android:inputType="date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -129,6 +128,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -161,7 +161,7 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fpvbs_street_lyt"
+            android:id="@+id/lyt_street"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon1"
@@ -197,7 +197,7 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fpvbs_outNumber_lyt"
+            android:id="@+id/lyt_external_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon2"
@@ -220,7 +220,7 @@
 
     <!-- Field without image -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fpvbs_complement_lyt"
+        android:id="@+id/lyt_internal_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -239,7 +239,7 @@
 
     <!-- Field without image -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fpvbs_suburb_lyt"
+        android:id="@+id/lyt_suburb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -272,7 +272,7 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fpvbs_cp_lyt"
+            android:id="@+id/lyt_zipcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon3"

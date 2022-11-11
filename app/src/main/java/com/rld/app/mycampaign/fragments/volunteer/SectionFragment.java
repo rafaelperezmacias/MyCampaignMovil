@@ -38,7 +38,7 @@ public class SectionFragment extends Fragment {
 
     private boolean isLocal;
 
-    public SectionFragment(Volunteer volunteer, Main2Activity mainActivity)
+    public SectionFragment(Volunteer volunteer)
     {
         this.volunteer = volunteer;
 //        municipalities = mainActivity.getMunipalities();

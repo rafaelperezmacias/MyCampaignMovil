@@ -189,14 +189,6 @@ public class Main2Activity extends AppCompatActivity {
         btnCrear.setEnabled(true);
     }
 
-    public void addVolunteerWithImage(Volunteer volunteer) {
-        Intent intent = new Intent(Main2Activity.this, CameraPreview.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("volutario", volunteer);
-        intent.putExtra("data", bundle);
-        startActivity(intent);
-    }
-
     public void createSnackBar(String text) {
         SpannableStringBuilder snackbarText = new SpannableStringBuilder();
         snackbarText.append(text);

@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ActivityMainBinding binding;
 
     private ActivityResultLauncher<Intent> startCameraPreviewIntent;
+
+    private VolunteerBottomSheet volunteerBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +63,12 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 result -> {
                     switch ( result.getResultCode() ) {
                         case CameraPreview.RESULT_OK: {
-                            String path = result.getData().getStringExtra("imagePath");
-                            Volunteer volunteer = initializeVolunteer(path);
-                            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer);
-                            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                            if ( result.getData() != null ) {
+                                String path = result.getData().getStringExtra("imagePath");
+                                Volunteer volunteer = initializeVolunteer(path);
+                                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this);
+                                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                            }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
                             Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
