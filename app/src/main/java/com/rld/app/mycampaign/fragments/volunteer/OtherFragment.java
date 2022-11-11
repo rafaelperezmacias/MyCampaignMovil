@@ -114,7 +114,7 @@ public class OtherFragment extends Fragment {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-
+        /*
         if (rcOPC.isSelected())         {
             volunteer.setTypeUser(Volunteer.TYPE_RC);
         } else if (rgOPC.isSelected())  {
@@ -125,7 +125,7 @@ public class OtherFragment extends Fragment {
             volunteer.setTypeUser(Volunteer.TYPE_SC);
         }
 
-        volunteer.setCasillaLocal(yesOPC.isSelected());
+        volunteer.setCasillaLocal(yesOPC.isSelected()); */
     }
 
     public boolean isComplete() {

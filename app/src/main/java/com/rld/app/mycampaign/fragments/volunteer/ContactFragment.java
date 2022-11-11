@@ -78,16 +78,16 @@ public class ContactFragment extends Fragment {
         txtError = view.findViewById(R.id.fcvbs_cardError_txt);
         imgCardIcon = view.findViewById(R.id.fbvbs_cardIcon_img);
 
-        states = State.getStates(getContext());
+        // states = State.getStates(getContext());
         addStates();
         addSections();
-        if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE ) {
+        /* if ( sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE ) {
             isLocal = true;
             showCardError2();
         } else {
             isLocal = false;
             showCardError1();
-        }
+        } */
 
         lytStates.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,7 +97,7 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if ( isValidState(lytStates.getEditText().getText().toString().trim()) ) {
+                /* if ( isValidState(lytStates.getEditText().getText().toString().trim()) ) {
                     isStateValid = true;
                     if ( lytStates.getEditText().getText().toString().equals(State.STATE_JALISCO) ) {
                         if ( !isLocal ) {
@@ -111,7 +111,7 @@ public class ContactFragment extends Fragment {
                     }
                 } else {
                     isStateValid = false;
-                }
+                } */
             }
 
             @Override
@@ -177,23 +177,23 @@ public class ContactFragment extends Fragment {
     }
 
     private void addStates() {
-        List<String> stringStates = new ArrayList<>();
+        /* List<String> stringStates = new ArrayList<>();
         for ( State state : states ) {
             stringStates.add(state.getState());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringStates);
-        ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter);
+        ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter); */
     }
 
     public void getState() {
-        for ( State state : states ) {
+        /* for ( State state : states ) {
             if ( state.getState().equals(lytStates.getEditText().getText().toString().trim()) ) {
                 volunteer.setJalisco(state.getState().equals(State.STATE_JALISCO));
                 volunteer.setState(state.getState());
                 volunteer.setStateNumber(state.getStateNumber());
                 break;
             }
-        }
+        } */
     }
 
     public boolean isComplete() {
@@ -208,7 +208,7 @@ public class ContactFragment extends Fragment {
     }
 
     public void setVolunteer() {
-        volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
+        /* volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
         volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
         volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
         volunteer.setLocal(isLocal);
@@ -222,7 +222,7 @@ public class ContactFragment extends Fragment {
             }
         } else {
 
-        }
+        } */
     }
 
     private boolean isSectionSelected() {
@@ -244,20 +244,20 @@ public class ContactFragment extends Fragment {
     }
 
     private boolean isValidSection(int mySection) {
-        for ( Section section : sections ) {
+        /* for ( Section section : sections ) {
             if ( section.getSection() == mySection ) {
                 return true;
             }
-        }
+        } */
         return false;
     }
 
     private boolean isValidState(String myState) {
-        for ( State state : states ) {
+        /* for ( State state : states ) {
             if ( state.getState().equals(myState) ) {
                 return true;
             }
-        }
+        } */
         return false;
     }
 }

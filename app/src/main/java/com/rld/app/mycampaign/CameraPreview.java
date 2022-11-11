@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,18 +24,19 @@ import com.rld.app.mycampaign.models.Volunteer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class CameraPreview extends AppCompatActivity {
 
     private Volunteer volunteer;
 
-    private final int REQUEST_IMAGE_CAPTURE = 0;
-    private final int REQUEST_TAKE_PHOTO = 1;
     private static final int CAMERA_PERMISSION_CODE = 100;
 
-    public static final int RESULT_CAMERA_NOT_PERMISSON = 6666;
+    public static final int RESULT_CAMERA_NOT_PERMISSON = 1000;
+    public static final int RESULT_IMAGE_FILE_NOT_CREATE = 1001;
+    public static final int RESULT_IMAGE_NOT_TAKEN = 1002;
 
-    private static onTakePhotoFinish LISTENER;
+    private ActivityResultLauncher<Intent> startCameraIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,136 +44,81 @@ public class CameraPreview extends AppCompatActivity {
         setContentView(R.layout.activity_camera_preview);
 
         Bundle bundle = getIntent().getBundleExtra("data");
-        volunteer = (Volunteer) bundle.getSerializable("volutario");
+        volunteer = (Volunteer) bundle.getSerializable("volunteer");
+
+        startCameraIntent = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if ( result.getResultCode() == RESULT_OK ) {
+                        setPicture();
+                    } else {
+                        setResult(RESULT_IMAGE_NOT_TAKEN);
+                        finish();
+                    }
+                }
+        );
 
         checkPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            switch (resultCode) {
-                case RESULT_OK:
-                    //Bitmap image = (Bitmap) data.getExtras().get("data");
-                    //imageView.setImageBitmap(image);
-                    setPic();
-                    break;
-                default:
-                    LISTENER.saveVolunteer(volunteer);
-                    finish();
-                    break;
-            }
-        } catch ( Exception ex ) {
-
-        }
-    }
-
-    private void setPic() {
-        // Get the dimensions of the View
-        /*int targetW = 1;
-        int targetH = 1;
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;*/
-
-        try {
-            Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
-            volunteer.setImg(bitmap);
-            LISTENER.saveVolunteer(volunteer);
-        } catch (Exception ex) {
-
-        }
-        finish();
-    }
-
-    // Function to check and request permission.
     public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(CameraPreview.this, permission) != PackageManager.PERMISSION_GRANTED) {
-            // Requesting the permission
+        if ( ContextCompat.checkSelfPermission(CameraPreview.this, permission) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions(CameraPreview.this, new String[]{ permission }, requestCode);
         } else {
-            //Toast.makeText(CameraPreview.this, "Permiso de camara concedido", Toast.LENGTH_SHORT).show();
             takePhoto();
         }
     }
 
     @Override
-    public void onBackPressed() {
-        LISTENER.saveVolunteer(volunteer);
-        super.onBackPressed();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
             takePhoto();
         } else {
-            Toast.makeText(CameraPreview.this, "Permiso de Camara Denegado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CameraPreview.this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
             setResult(RESULT_CAMERA_NOT_PERMISSON);
-            LISTENER.saveVolunteer(volunteer);
             finish();
         }
     }
 
     public void takePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
-            File photoFile = null;
+        if ( takePictureIntent.resolveActivity(getPackageManager()) != null ) {
+            File photoFile;
             try {
-                photoFile = createImageFile(this.volunteer);
+                photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
-
+                setResult(RESULT_IMAGE_FILE_NOT_CREATE);
+                finish();
+                return;
             }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                                                      "com.rld.futuro.futuroapp.provider",
-                                                      photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+            Uri photoURI = FileProvider.getUriForFile(this, "com.rld.app.mycampaign.provider", photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startCameraIntent.launch(takePictureIntent);
         }
     }
 
-    private File createImageFile(Volunteer volunteer) throws IOException {
-        // Create an image file name
-        String imageFileName = "IMG_" +  volunteer.getElectorKey() + "_";
+    private File createImageFile() throws IOException {
+        String imageFileName = UUID.randomUUID().toString();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        volunteer.setPathPhoto(image.getAbsolutePath());
-        return image;
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
-    public interface onTakePhotoFinish {
-        void saveVolunteer(Volunteer volunteer);
+    private void setPicture() {
+        try {
+            // Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
+            // volunteer.setImg(bitmap);
+            // LISTENER.saveVolunteer(volunteer);
+        } catch (Exception ex) {
+
+        }
+        finish();
     }
 
-    public static void setLISTENER(onTakePhotoFinish listener) {
-        LISTENER = listener;
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_IMAGE_NOT_TAKEN);
+        super.onBackPressed();
     }
+
 }

@@ -60,7 +60,7 @@ public class PersonalFragment extends Fragment {
 
 
     public void setVolunteer() {
-        volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
+        /* volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
         volunteer.setLastName2(lytLastName2.getEditText().getText().toString().trim());
         volunteer.setNames(lytNames.getEditText().getText().toString().trim());
         volunteer.setAge(lytAge.getEditText().getText().toString().trim());
@@ -70,7 +70,7 @@ public class PersonalFragment extends Fragment {
             volunteer.setAddressNumInt(lytComplement.getEditText().getText().toString().trim());
         }
         volunteer.setSuburb(lytSuburb.getEditText().getText().toString().trim());
-        volunteer.setZipCode(lytCP.getEditText().getText().toString().trim());
+        volunteer.setZipCode(lytCP.getEditText().getText().toString().trim()); */
     }
 
     public boolean isComplete() {

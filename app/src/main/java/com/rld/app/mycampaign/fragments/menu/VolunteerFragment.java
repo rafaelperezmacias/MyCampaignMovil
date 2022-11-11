@@ -9,31 +9,36 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.databinding.FragmentVolunteerBinding;
 
 public class VolunteerFragment extends Fragment {
 
-    private MainActivity mainActivity;
+    private FragmentVolunteerBinding binding;
 
-    public VolunteerFragment(MainActivity mainActivity)
-    {
-        this.mainActivity = mainActivity;
-    }
+    private static OnClickAddVolunteer onClickAddVolunteer;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_volunteer, container, false);
+        binding = FragmentVolunteerBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        FloatingActionButton btnAddVolunteer = view.findViewById(R.id.btn_add_volunteer);
+        FloatingActionButton btnAddVolunteer = binding.btnAddVolunteer;
 
-        btnAddVolunteer.setOnClickListener(view1 -> {
-            if ( btnAddVolunteer.getVisibility() == View.VISIBLE ) {
-                Volunteer volunteer = new Volunteer();
+        btnAddVolunteer.setOnClickListener(v -> {
+            if ( btnAddVolunteer.getVisibility() == View.VISIBLE && onClickAddVolunteer != null ) {
+                onClickAddVolunteer.addVolunteerFragment();
             }
         });
 
-        return view;
+        return root;
+    }
+
+    public interface OnClickAddVolunteer {
+        void addVolunteerFragment();
+    }
+
+    public static void setOnClickAddVolunteer(OnClickAddVolunteer onClickAddVolunteer) {
+        VolunteerFragment.onClickAddVolunteer = onClickAddVolunteer;
     }
 
 }

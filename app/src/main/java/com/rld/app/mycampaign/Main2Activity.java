@@ -216,7 +216,7 @@ public class Main2Activity extends AppCompatActivity implements CameraPreview.on
         btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
         fileManager.saveFile(volunteers, getApplicationContext());
         for ( Volunteer v : volunteers ) {
-            v.deleteImage();
+            // v.deleteImage();
         }
         if ( volunteers.size() > 0 ) {
             btnCarga.setVisibility(View.VISIBLE);

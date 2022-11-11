@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class DataTrasform {
 
     public static ArrayList<Municipality> getMunicipalities(JSONArray municipalitiesJSON) {
-        ArrayList<Municipality> municipalities = new ArrayList<>();
+        /* ArrayList<Municipality> municipalities = new ArrayList<>();
 
         Municipality municipality;
         JSONObject json = null;
@@ -37,11 +37,12 @@ public class DataTrasform {
             municipalities.add(municipality);
         }
 
-        return municipalities;
+        return municipalities; */
+        return null;
     }
 
     public static ArrayList<LocalDistrict> getLocalDistricts(JSONArray localDistrictsJSON) {
-        ArrayList<LocalDistrict> localDistricts = new ArrayList<>();
+        /* ArrayList<LocalDistrict> localDistricts = new ArrayList<>();
 
         LocalDistrict localDistrict;
         JSONObject json;
@@ -65,11 +66,12 @@ public class DataTrasform {
             localDistricts.add(localDistrict);
         }
 
-        return localDistricts;
+        return localDistricts; */
+         return null;
     }
 
     public static ArrayList<Section> getSections(JSONArray sectionsJSON) {
-        ArrayList<Section> sections = new ArrayList<>();
+        /* ArrayList<Section> sections = new ArrayList<>();
 
         Section section;
         JSONObject json;
@@ -98,6 +100,7 @@ public class DataTrasform {
             sections.add(section);
         }
 
-        return sections;
+        return sections; */
+        return null;
     }
 }

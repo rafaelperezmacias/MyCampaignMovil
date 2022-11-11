@@ -35,7 +35,7 @@ public class VolunteerAdapter extends RecyclerView.Adapter<VolunteerAdapter.View
     @Override
     public void onBindViewHolder(@NonNull VolunteerAdapter.ViewHolder holder, int position) {
         Volunteer volunteer = volunteers.get(position);
-        holder.txtTitle.setText(volunteer.getNames());
+        // holder.txtTitle.setText(volunteer.getNames());
     }
 
     @Override

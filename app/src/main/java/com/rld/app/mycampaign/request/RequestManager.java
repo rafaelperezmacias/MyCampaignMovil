@@ -16,7 +16,7 @@ public class RequestManager {
         JSONObject myJson = new JSONObject();
         try {
             myJson.put("volunteer", json);
-            myJson.put("key", AppConfig.KEY_INSERT);
+            // myJson.put("key", AppConfig.KEY_INSERT);
         } catch (JSONException e) {
             return null;
         }
