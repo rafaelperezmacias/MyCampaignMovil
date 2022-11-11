@@ -1,9 +1,8 @@
 package com.rld.app.mycampaign.models;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Volunteer implements Serializable {
+public class Volunteer {
 
     private static final int TYPE_GENERAL_REPRESENTATIVE = 0;
     private static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 1;

@@ -1,8 +1,6 @@
 package com.rld.app.mycampaign.models;
 
-import java.io.Serializable;
-
-public class Address implements Serializable {
+public class Address {
 
     private String street;
     private String externalNumber;

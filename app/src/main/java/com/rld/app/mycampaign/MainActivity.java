@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -18,8 +20,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
+import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
 
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickAddVolunteer {
@@ -54,7 +58,23 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         startCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    Toast.makeText(this, "" + result.getResultCode(), Toast.LENGTH_SHORT).show();
+                    switch ( result.getResultCode() ) {
+                        case CameraPreview.RESULT_OK: {
+                            String path = result.getData().getStringExtra("imagePath");
+                            Volunteer volunteer = initializeVolunteer(path);
+                            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer);
+                            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                        } break;
+                        case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
+                            Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
+                        } break;
+                        case CameraPreview.RESULT_IMAGE_NOT_TAKEN: {
+                            Toast.makeText(this, "Fotografia no tomada", Toast.LENGTH_SHORT).show();
+                        } break;
+                        case CameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
+                            Toast.makeText(this, "La fotografia no se pudo crear", Toast.LENGTH_SHORT).show();
+                        } break;
+                    }
                 }
         );
     }
@@ -65,15 +85,19 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
-
     @Override
     public void addVolunteerFragment() {
+        startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+    }
+
+    private Volunteer initializeVolunteer(String path) {
+        Image image = new Image();
+        image.setPath(path);
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        image.setBlob(bitmap);
         Volunteer volunteer = new Volunteer();
-        Intent cameraPreviewIntent = new Intent(MainActivity.this, CameraPreview.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("volunteer", volunteer);
-        cameraPreviewIntent.putExtra("data", bundle);
-        startCameraPreviewIntent.launch(cameraPreviewIntent);
+        volunteer.setImageCredential(image);
+        return volunteer;
     }
 
 }

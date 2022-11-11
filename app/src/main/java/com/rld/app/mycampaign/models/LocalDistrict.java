@@ -1,8 +1,6 @@
 package com.rld.app.mycampaign.models;
 
-import java.io.Serializable;
-
-public class LocalDistrict implements Serializable {
+public class LocalDistrict {
 
     private int id;
     private String name;

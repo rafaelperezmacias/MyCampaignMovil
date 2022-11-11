@@ -1,15 +1,13 @@
 package com.rld.app.mycampaign;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,37 +18,36 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.rld.app.mycampaign.models.Volunteer;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
 public class CameraPreview extends AppCompatActivity {
 
-    private Volunteer volunteer;
-
     private static final int CAMERA_PERMISSION_CODE = 100;
 
-    public static final int RESULT_CAMERA_NOT_PERMISSON = 1000;
-    public static final int RESULT_IMAGE_FILE_NOT_CREATE = 1001;
-    public static final int RESULT_IMAGE_NOT_TAKEN = 1002;
+    public static final int RESULT_OK = 1000;
+    public static final int RESULT_CAMERA_NOT_PERMISSION = 1001;
+    public static final int RESULT_IMAGE_FILE_NOT_CREATE = 1002;
+    public static final int RESULT_IMAGE_NOT_TAKEN = 1003;
 
     private ActivityResultLauncher<Intent> startCameraIntent;
+
+    private String imagePath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_preview);
 
-        Bundle bundle = getIntent().getBundleExtra("data");
-        volunteer = (Volunteer) bundle.getSerializable("volunteer");
-
         startCameraIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if ( result.getResultCode() == RESULT_OK ) {
-                        setPicture();
+                    if ( result.getResultCode() == Activity.RESULT_OK ) {
+                        Intent outputPath = new Intent();
+                        outputPath.putExtra("imagePath", imagePath);
+                        setResult(RESULT_OK, outputPath);
+                        finish();
                     } else {
                         setResult(RESULT_IMAGE_NOT_TAKEN);
                         finish();
@@ -75,8 +72,7 @@ public class CameraPreview extends AppCompatActivity {
         if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
             takePhoto();
         } else {
-            Toast.makeText(CameraPreview.this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
-            setResult(RESULT_CAMERA_NOT_PERMISSON);
+            setResult(RESULT_CAMERA_NOT_PERMISSION);
             finish();
         }
     }
@@ -87,7 +83,7 @@ public class CameraPreview extends AppCompatActivity {
             File photoFile;
             try {
                 photoFile = createImageFile();
-            } catch (IOException ex) {
+            } catch ( IOException ex ) {
                 setResult(RESULT_IMAGE_FILE_NOT_CREATE);
                 finish();
                 return;
@@ -101,18 +97,9 @@ public class CameraPreview extends AppCompatActivity {
     private File createImageFile() throws IOException {
         String imageFileName = UUID.randomUUID().toString();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        return File.createTempFile(imageFileName, ".jpg", storageDir);
-    }
-
-    private void setPicture() {
-        try {
-            // Bitmap bitmap = BitmapFactory.decodeFile(volunteer.getPathPhoto());
-            // volunteer.setImg(bitmap);
-            // LISTENER.saveVolunteer(volunteer);
-        } catch (Exception ex) {
-
-        }
-        finish();
+        File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+        imagePath = imageFile.getAbsolutePath();
+        return imageFile;
     }
 
     @Override

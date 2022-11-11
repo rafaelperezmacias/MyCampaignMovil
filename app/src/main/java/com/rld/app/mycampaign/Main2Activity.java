@@ -23,7 +23,7 @@ import com.rld.app.mycampaign.models.Volunteer;
 
 import java.util.ArrayList;
 
-public class Main2Activity extends AppCompatActivity implements CameraPreview.onTakePhotoFinish {
+public class Main2Activity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
@@ -137,11 +137,6 @@ public class Main2Activity extends AppCompatActivity implements CameraPreview.on
 //            alertDialog.show();
 //        });
 //
-        btnCrear.setOnClickListener(v -> {
-            btnCrear.setEnabled(false);
-            VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(Main2Activity.this);
-            volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
-        });
     }
 
     public void enableBtnCarga() {
@@ -237,7 +232,6 @@ public class Main2Activity extends AppCompatActivity implements CameraPreview.on
         return fileManager.readJSONLocalDistricts(Main2Activity.this);
     }
 
-    @Override
     public void saveVolunteer(Volunteer volunteer) {
         volunteers.add(volunteer);
         saveVolunteers();

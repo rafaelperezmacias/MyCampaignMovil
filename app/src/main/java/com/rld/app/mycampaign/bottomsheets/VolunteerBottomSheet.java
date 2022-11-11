@@ -36,12 +36,9 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private Volunteer volunteer;
 
-    private Main2Activity mainActivity;
-
-    public VolunteerBottomSheet(Main2Activity mainActivity)
+    public VolunteerBottomSheet(Volunteer volunteer)
     {
-        volunteer = new Volunteer();
-        this.mainActivity = mainActivity;
+        this.volunteer = volunteer;
     }
 
     @Override
@@ -72,9 +69,9 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         TextView txtSubtitle = view.findViewById(R.id.fvbs_subtitle);
 
         PersonalFragment personalFragment = new PersonalFragment(volunteer);
-        ContactFragment contactFragment = new ContactFragment(volunteer, mainActivity);
+        // ContactFragment contactFragment = new ContactFragment(volunteer, mainActivity);
         OtherFragment otherFragment = new OtherFragment(volunteer);
-        SectionFragment sectionFragment = new SectionFragment(volunteer, mainActivity);
+        // SectionFragment sectionFragment = new SectionFragment(volunteer, mainActivity);
         PolicyFragment policyFragment = new PolicyFragment();
         currentFragment = personalFragment;
         txtSubtitle.setText(getString(R.string.fbs_step1));
@@ -87,8 +84,8 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 //        fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
         btnClose.setOnClickListener(v -> {
-            if ( currentFragment == personalFragment ) {
-                new MaterialAlertDialogBuilder(mainActivity)
+            /* if ( currentFragment == personalFragment ) {
+                /* new MaterialAlertDialogBuilder(mainActivity)
                         .setTitle("Alerta")
                         .setMessage("¿Esta seguro de querer cancelar el proceso?")
                         .setNegativeButton("Quedarme", (dialog, which) -> {
@@ -119,12 +116,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step4));
                 showFragment(otherFragment, fragmentManager);
-            }
+            } */
 
         });
 
         btnSave.setOnClickListener(v -> {
-            if ( currentFragment == personalFragment ) {
+            /* if ( currentFragment == personalFragment ) {
 
                 if ( !personalFragment.isComplete() ) {
                     return;
@@ -191,7 +188,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                             .setCancelable(false)
                             .show();
                 }
-            }
+            } */
 
         });
 
@@ -209,4 +206,5 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
+
 }
