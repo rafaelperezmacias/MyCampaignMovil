@@ -1,4 +1,4 @@
-package com.rld.app.mycampaign.utils;
+package com.rld.app.mycampaign.files;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,29 +32,6 @@ public class FileManager {
         File folderImage = new File(activity.getApplicationContext().getFilesDir() + "/Images");
         if ( !folderImage.exists() ){
             folderImage.mkdir();
-        }
-    }
-
-    public void createJSONFromDB(JSONArray jsonArray, String fileName, String id, Context context) {
-        FileOutputStream fileOutputStream = null;
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put(id, jsonArray);
-        } catch (JSONException ignored) {
-            return;
-        }
-        try {
-            fileOutputStream = context.openFileOutput( fileName, context.MODE_PRIVATE);
-            fileOutputStream.write(jsonObject.toString().getBytes());
-        } catch (Exception ignored) {
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -386,5 +363,22 @@ public class FileManager {
 
     public JSONObject getJson() {
         return json;
+    }
+
+    public static boolean createJSONFromDB(JSONArray jsonArray, String fileName, String id, Context context) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(id, jsonArray);
+        } catch ( JSONException ex ) {
+            Log.e("createJSONFromDB", "" + ex.getMessage());
+            return false;
+        }
+        try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+            fileOutputStream.write(jsonObject.toString().getBytes());
+        } catch ( Exception ex ) {
+            Log.e("createJSONFromDB", "" + ex.getMessage());
+            return false;
+        }
+        return true;
     }
 }

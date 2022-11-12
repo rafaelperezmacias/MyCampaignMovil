@@ -1,6 +1,5 @@
 package com.rld.app.mycampaign;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -14,8 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.RequestQueue;
 import com.google.android.material.snackbar.Snackbar;
-import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
-import com.rld.app.mycampaign.utils.FileManager;
+import com.rld.app.mycampaign.files.FileManager;
 import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
@@ -72,28 +70,7 @@ public class Main2Activity extends AppCompatActivity {
 //        ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
 //        ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
 //        ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-//        if ( Internet.isNetDisponible(MainActivity.this) ) {
-//            if (municipalities.isEmpty() || municipalities.size() != AppConfig.MUNICIPALITIES_SIZE
-//                    || localDistricts.isEmpty() || localDistricts.size() != AppConfig.LOCAL_DISTRICTS_SIZE
-//                    || sections.isEmpty() || sections.size() != AppConfig.SECTIONS_SIZE) {
-//                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
-//                    try {
-//                        if (response.getInt("code") == 205) {
-//                            fileManager.createJSONFromDB(response.getJSONArray("municipalities"), "data-municipalities.json", "municipalities", MainActivity.this);
-//                            fileManager.createJSONFromDB(response.getJSONArray("localDistricts"), "data-localDistricts.json", "localDistricts", MainActivity.this);
-//                            fileManager.createJSONFromDB(response.getJSONArray("sections"), "data-sections.json", "sections", MainActivity.this);
-//                        }
-//                    } catch (JSONException ignored) {
-//                        Log.e("e", "Error en responder :v");
-//                    }
-//                }, error -> {
-//                    Log.e("e", "Error en error");
-//                });
-//                request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//                requestQueue.add(request);
-//            }
-//        }
-//
+
 //        btnCarga.setOnClickListener(v -> {
 //            btnCarga.setEnabled(false);
 //            AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
