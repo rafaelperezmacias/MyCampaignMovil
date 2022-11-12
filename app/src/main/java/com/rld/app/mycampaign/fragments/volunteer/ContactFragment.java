@@ -7,8 +7,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -18,17 +16,9 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
-import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.databinding.FragmentContactVolunteerBsBinding;
-import com.rld.app.mycampaign.models.Section;
-import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.request.AppConfig;
-import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContactFragment extends Fragment {
 

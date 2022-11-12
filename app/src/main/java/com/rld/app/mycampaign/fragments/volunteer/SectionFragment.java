@@ -1,7 +1,6 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
-import com.rld.app.mycampaign.Main2Activity;
 import com.rld.app.mycampaign.databinding.FragmentSectionVolunteerBsBinding;
-import com.rld.app.mycampaign.models.LocalDistrict;
-import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.request.AppConfig;
-import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
-
-import java.util.ArrayList;
 
 public class SectionFragment extends Fragment {
 

@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.databinding.ActivityFirmBinding;
 
 import java.io.ByteArrayOutputStream;
@@ -45,6 +47,10 @@ public class FirmActivity extends AppCompatActivity {
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
+            toolbar.setElevation(12.0f);
+        }
 
         canvasFirm = binding.canvas;
         btnSave = binding.btnSave;

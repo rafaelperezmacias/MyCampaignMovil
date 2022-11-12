@@ -20,7 +20,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.databinding.FragmentVolunterBottomSheetBinding;
 import com.rld.app.mycampaign.fragments.volunteer.ContactFragment;
 import com.rld.app.mycampaign.fragments.volunteer.OtherFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PersonalFragment;
@@ -37,6 +36,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private Volunteer volunteer;
     private MainActivity mainActivity;
+
 
     public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity)
     {

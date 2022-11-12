@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/app/src/main/java/com/rld/futuro/futuroapp/Request/AppConfig.java
+/app/src/main/java/com/rld/app/mycampaign/secrets/AppConfig.java

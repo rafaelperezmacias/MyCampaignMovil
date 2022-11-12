@@ -1,25 +1,27 @@
 package com.rld.app.mycampaign;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
@@ -27,6 +29,9 @@ import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.secrets.AppConfig;
+
+import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickAddVolunteer {
 
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private VolunteerBottomSheet volunteerBottomSheet;
 
     private Volunteer currentVolunteer;
+
+    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavigationUI.setupWithNavController(navigationView, navController);
 
         VolunteerFragment.setOnClickAddVolunteer(MainActivity.this);
+
+        requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         startCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -108,6 +117,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     }
                 }
         );
+
+        boolean localData = getSharedPreferences("sections", Context.MODE_PRIVATE).getBoolean("localData", false);
+        if ( !localData ) {
+            downloadDataOfSections();
+        } else {
+            // TODO uptade en un service (background)
+        }
     }
 
     @Override
@@ -136,4 +152,21 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     public void firmActivityForVolunteer() {
         startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
     }
+
+    private void downloadDataOfSections() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
+            try {
+                if ( response.getInt("code") == 200 ) {
+                    Toast.makeText(this, "Si se pudo burro", Toast.LENGTH_SHORT).show();
+                }
+            } catch ( JSONException ex ) {
+                
+            }
+        }, error -> {
+            Log.e("Error", "" + error.getMessage());
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
+    }
+
 }
