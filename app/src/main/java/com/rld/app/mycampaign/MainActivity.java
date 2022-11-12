@@ -25,7 +25,10 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
+import com.rld.app.mycampaign.files.FederalDistrictFileManager;
 import com.rld.app.mycampaign.files.FileManager;
+import com.rld.app.mycampaign.files.LocalDistrictFileManager;
+import com.rld.app.mycampaign.files.StateFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
@@ -159,16 +162,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
             try {
                 if ( response.getInt("code") == 200 ) {
-                    JSONArray jsonArrayStates = response.getJSONArray("states");
-                    JSONArray jsonArrayLocalDistricts = response.getJSONArray("federal_districtics");
-                    JSONArray jsonArrayFederalDistricts = response.getJSONArray("local_districts");
-                    JSONArray jsonArrayMunicipalities = response.getJSONArray("municipalities");
-                    JSONArray jsonArraySections = response.getJSONArray("sections");
-                    FileManager.createJSONFromDB(jsonArrayStates, "data-states.json", "states", MainActivity.this);
-                    FileManager.createJSONFromDB(jsonArrayLocalDistricts, "data-federal_districtics.json", "federal_districtics", MainActivity.this);
-                    FileManager.createJSONFromDB(jsonArrayFederalDistricts, "data-local_districts.json", "local_districts", MainActivity.this);
-                    FileManager.createJSONFromDB(jsonArrayMunicipalities, "data-municipalities.json", "municipalities", MainActivity.this);
-                    FileManager.createJSONFromDB(jsonArraySections, "data-sections.json", "sections", MainActivity.this);
+                    StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
+                    FederalDistrictFileManager.writeJSON(response.getJSONArray("federal_districts"), MainActivity.this);
+                    LocalDistrictFileManager.writeJSON(response.getJSONArray("local_districts"), MainActivity.this);
+                    // FileManager.createJSONFromDB(jsonArrayMunicipalities, "data-municipalities.json", "municipalities", MainActivity.this);
+                    // FileManager.createJSONFromDB(jsonArraySections, "data-sections.json", "sections", MainActivity.this);
                 }
             } catch ( JSONException ex ) {
                 

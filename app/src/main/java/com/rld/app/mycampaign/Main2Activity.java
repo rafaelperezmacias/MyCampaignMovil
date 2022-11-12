@@ -27,9 +27,6 @@ public class Main2Activity extends AppCompatActivity {
 
     private ArrayList<Volunteer> volunteers;
 
-    private FileManager fileManager;
-    private RequestQueue requestQueue;
-
     private AlertDialog alertDialog;
 
     private int peticiones;
@@ -54,9 +51,7 @@ public class Main2Activity extends AppCompatActivity {
 //
 //        volunteers = new ArrayList<>();
 //
-//        fileManager = new FileManager(MainActivity.this);
 //        volunteers = fileManager.readFile(getApplicationContext());
-//        requestQueue = Volley.newRequestQueue(MainActivity.this);
 //
 //        CameraPreview.setLISTENER(MainActivity.this);
 //
@@ -67,10 +62,6 @@ public class Main2Activity extends AppCompatActivity {
 //            btnCarga.setVisibility(View.GONE);
 //        }
 //
-//        ArrayList<Municipality> municipalities = fileManager.readJSONMunicipalities(MainActivity.this);
-//        ArrayList<LocalDistrict> localDistricts = fileManager.readJSONLocalDistricts(MainActivity.this);
-//        ArrayList<Section> sections = fileManager.readJSONSections(MainActivity.this);
-
 //        btnCarga.setOnClickListener(v -> {
 //            btnCarga.setEnabled(false);
 //            AlertDialog.Builder alertDialogBuilder = new MaterialAlertDialogBuilder(MainActivity.this)
@@ -150,9 +141,9 @@ public class Main2Activity extends AppCompatActivity {
             } else {
                 btnCarga.setEnabled(true);
                 createSnackBar("No todos los registros fueron cargados, intentelo más tarde");
-                ArrayList<Volunteer> tmp = new ArrayList<>(volunteers);
-                fileManager.saveFile(tmp, getApplicationContext());
-                volunteers = fileManager.readFile(Main2Activity.this);
+                // ArrayList<Volunteer> tmp = new ArrayList<>(volunteers);
+                // fileManager.saveFile(tmp, getApplicationContext());
+                // volunteers = fileManager.readFile(Main2Activity.this);
             }
             cont_peticiones = 0;
             cont_peticiones_pos = 0;
@@ -178,7 +169,7 @@ public class Main2Activity extends AppCompatActivity {
 
     public void saveVolunteers() {
         btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
-        fileManager.saveFile(volunteers, getApplicationContext());
+        // fileManager.saveFile(volunteers, getApplicationContext());
         for ( Volunteer v : volunteers ) {
             // v.deleteImage();
         }
@@ -187,18 +178,6 @@ public class Main2Activity extends AppCompatActivity {
         } else {
             btnCarga.setVisibility(View.GONE);
         }
-    }
-
-    public ArrayList<Section> getSections() {
-        return fileManager.readJSONSections(Main2Activity.this);
-    }
-
-    public ArrayList<Municipality> getMunipalities() {
-        return fileManager.readJSONMunicipalities(Main2Activity.this);
-    }
-
-    public ArrayList<LocalDistrict> getLocalDistricts() {
-        return fileManager.readJSONLocalDistricts(Main2Activity.this);
     }
 
     public void saveVolunteer(Volunteer volunteer) {

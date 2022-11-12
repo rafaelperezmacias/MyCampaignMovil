@@ -5,17 +5,19 @@ public class LocalDistrict {
     private int id;
     private String name;
     private int number;
+    private State state;
 
     public LocalDistrict()
     {
 
     }
 
-    public LocalDistrict(int id, String name, int number)
+    public LocalDistrict(int id, String name, int number, State state)
     {
         this.id = id;
         this.name = name;
         this.number = number;
+        this.state = state;
     }
 
     public int getId() {
@@ -42,12 +44,21 @@ public class LocalDistrict {
         this.number = number;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "LocalDistrict{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", number=" + number +
+                ", state=" + state +
                 '}';
     }
 
