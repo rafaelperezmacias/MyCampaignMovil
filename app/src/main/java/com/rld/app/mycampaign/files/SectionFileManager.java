@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.rld.app.mycampaign.models.FederalDistrict;
+import com.rld.app.mycampaign.models.LocalDistrict;
+import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 
@@ -11,40 +13,39 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class SectionFileManager {
 
-    private static final String FILE_NAME = "data-federal_districts.json";
-    private static final String JSON_ID = "federal_districts";
+    private static final String FILE_NAME = "data-sections.json";
+    private static final String JSON_ID = "sections";
 
     private SectionFileManager()
     {
 
     }
 
-    protected static ArrayList<FederalDistrict> readJSON(Context context, ArrayList<State> states) {
+    protected static ArrayList<Section> readJSON(Context context, ArrayList<State> states, ArrayList<Municipality> municipalities, ArrayList<FederalDistrict> federalDistricts, ArrayList<LocalDistrict> localDistricts) {
         String fileString = FileManager.readJSON(FILE_NAME, context);
-        if ( fileString == null ) {
+        if ( fileString == null || fileString.length() == 0 ) {
             return new ArrayList<>();
         }
-        ArrayList<FederalDistrict> federalDistricts = new ArrayList<>();
+        ArrayList<Section> sections = new ArrayList<>();
         try {
             JSONObject root = new JSONObject(fileString);
             JSONArray statesJSONArray = root.getJSONArray(JSON_ID);
             int cont = 0;
             while ( cont < statesJSONArray.length() ) {
-                FederalDistrict federalDistrict = new FederalDistrict();
+                Section section = new Section();
                 try {
                     JSONObject object = statesJSONArray.getJSONObject(cont);
-                    federalDistrict.setId(object.getInt("id"));
-                    federalDistrict.setName(object.getString("name"));
-                    federalDistrict.setNumber(object.getInt("number"));
-                    federalDistrict.setState(LocalDataFileManager.findState(states, object.getInt("state_id")));
-                    federalDistricts.add(federalDistrict);
+                    section.setId(object.getInt("id"));
+                    section.setSection(object.getString("section"));
+                    section.setState(LocalDataFileManager.findState(states, object.getInt("state_id")));
+                    section.setMunicipality(LocalDataFileManager.findMunicipality(municipalities, object.getInt("municipality_id")));
+                    section.setFederalDistrict(LocalDataFileManager.findFederalDistrict(federalDistricts, object.getInt("federal_district_id")));
+                    section.setLocalDistrict(LocalDataFileManager.findLocalDistrict(localDistricts, object.getInt("local_district_id")));
+                    sections.add(section);
                     cont++;
                 } catch ( JSONException ex ) {
                     Log.e("readJSON()", "" + ex.getMessage());
@@ -56,11 +57,11 @@ public class SectionFileManager {
             Log.e("readJSON()", "" + ex.getMessage());
             return new ArrayList<>();
         }
-        return federalDistricts;
+        return sections;
     }
 
     public static boolean writeJSON(JSONArray jsonArray, Context context) {
-        return FileManager.createJSON(jsonArray, FILE_NAME, JSON_ID, context);
+        return FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
     }
 
 }

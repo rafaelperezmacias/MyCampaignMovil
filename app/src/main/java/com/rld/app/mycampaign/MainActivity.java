@@ -27,7 +27,10 @@ import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
 import com.rld.app.mycampaign.files.FileManager;
+import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.files.LocalDistrictFileManager;
+import com.rld.app.mycampaign.files.MunicipalityFileManager;
+import com.rld.app.mycampaign.files.SectionFileManager;
 import com.rld.app.mycampaign.files.StateFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
@@ -123,8 +126,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 }
         );
 
-        boolean localData = getSharedPreferences("sections", Context.MODE_PRIVATE).getBoolean("localData", false);
-        if ( !localData ) {
+        boolean localDataSaved = getSharedPreferences("localData", Context.MODE_PRIVATE).getBoolean("saved", false);
+        if ( !localDataSaved ) {
             downloadDataOfSections();
         } else {
             // TODO uptade en un service (background)
@@ -165,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
                     FederalDistrictFileManager.writeJSON(response.getJSONArray("federal_districts"), MainActivity.this);
                     LocalDistrictFileManager.writeJSON(response.getJSONArray("local_districts"), MainActivity.this);
-                    // FileManager.createJSONFromDB(jsonArrayMunicipalities, "data-municipalities.json", "municipalities", MainActivity.this);
-                    // FileManager.createJSONFromDB(jsonArraySections, "data-sections.json", "sections", MainActivity.this);
+                    MunicipalityFileManager.writeJSON(response.getJSONArray("municipalities"), MainActivity.this);
+                    SectionFileManager.writeJSON(response.getJSONArray("sections"), MainActivity.this);
                 }
             } catch ( JSONException ex ) {
                 

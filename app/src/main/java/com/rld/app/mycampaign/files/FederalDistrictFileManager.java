@@ -24,7 +24,7 @@ public class FederalDistrictFileManager {
 
     protected static ArrayList<FederalDistrict> readJSON(Context context, ArrayList<State> states) {
         String fileString = FileManager.readJSON(FILE_NAME, context);
-        if ( fileString == null ) {
+        if ( fileString == null || fileString.length() == 0) {
             return new ArrayList<>();
         }
         ArrayList<FederalDistrict> federalDistricts = new ArrayList<>();
@@ -56,7 +56,7 @@ public class FederalDistrictFileManager {
     }
 
     public static boolean writeJSON(JSONArray jsonArray, Context context) {
-        return FileManager.createJSON(jsonArray, FILE_NAME, JSON_ID, context);
+        return FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
     }
 
 }

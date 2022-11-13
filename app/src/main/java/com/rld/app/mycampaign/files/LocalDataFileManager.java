@@ -18,6 +18,8 @@ public class LocalDataFileManager {
     private ArrayList<Municipality> municipalities;
     private ArrayList<Section> sections;
 
+    private static LocalDataFileManager localDataFileManager;
+
     private LocalDataFileManager()
     {
         states = new ArrayList<>();
@@ -27,17 +29,20 @@ public class LocalDataFileManager {
         sections = new ArrayList<>();
     }
 
-    private static LocalDataFileManager loadData(Context context) {
-        LocalDataFileManager localDataFileManager = new LocalDataFileManager();
+    public static LocalDataFileManager getInstance(Context context) {
+        if ( localDataFileManager == null ) {
+            localDataFileManager = new LocalDataFileManager();
+        }
         // Estados
         localDataFileManager.states = StateFileManager.readJSON(context);
         // Distritos federales
         localDataFileManager.federalDistricts = FederalDistrictFileManager.readJSON(context, localDataFileManager.states);
         // Distritos locales
-
+        localDataFileManager.localDistricts = LocalDistrictFileManager.readJSON(context, localDataFileManager.states);
         // Municipios
-
+        localDataFileManager.municipalities = MunicipalityFileManager.readJSON(context, localDataFileManager.states);
         // Secciones
+        localDataFileManager.sections = SectionFileManager.readJSON(context, localDataFileManager.states, localDataFileManager.municipalities, localDataFileManager.federalDistricts, localDataFileManager.localDistricts);
         return localDataFileManager;
     }
 
@@ -48,6 +53,57 @@ public class LocalDataFileManager {
             }
         }
         return null;
+    }
+
+    protected static Municipality findMunicipality(ArrayList<Municipality> municipalities, int id) {
+        for ( Municipality municipality : municipalities ) {
+            if ( municipality.getId() == id ) {
+                return municipality;
+            }
+        }
+        return null;
+    }
+
+    protected static FederalDistrict findFederalDistrict(ArrayList<FederalDistrict> federalDistricts, int id) {
+        for ( FederalDistrict federalDistrict : federalDistricts ) {
+            if ( federalDistrict.getId() == id ) {
+                return federalDistrict;
+            }
+        }
+        return null;
+    }
+
+    protected static LocalDistrict findLocalDistrict(ArrayList<LocalDistrict> localDistricts, int id) {
+        for ( LocalDistrict localDistrict : localDistricts ) {
+            if ( localDistrict.getId() == id ) {
+                return localDistrict;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<State> getStates() {
+        return states;
+    }
+
+    public ArrayList<FederalDistrict> getFederalDistricts() {
+        return federalDistricts;
+    }
+
+    public ArrayList<LocalDistrict> getLocalDistricts() {
+        return localDistricts;
+    }
+
+    public ArrayList<Municipality> getMunicipalities() {
+        return municipalities;
+    }
+
+    public ArrayList<Section> getSections() {
+        return sections;
+    }
+
+    public static LocalDataFileManager getLocalDataFileManager() {
+        return localDataFileManager;
     }
 
 }
