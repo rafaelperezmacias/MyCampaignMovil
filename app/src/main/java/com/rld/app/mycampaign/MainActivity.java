@@ -26,9 +26,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
+import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
-import com.rld.app.mycampaign.files.FileManager;
-import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.files.LocalDistrictFileManager;
 import com.rld.app.mycampaign.files.MunicipalityFileManager;
 import com.rld.app.mycampaign.files.SectionFileManager;
@@ -39,7 +38,6 @@ import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickAddVolunteer {

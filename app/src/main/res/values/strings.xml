@@ -41,7 +41,7 @@
     <string name="fcvbs_email_error">Ingrese el correo electrónico</string>
     <string name="fcvbs_phone">Teléfono</string>
     <string name="fcvbs_phone_error">Ingrese el teléfono</string>
-    <string name="fcvbs_searchSection">Búsqueda de casilla</string>
+    <string name="fcvbs_searchSection">Búsqueda de sección</string>
     <string name="fcvbs_state">Estado</string>
     <string name="fcvbs_state_error">Ingrese un estado valido</string>
     <string name="fcvbs_section">Sección</string>

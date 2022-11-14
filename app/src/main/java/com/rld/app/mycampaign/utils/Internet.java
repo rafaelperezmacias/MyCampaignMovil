@@ -16,8 +16,7 @@ public class Internet {
         try {
             Process p = java.lang.Runtime.getRuntime().exec("ping -c 1 8.8.8.8");
             int val = p.waitFor();
-            boolean reachable = (val == 0);
-            return reachable;
+            return (val == 0);
         } catch (Exception e) {
             return false;
         }
