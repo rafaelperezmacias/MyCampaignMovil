@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
@@ -40,6 +44,7 @@ import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -135,6 +140,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         } else {
             // TODO uptade en un service (background)
         }
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+        snackbarText.append("Voluntario registrado con exito");
+        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_SHORT)
+                .setBackgroundTint(getResources().getColor(R.color.blue))
+                .setTextColor(getResources().getColor(R.color.white))
+                .show();
     }
 
     @Override
@@ -169,10 +181,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             try {
                 if ( response.getInt("code") == 200 ) {
                     StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
-                    FederalDistrictFileManager.writeJSON(response.getJSONArray("federal_districts"), MainActivity.this);
-                    LocalDistrictFileManager.writeJSON(response.getJSONArray("local_districts"), MainActivity.this);
-                    MunicipalityFileManager.writeJSON(response.getJSONArray("municipalities"), MainActivity.this);
-                    SectionFileManager.writeJSON(response.getJSONArray("sections"), MainActivity.this);
+                    JSONObject state = response.getJSONObject("state");
+                    getSharedPreferences("localData", MODE_PRIVATE).edit().putInt("state_id", state.getInt("id")).apply();
+                    getSharedPreferences("localData", MODE_PRIVATE).edit().putString("state_name", state.getString("name")).apply();
+                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), MainActivity.this);
+                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), MainActivity.this);
+                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), MainActivity.this);
+                    SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
                 }
             } catch ( JSONException ex ) {
                 
@@ -199,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             }
         };
         Timer timer = new Timer();
-        timer.schedule(task, 500);
+        timer.schedule(task, 100);
     }
 
     public void hideProgressDialog() {

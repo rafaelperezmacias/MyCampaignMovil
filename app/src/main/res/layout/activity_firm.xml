@@ -52,7 +52,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Paso 4 de 4" />
+                        android:text="Paso 6 de 6" />
 
                 </LinearLayout>
 

@@ -18,8 +18,6 @@ public class LocalDataFileManager {
     private ArrayList<Municipality> municipalities;
     private ArrayList<Section> sections;
 
-    private static LocalDataFileManager localDataFileManager;
-
     private LocalDataFileManager()
     {
         states = new ArrayList<>();
@@ -30,9 +28,7 @@ public class LocalDataFileManager {
     }
 
     public static LocalDataFileManager getInstance(Context context) {
-        if ( localDataFileManager == null ) {
-            localDataFileManager = new LocalDataFileManager();
-        }
+        LocalDataFileManager localDataFileManager = new LocalDataFileManager();
         // Estados
         localDataFileManager.states = StateFileManager.readJSON(context);
         // Distritos federales
@@ -102,8 +98,8 @@ public class LocalDataFileManager {
         return sections;
     }
 
-    public static LocalDataFileManager getLocalDataFileManager() {
-        return localDataFileManager;
+    public boolean isEmpty() {
+        return sections.isEmpty() || municipalities.isEmpty() || localDistricts.isEmpty() || federalDistricts.isEmpty() || states.isEmpty();
     }
 
 }

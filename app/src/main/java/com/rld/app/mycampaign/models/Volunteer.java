@@ -1,18 +1,18 @@
 package com.rld.app.mycampaign.models;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Volunteer {
 
-    private static final int TYPE_GENERAL_REPRESENTATIVE = 0;
-    private static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 1;
-    private static final int TYPE_OTHER = 2;
+    public static final int TYPE_GENERAL_REPRESENTATIVE = 0;
+    public static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 1;
+    public static final int TYPE_OTHER = 2;
 
     private int id;
     private String name;
     private String fathersLastname;
     private String mothersLastname;
-    private Date birthdate;
+    private Calendar birthdate;
 
     private Address address;
 
@@ -67,11 +67,11 @@ public class Volunteer {
         this.mothersLastname = mothersLastname;
     }
 
-    public Date getBirthdate() {
+    public Calendar getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(Calendar birthdate) {
         this.birthdate = birthdate;
     }
 

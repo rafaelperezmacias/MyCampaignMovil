@@ -2,18 +2,26 @@ package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.databinding.FragmentPersonalVolunteerBsBinding;
+import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class PersonalFragment extends Fragment {
 
@@ -21,7 +29,7 @@ public class PersonalFragment extends Fragment {
 
     private TextInputLayout lytFathersLastname;
     private TextInputLayout lytMothersLastname;
-    private TextInputLayout lytNames;
+    private TextInputLayout lytName;
     private TextInputLayout lytBirthdate;
     private TextInputLayout lytStreet;
     private TextInputLayout lytExternalNumber;
@@ -31,6 +39,7 @@ public class PersonalFragment extends Fragment {
 
     private Volunteer volunteer;
 
+    private Calendar birthDate;
 
     public PersonalFragment(Volunteer volunteer)
     {
@@ -39,13 +48,13 @@ public class PersonalFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentPersonalVolunteerBsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         lytFathersLastname = binding.lytFathersLastname;
         lytMothersLastname = binding.lytMothersLastname;
-        lytNames = binding.lytNames;
+        lytName = binding.lytName;
         lytBirthdate = binding.lytBirthdate;
         lytStreet = binding.lytStreet;
         lytExternalNumber = binding.lytExternalNumber;
@@ -53,9 +62,33 @@ public class PersonalFragment extends Fragment {
         lytSuburb = binding.lytSuburb;
         lytZipcode = binding.lytZipcode;
 
+        birthDate = Calendar.getInstance();
+
+        lytBirthdate.getEditText().setOnFocusChangeListener((view, focus) -> {
+            if ( focus ) {
+                lytBirthdate.getEditText().callOnClick();
+            }
+        });
+
+        lytBirthdate.getEditText().setOnClickListener(view -> {
+            CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
+                    .setValidator(DateValidatorPointBackward.now());
+            MaterialDatePicker<Long> dialog = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Seleccione la fecha")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .setCalendarConstraints(calendarConstraints.build())
+                    .build();
+            dialog.show(getChildFragmentManager(), dialog.getTag());
+            dialog.addOnPositiveButtonClickListener(selection -> {
+                birthDate.setTimeInMillis(selection);
+                String date = birthDate.get(Calendar.DAY_OF_MONTH) + "/" + (birthDate.get(Calendar.MONTH) + 1) + "/" + birthDate.get(Calendar.YEAR);
+                lytBirthdate.getEditText().setText(date);
+            });
+        });
+
         lytFathersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytMothersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytNames.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+        lytName.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytStreet.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytInternalNumber.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytSuburb.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
@@ -63,19 +96,23 @@ public class PersonalFragment extends Fragment {
         return root;
     }
 
-
     public void setVolunteer() {
-        /* volunteer.setLastName1(lytLastName1.getEditText().getText().toString().trim());
-        volunteer.setLastName2(lytLastName2.getEditText().getText().toString().trim());
-        volunteer.setNames(lytNames.getEditText().getText().toString().trim());
-        volunteer.setAge(lytAge.getEditText().getText().toString().trim());
-        volunteer.setAddressName(lytStreet.getEditText().getText().toString().trim());
-        volunteer.setAddressNumExt(lytOutNumber.getEditText().getText().toString().trim());
-        if ( !lytComplement.getEditText().getText().toString().isEmpty() ) {
-            volunteer.setAddressNumInt(lytComplement.getEditText().getText().toString().trim());
+        volunteer.setFathersLastname(lytFathersLastname.getEditText().getText().toString().trim());
+        volunteer.setMothersLastname(lytMothersLastname.getEditText().getText().toString().trim());
+        volunteer.setName(lytName.getEditText().getText().toString().trim());
+        volunteer.setBirthdate(birthDate);
+        Address address = volunteer.getAddress();
+        if ( address == null ) {
+            address = new Address();
+            volunteer.setAddress(address);
         }
-        volunteer.setSuburb(lytSuburb.getEditText().getText().toString().trim());
-        volunteer.setZipCode(lytCP.getEditText().getText().toString().trim()); */
+        address.setStreet(lytStreet.getEditText().getText().toString().trim());
+        address.setExternalNumber(lytExternalNumber.getEditText().getText().toString().trim());
+        if ( !lytInternalNumber.getEditText().getText().toString().isEmpty() ) {
+            address.setInternalNumber(lytInternalNumber.getEditText().getText().toString().trim());
+        }
+        address.setSuburb(lytSuburb.getEditText().getText().toString().trim());
+        address.setZipcode(lytZipcode.getEditText().getText().toString().trim());
     }
 
     public boolean isComplete() {

@@ -17,14 +17,14 @@
         android:text="AVISO DE PRIVACIDAD"/>
 
     <com.rld.app.mycampaign.utils.JustifyTextView
-        android:id="@+id/textview"
+        android:id="@+id/txt_privacy_policy"
         android:layout_marginStart="15dp"
         android:gravity="fill_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <CheckBox
-        android:id="@+id/checkbox"
+        android:id="@+id/btn_checked"
         android:buttonTint="@color/blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

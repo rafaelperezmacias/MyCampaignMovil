@@ -39,7 +39,6 @@ public class LocalDistrictFileManager {
                     localDistrict.setId(object.getInt("id"));
                     localDistrict.setName(object.getString("name"));
                     localDistrict.setNumber(object.getInt("number"));
-                    localDistrict.setState(LocalDataFileManager.findState(states, object.getInt("state_id")));
                     federalDistricts.add(localDistrict);
                     cont++;
                 } catch ( JSONException ex ) {

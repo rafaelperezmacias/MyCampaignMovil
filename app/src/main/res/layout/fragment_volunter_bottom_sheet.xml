@@ -8,7 +8,7 @@
     tools:context=".bottomsheets.VolunteerBottomSheet">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/volunter_bs_toolbar"
+        android:id="@+id/volunteer_bs_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white" >
@@ -20,7 +20,7 @@
             android:gravity="center_vertical">
 
             <ImageButton
-                android:id="@+id/fvbs_close_btn"
+                android:id="@+id/btn_close"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/white"
@@ -43,7 +43,7 @@
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
 
                 <TextView
-                    android:id="@+id/fvbs_subtitle"
+                    android:id="@+id/txt_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="Paso 1 de 4"/>
@@ -51,7 +51,7 @@
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/fvbs_save_btn"
+                android:id="@+id/btn_save"
                 android:backgroundTint="@color/blue"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_below="@+id/volunter_bs_toolbar"
+        android:layout_below="@+id/volunteer_bs_toolbar"
         android:id="@+id/volunteer_bs_nested"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

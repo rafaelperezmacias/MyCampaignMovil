@@ -11,6 +11,8 @@
     <string name="fbs_step2">Paso 2 de 6</string>
     <string name="fbs_step3">Paso 3 de 6</string>
     <string name="fbs_step4">Paso 4 de 6</string>
+    <string name="fbs_step5">Paso 5 de 6</string>
+    <string name="fbs_step6">Paso 6 de 6</string>
     <string name="fbs_continue">CONTINUAR</string>
     <string name="fbs_finish">FINALIZAR</string>
     <string name="fbs_snackbar">Voluntario registrado con éxito</string>

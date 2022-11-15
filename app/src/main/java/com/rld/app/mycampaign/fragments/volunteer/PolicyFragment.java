@@ -7,30 +7,33 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.rld.app.mycampaign.R;
+import com.rld.app.mycampaign.databinding.FragmentPolicyVolunteerBsBinding;
 
 public class PolicyFragment extends Fragment {
 
-    private CheckBox checkBox;
+    private FragmentPolicyVolunteerBsBinding binding;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_policy_volunteer_bs, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentPolicyVolunteerBsBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        checkBox = view.findViewById(R.id.checkbox);
+        CheckBox btnChecked = binding.btnChecked;
+        TextView txtPrivacyPolicy = binding.txtPrivacyPolicy;
 
-        TextView  textView = view.findViewById(R.id.textview);
-        textView.setText(R.string.aviso_privacidad);
+        txtPrivacyPolicy.setText(R.string.aviso_privacidad);
 
-        return view;
+        return root;
     }
 
     public boolean isComplete() {
-        return !checkBox.isChecked();
+        return true;
     }
 
 }

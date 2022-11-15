@@ -158,14 +158,14 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/icon_5"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="Sección"
+            android:hint="Sector"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             app:errorTextColor="@color/red_liane"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="number"
+                android:inputType="textCapCharacters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -397,7 +397,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:inputType="textCapCharacters"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </com.google.android.material.textfield.TextInputEditText>
@@ -420,7 +419,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:inputType="number"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 </com.google.android.material.textfield.TextInputEditText>

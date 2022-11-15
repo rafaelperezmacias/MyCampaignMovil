@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon"
+            android:id="@+id/icon1"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -35,7 +35,7 @@
             android:id="@+id/lyt_fathers_lastname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon"
+            android:layout_toEndOf="@+id/icon1"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_lastName1"
             android:paddingStart="16dp"
@@ -75,7 +75,7 @@
 
     <!-- Field without image -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/lyt_names"
+        android:id="@+id/lyt_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -98,7 +98,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon2a"
+            android:id="@+id/icon2"
             android:visibility="visible"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -112,7 +112,7 @@
             android:id="@+id/lyt_birthdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon2a"
+            android:layout_toEndOf="@+id/icon2"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Fecha de nacimiento"
             android:paddingStart="16dp"
@@ -121,6 +121,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="date"
+                android:cursorVisible="false"
+                android:autoHandwritingEnabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </com.google.android.material.textfield.TextInputEditText>
@@ -151,7 +153,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon1"
+            android:id="@+id/icon3"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -164,7 +166,7 @@
             android:id="@+id/lyt_street"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon1"
+            android:layout_toEndOf="@+id/icon3"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_street"
             android:paddingStart="16dp"
@@ -187,7 +189,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon2"
+            android:id="@+id/icon4"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -200,7 +202,7 @@
             android:id="@+id/lyt_external_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon2"
+            android:layout_toEndOf="@+id/icon4"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_out_number"
             android:paddingStart="16dp"
@@ -262,7 +264,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon3"
+            android:id="@+id/icon5"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -275,7 +277,7 @@
             android:id="@+id/lyt_zipcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon3"
+            android:layout_toEndOf="@+id/icon5"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_cp"
             android:paddingStart="16dp"

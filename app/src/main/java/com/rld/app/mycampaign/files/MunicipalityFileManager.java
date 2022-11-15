@@ -39,7 +39,6 @@ public class MunicipalityFileManager {
                     municipality.setId(object.getInt("id"));
                     municipality.setName(object.getString("name"));
                     municipality.setNumber(object.getInt("number"));
-                    municipality.setState(LocalDataFileManager.findState(states, object.getInt("state_id")));
                     municipalities.add(municipality);
                     cont++;
                 } catch ( JSONException ex ) {
