@@ -9,6 +9,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -37,6 +38,7 @@ import com.rld.app.mycampaign.files.LocalDistrictFileManager;
 import com.rld.app.mycampaign.files.MunicipalityFileManager;
 import com.rld.app.mycampaign.files.SectionFileManager;
 import com.rld.app.mycampaign.files.StateFileManager;
+import com.rld.app.mycampaign.files.VolunteerFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
@@ -46,6 +48,7 @@ import com.rld.app.mycampaign.secrets.AppConfig;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -64,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private RequestQueue requestQueue;
 
+    private ArrayList<Volunteer> localVolunteers;
+    private ArrayList<Volunteer> remoteVolunteers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        localVolunteers = new ArrayList<>();
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile)
                 .setOpenableLayout(drawer)
@@ -121,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             if ( result.getData() != null ) {
                                 String path = result.getData().getStringExtra("imageFirmPath");
                                 initializeImageOfVolunteer(currentVolunteer, path, false);
-                                volunteerBottomSheet.dismiss();
+                                addLocalVolunteer();
                             }
                         } break;
                         case FirmActivity.RESULT_REJECT_FIRM: {
@@ -140,14 +148,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         } else {
             // TODO uptade en un service (background)
         }
-
-        /* SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-        snackbarText.append("Voluntario registrado con exito");
-        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_SHORT)
-                .setBackgroundTint(getResources().getColor(R.color.blue))
-                .setTextColor(getResources().getColor(R.color.white))
-                .show(); */
     }
 
     @Override
@@ -159,6 +159,25 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     @Override
     public void addVolunteerFragment() {
         startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+    }
+
+    private void addLocalVolunteer() {
+        localVolunteers.add(currentVolunteer);
+        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+        currentVolunteer.getImageCredential().deleteImage();
+        currentVolunteer.getImageFirm().deleteImage();
+        volunteerBottomSheet.dismiss();
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+        snackbarText.append("Voluntario registrado con éxito");
+        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.blue))
+                .setTextColor(getResources().getColor(R.color.light_white))
+                .setAction("DETALLES", view -> {
+
+                })
+                .setActionTextColor(getResources().getColor(R.color.white))
+                .show();
     }
 
     private void initializeImageOfVolunteer(Volunteer volunteer, String path, boolean credential) {
@@ -185,9 +204,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     JSONObject state = response.getJSONObject("state");
                     getSharedPreferences("localData", MODE_PRIVATE).edit().putInt("state_id", state.getInt("id")).apply();
                     getSharedPreferences("localData", MODE_PRIVATE).edit().putString("state_name", state.getString("name")).apply();
-                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), MainActivity.this);
-                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), MainActivity.this);
-                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), MainActivity.this);
+                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), state.getInt("id"), MainActivity.this);
+                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
+                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
                     SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
                 }
             } catch ( JSONException ex ) {

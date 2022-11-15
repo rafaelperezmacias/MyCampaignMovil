@@ -14,21 +14,18 @@ import java.io.InputStreamReader;
 
 public class FileManager {
 
-    protected static boolean writeJSON(JSONArray jsonArray, String fileName, String id, Context context) {
+    protected static void writeJSON(JSONArray jsonArray, String fileName, String id, Context context) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(id, jsonArray);
         } catch ( JSONException ex ) {
             Log.e("writeJSON()", "" + ex.getMessage());
-            return false;
         }
         try ( FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE) ) {
             fileOutputStream.write(jsonObject.toString().getBytes());
         } catch ( Exception ex ) {
             Log.e("writeJSON()", "" + ex.getMessage());
-            return false;
         }
-        return true;
     }
 
     protected static String readJSON(String filename, Context context) {

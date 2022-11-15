@@ -52,8 +52,8 @@ public class StateFileManager {
         return states;
     }
 
-    public static boolean writeJSON(JSONArray jsonArray, Context context) {
-        return FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+    public static void writeJSON(JSONArray jsonArray, Context context) {
+        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
     }
 
 }

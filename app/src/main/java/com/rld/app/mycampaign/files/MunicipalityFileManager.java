@@ -39,6 +39,7 @@ public class MunicipalityFileManager {
                     municipality.setId(object.getInt("id"));
                     municipality.setName(object.getString("name"));
                     municipality.setNumber(object.getInt("number"));
+                    municipality.setState(LocalDataFileManager.findState(states, object.getInt("stateId")));
                     municipalities.add(municipality);
                     cont++;
                 } catch ( JSONException ex ) {
@@ -54,8 +55,15 @@ public class MunicipalityFileManager {
         return municipalities;
     }
 
-    public static boolean writeJSON(JSONArray jsonArray, Context context) {
-        return FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+    public static void writeJSON(JSONArray jsonArray, int stateId, Context context) {
+        for ( int i = 0; i < jsonArray.length(); i++ ) {
+            try {
+                jsonArray.getJSONObject(i).put("stateId", stateId);
+            } catch ( JSONException ex ) {
+                Log.e("writeJSON()", "" + ex.getMessage());
+            }
+        }
+        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
     }
 
 }

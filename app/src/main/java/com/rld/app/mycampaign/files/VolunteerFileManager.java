@@ -1,81 +1,109 @@
 package com.rld.app.mycampaign.files;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
+import com.rld.app.mycampaign.models.Address;
+import com.rld.app.mycampaign.models.FederalDistrict;
+import com.rld.app.mycampaign.models.LocalDistrict;
+import com.rld.app.mycampaign.models.Municipality;
+import com.rld.app.mycampaign.models.Section;
+import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class VolunteerFileManager {
 
-    private final String fileNameJSON;
-    private JSONObject json;
+    private static final String LOCAL_FILE_NAME = "data-local-volunteers.json";
+    private static final String LOCAL_JSON_ID = "local-volunteers";
 
-    public VolunteerFileManager(Activity activity)
-    {
-        json = null;
-        fileNameJSON = "data";
-        File folderImage = new File(activity.getApplicationContext().getFilesDir() + "/Images");
-        if ( !folderImage.exists() ){
-            folderImage.mkdir();
-        }
-    }
+    private static final String REMOTE_FILE_NAME = "data-remote-volunteers.json";
+    private static final String REMOTE_JSON_ID = "remote-volunteers";
 
-    private void createJSON(ArrayList<Volunteer> volunteers) {
-        /*
-        this.json = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        JSONObject obj = null;
+    public static void writeJSON(ArrayList<Volunteer> volunteers, boolean isLocal, Context context) {
+        JSONArray volunteersArray = new JSONArray();
         int cont = 0;
-        while (cont < volunteers.size()) {
-            obj = new JSONObject();
+        while ( cont < volunteers.size() ) {
+            JSONObject volunteerObject = new JSONObject();
             try {
-                obj.put("names", volunteers.get(cont).getNames());
-                obj.put("lastName1", volunteers.get(cont).getLastName1());
-                obj.put("lastName2", volunteers.get(cont).getLastName2());
-                obj.put("age", volunteers.get(cont).getAge());
-                obj.put("addressName", volunteers.get(cont).getAddressName());
-                obj.put("addressNumExt", volunteers.get(cont).getAddressNumExt());
-                obj.put("addressNumInt", volunteers.get(cont).getAddressNumInt());
-                obj.put("suburb", volunteers.get(cont).getSuburb());
-                obj.put("zipCode", volunteers.get(cont).getZipCode());
-                obj.put("electorKey", volunteers.get(cont).getElectorKey());
-                obj.put("email", volunteers.get(cont).getEmail());
-                obj.put("phone", volunteers.get(cont).getPhone());
-                obj.put("question1", volunteers.get(cont).isCasillaLocal());
+                Volunteer volunteer = volunteers.get(cont);
+                volunteerObject.put("name", volunteer.getName());
+                volunteerObject.put("fathersLastname", volunteer.getFathersLastname());
+                volunteerObject.put("mothersLastname", volunteer.getMothersLastname());
+                volunteerObject.put("birthdate", volunteer.getBirthdate().getTimeInMillis());
 
-                obj.put("imgString", volunteers.get(cont).getImgString());
+                JSONObject addressObject = new JSONObject();
+                Address address = volunteer.getAddress();
+                addressObject.put("street", address.getStreet());
+                addressObject.put("externalNumber", address.getExternalNumber());
+                addressObject.put("internalNumber", address.getInternalNumber() == null ? "" : address.getInternalNumber());
+                addressObject.put("suburb", address.getSuburb());
+                addressObject.put("zipcode", address.getZipcode());
+                volunteerObject.put("address", addressObject);
 
-                obj.put("stateNumber", volunteers.get(cont).getStateNumber());
-                obj.put("section", volunteers.get(cont).getSection());
-                obj.put("municipality", volunteers.get(cont).getMunicipality());
-                obj.put("localDistrict", volunteers.get(cont).getLocalDistrict());
-                obj.put("section", Integer.parseInt(volunteers.get(cont).getSection()));
-                obj.put("sector", volunteers.get(cont).getSector());
-                obj.put("notes", volunteers.get(cont).getNotes());
-                obj.put("typeUser", volunteers.get(cont).getTypeUser());
+                volunteerObject.put("electorKey", volunteer.getElectorKey());
+                volunteerObject.put("email", volunteer.getEmail());
+                volunteerObject.put("phone", volunteer.getPhone());
+
+                JSONObject sectionObject = new JSONObject();
+                Section section = volunteers.get(cont).getSection();
+                sectionObject.put("id", section.getId());
+                sectionObject.put("section", section.getSection());
+
+                JSONObject stateObject = new JSONObject();
+                State state = section.getState();
+                stateObject.put("id", state.getId());
+                stateObject.put("name", state.getName());
+                sectionObject.put("state", stateObject);
+
+                JSONObject municipalityObject = new JSONObject();
+                Municipality municipality = section.getMunicipality();
+                municipalityObject.put("id", municipality.getId());
+                municipalityObject.put("name", municipality.getNumber());
+                municipalityObject.put("number", municipality.getName());
+                municipalityObject.put("stateId", municipality.getState().getId());
+                sectionObject.put("municipality", municipalityObject);
+
+                JSONObject localDistrictObject = new JSONObject();
+                LocalDistrict localDistrict = section.getLocalDistrict();
+                localDistrictObject.put("id", localDistrict.getId());
+                localDistrictObject.put("name", localDistrict.getNumber());
+                localDistrictObject.put("number", localDistrict.getName());
+                localDistrictObject.put("stateId", localDistrict.getState().getId());
+                sectionObject.put("localDistrict", localDistrictObject);
+
+                JSONObject federalDistrictObject = new JSONObject();
+                FederalDistrict federalDistrict = section.getFederalDistrict();
+                federalDistrictObject.put("id", federalDistrict.getId());
+                federalDistrictObject.put("name", federalDistrict.getNumber());
+                federalDistrictObject.put("number", federalDistrict.getName());
+                federalDistrictObject.put("stateId", federalDistrict.getState().getId());
+                sectionObject.put("federalDistrict", federalDistrictObject);
+
+                volunteerObject.put("section", sectionObject);
+                volunteerObject.put("sector", volunteer.getSector());
+                volunteerObject.put("notes", volunteer.getNotes() == null ? "" : volunteer.getNotes());
+                volunteerObject.put("type", volunteer.getType());
+                volunteerObject.put("localVotingBooth", volunteer.isLocalVotingBooth());
+
+                volunteerObject.put("imageFirm", volunteer.getImageFirm().getImageBase64());
+                volunteerObject.put("imageCredential", volunteer.getImageCredential().getImageBase64());
+
                 cont++;
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (JSONException ex) {
+                ex.printStackTrace();
             }
-            jsonArray.put(obj);
+            volunteersArray.put(volunteerObject);
         }
-
-        try {
-            this.json.put("users", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } */
+        if ( isLocal ) {
+            FileManager.writeJSON(volunteersArray, LOCAL_FILE_NAME, LOCAL_JSON_ID, context);
+        } else {
+            FileManager.writeJSON(volunteersArray, REMOTE_FILE_NAME, REMOTE_JSON_ID, context);
+        }
     }
 
     private ArrayList<Volunteer> readJSON(String data){
@@ -129,80 +157,6 @@ public class VolunteerFileManager {
         return volunteers;
         */
         return null;
-    }
-
-    public void saveFile(ArrayList<Volunteer> volunteers, Context context) {
-        FileOutputStream fileOutputStream = null;
-        createJSON(volunteers);
-        try {
-            fileOutputStream = context.openFileOutput(fileNameJSON + ".json", context.MODE_PRIVATE);
-            fileOutputStream.write(this.json.toString().getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public void deleteFileJSON(Context context){
-        File file = new File(context.getFilesDir() + "/" + fileNameJSON + ".json");
-        if (file.exists()){
-            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
-            file.delete();
-        } else {
-            Log.d("TAG1", "archivo no existente");
-        }
-    }
-
-    public void deleteFile(String path){
-        File file = new File(path);
-        if (file.exists()){
-            Log.d("TAG1", "archivo a borrar" + file.getAbsolutePath());
-            file.delete();
-        } else {
-            Log.d("TAG1", "archivo no existente");
-        }
-    }
-
-    public ArrayList<Volunteer> readFile(Context context){
-        FileInputStream fileInputStream = null;
-        StringBuilder stringBuilder = new StringBuilder();
-        try{
-            fileInputStream = context.openFileInput(fileNameJSON + ".json");
-
-            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String lineaTexto;
-            while((lineaTexto = bufferedReader.readLine())!= null){
-                stringBuilder.append(lineaTexto);
-            }
-        }catch (Exception e){
-            Log.e("", "" + e.getMessage());
-            return new ArrayList<>();
-        }finally {
-            if(fileInputStream !=null){
-                try {
-                    fileInputStream.close();
-                }catch (Exception e){
-                    Log.e("", "" + e.getMessage());
-                }
-            }
-        }
-        return readJSON(stringBuilder.toString());
-    }
-
-    public String getFileName() {
-        return fileNameJSON;
-    }
-
-    public JSONObject getJson() {
-        return json;
     }
 
 }
