@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             }
                         } break;
                         case FirmActivity.RESULT_REJECT_FIRM: {
-
+                            Toast.makeText(this, "No se firmo", Toast.LENGTH_SHORT).show();
                         } break;
                         case FirmActivity.RESULT_IMAGE_FILE_NOT_CREATE: {
                             Toast.makeText(this, "Ocurrion un error, intentlo de nuevo", Toast.LENGTH_SHORT).show();
@@ -140,13 +140,14 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         } else {
             // TODO uptade en un service (background)
         }
-        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+
+        /* SpannableStringBuilder snackbarText = new SpannableStringBuilder();
         snackbarText.append("Voluntario registrado con exito");
         snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_SHORT)
                 .setBackgroundTint(getResources().getColor(R.color.blue))
                 .setTextColor(getResources().getColor(R.color.white))
-                .show();
+                .show(); */
     }
 
     @Override

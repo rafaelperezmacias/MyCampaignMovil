@@ -96,8 +96,10 @@ public class ContactFragment extends Fragment {
                     isValidState = true;
                     if ( lytStates.getEditText().getText().toString().equals(currentStateName) ) {
                         lytSections.setVisibility(View.VISIBLE);
+                        isValidSection = isValidSection(lytSections.getEditText().getText().toString().trim());
                     } else {
                         lytSections.setVisibility(View.GONE);
+                        isValidSection = false;
                     }
                 } else {
                     isValidState = false;
@@ -143,14 +145,15 @@ public class ContactFragment extends Fragment {
         volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
         volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
         if ( isValidSection ) {
-            volunteer.setSection(findSection(lytSections.getEditText().getText().toString().trim()));
+            volunteer.setSection(new Section(findSection(lytSections.getEditText().getText().toString().trim())));
         } else {
             Section section = new Section();
             if ( isValidState ) {
-                section.setState(findState(lytStates.getEditText().getText().toString().trim()));
+                section.setState(new State(findState(lytStates.getEditText().getText().toString().trim())));
             } else {
                 State state = new State();
-                state.setName("" + lytStates.getEditText().getText().toString());
+                state.setName(lytStates.getEditText().getText().toString());
+                section.setState(state);
             }
             volunteer.setSection(section);
         }

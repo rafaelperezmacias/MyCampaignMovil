@@ -35,7 +35,7 @@
                     android:minWidth="48dp"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:src="@drawable/ic_sharp_close_24" />
+                    android:src="@drawable/ic_baseline_arrow_back_24" />
 
                 <LinearLayout
                     android:layout_weight="1"

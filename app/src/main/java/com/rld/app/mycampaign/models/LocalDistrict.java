@@ -20,6 +20,14 @@ public class LocalDistrict {
         this.state = state;
     }
 
+    public LocalDistrict(LocalDistrict localDistrict)
+    {
+        this.id = localDistrict.id;
+        this.name = localDistrict.name;
+        this.number = localDistrict.number;
+        this.state = localDistrict.state;
+    }
+
     public int getId() {
         return id;
     }

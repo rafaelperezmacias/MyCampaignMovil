@@ -26,7 +26,7 @@ public class VolunteerFragment extends Fragment {
         FloatingActionButton btnAddVolunteer = binding.btnAddVolunteer;
 
         btnAddVolunteer.setOnClickListener(v -> {
-            if ( btnAddVolunteer.getVisibility() == View.VISIBLE && onClickAddVolunteer != null ) {
+            if ( onClickAddVolunteer != null ) {
                 onClickAddVolunteer.addVolunteerFragment();
             }
         });

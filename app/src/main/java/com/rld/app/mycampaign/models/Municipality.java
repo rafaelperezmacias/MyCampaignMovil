@@ -20,6 +20,14 @@ public class Municipality {
         this.state = state;
     }
 
+    public Municipality(Municipality municipality)
+    {
+        this.id = municipality.id;
+        this.name = municipality.name;
+        this.number = municipality.number;
+        this.state = municipality.state;
+    }
+
     public int getId() {
         return id;
     }

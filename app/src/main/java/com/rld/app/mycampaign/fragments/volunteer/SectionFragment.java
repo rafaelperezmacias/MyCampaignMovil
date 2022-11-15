@@ -34,6 +34,8 @@ public class SectionFragment extends Fragment {
     private Volunteer volunteer;
     private LocalDataFileManager localDataFileManager;
 
+    private String currentSection;
+
     public SectionFragment(Volunteer volunteer, LocalDataFileManager localDataFileManager)
     {
         this.volunteer = volunteer;
@@ -86,21 +88,39 @@ public class SectionFragment extends Fragment {
             if ( volunteer.getSection().getFederalDistrict() != null ) {
                 lytFederalDistrictName.getEditText().setText(section.getFederalDistrict().getName());
                 lytFederalDistrictNumber.getEditText().setText(String.valueOf(section.getFederalDistrict().getNumber()));
+            } else {
+                lytFederalDistrictName.getEditText().setText("");
+                lytFederalDistrictNumber.getEditText().setText("");
             }
             if ( volunteer.getSection().getLocalDistrict() != null ) {
                 lytLocalDistrictName.getEditText().setText(section.getLocalDistrict().getName());
                 lytLocalDistrictNumber.getEditText().setText(String.valueOf(section.getLocalDistrict().getNumber()));
+            } else {
+                lytLocalDistrictName.getEditText().setText("");
+                lytLocalDistrictNumber.getEditText().setText("");
             }
             if ( volunteer.getSection().getMunicipality() != null ) {
                 lytMunicipalityName.getEditText().setText(section.getMunicipality().getName());
                 lytMunicipalityNumber.getEditText().setText(String.valueOf(section.getMunicipality().getNumber()));
+            } else {
+                lytMunicipalityName.getEditText().setText("");
+                lytMunicipalityNumber.getEditText().setText("");
             }
             if ( volunteer.getSection().getState() != null ) {
                 lytStateName.getEditText().setText(section.getState().getName());
                 lytStateNumber.getEditText().setText(String.valueOf(section.getState().getId()));
+            } else {
+                lytStateName.getEditText().setText("");
+                lytStateNumber.getEditText().setText("");
+            }
+            if ( currentSection != null && !currentSection.equals(section.getSection()) ) {
+                lytSector.getEditText().setText("");
             }
             if ( section.getId() != 0 ) {
                 lytSection.getEditText().setText(section.getSection());
+                currentSection = section.getSection();
+            } else {
+                lytSection.getEditText().setText("");
             }
         }
     }
