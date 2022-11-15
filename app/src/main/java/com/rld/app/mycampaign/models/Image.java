@@ -38,6 +38,10 @@ public class Image {
         return imageBase64;
     }
 
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
     public String convertImageToString(Bitmap image) {
         ByteArrayOutputStream array = new ByteArrayOutputStream();
         int mb = image.getByteCount() / 8 / 1000 / 1000;

@@ -82,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        localVolunteers = new ArrayList<>();
+        localVolunteers = VolunteerFileManager.readJSON(true, MainActivity.this);
+        remoteVolunteers = VolunteerFileManager.readJSON(false, MainActivity.this);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile)
                 .setOpenableLayout(drawer)

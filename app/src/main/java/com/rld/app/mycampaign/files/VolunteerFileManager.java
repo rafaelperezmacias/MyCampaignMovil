@@ -1,9 +1,11 @@
 package com.rld.app.mycampaign.files;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.FederalDistrict;
+import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
@@ -15,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class VolunteerFileManager {
 
@@ -63,24 +66,24 @@ public class VolunteerFileManager {
                 JSONObject municipalityObject = new JSONObject();
                 Municipality municipality = section.getMunicipality();
                 municipalityObject.put("id", municipality.getId());
-                municipalityObject.put("name", municipality.getNumber());
-                municipalityObject.put("number", municipality.getName());
+                municipalityObject.put("name", municipality.getName());
+                municipalityObject.put("number", municipality.getNumber());
                 municipalityObject.put("stateId", municipality.getState().getId());
                 sectionObject.put("municipality", municipalityObject);
 
                 JSONObject localDistrictObject = new JSONObject();
                 LocalDistrict localDistrict = section.getLocalDistrict();
                 localDistrictObject.put("id", localDistrict.getId());
-                localDistrictObject.put("name", localDistrict.getNumber());
-                localDistrictObject.put("number", localDistrict.getName());
+                localDistrictObject.put("name", localDistrict.getName());
+                localDistrictObject.put("number", localDistrict.getNumber());
                 localDistrictObject.put("stateId", localDistrict.getState().getId());
                 sectionObject.put("localDistrict", localDistrictObject);
 
                 JSONObject federalDistrictObject = new JSONObject();
                 FederalDistrict federalDistrict = section.getFederalDistrict();
                 federalDistrictObject.put("id", federalDistrict.getId());
-                federalDistrictObject.put("name", federalDistrict.getNumber());
-                federalDistrictObject.put("number", federalDistrict.getName());
+                federalDistrictObject.put("name", federalDistrict.getName());
+                federalDistrictObject.put("number", federalDistrict.getNumber());
                 federalDistrictObject.put("stateId", federalDistrict.getState().getId());
                 sectionObject.put("federalDistrict", federalDistrictObject);
 
@@ -94,8 +97,8 @@ public class VolunteerFileManager {
                 volunteerObject.put("imageCredential", volunteer.getImageCredential().getImageBase64());
 
                 cont++;
-            } catch (JSONException ex) {
-                ex.printStackTrace();
+            } catch ( JSONException ex ) {
+                Log.e("writeJSON()", "" + ex.getMessage());
             }
             volunteersArray.put(volunteerObject);
         }
@@ -106,57 +109,107 @@ public class VolunteerFileManager {
         }
     }
 
-    private ArrayList<Volunteer> readJSON(String data){
-        /*
+    public static ArrayList<Volunteer> readJSON(boolean isLocal, Context context){
+        String fileString;
+        if ( isLocal ) {
+            fileString = FileManager.readJSON(LOCAL_FILE_NAME, context);
+        } else {
+            fileString = FileManager.readJSON(REMOTE_FILE_NAME, context);
+        }
+        if ( fileString == null || fileString.isEmpty() ) {
+            return new ArrayList<>();
+        }
         ArrayList<Volunteer> volunteers = new ArrayList<>();
-
         try {
-            JSONObject root = new JSONObject(data);
-            this.json = root;
-
-            JSONArray user = root.getJSONArray("users");
+            JSONObject root = new JSONObject(fileString);
+            JSONArray volunteersArray = root.getJSONArray(isLocal ? LOCAL_JSON_ID : REMOTE_JSON_ID);
             int cont = 0;
-            while (cont < user.length()) {
+            while ( cont < volunteersArray.length() ) {
                 Volunteer volunteer = new Volunteer();
-                JSONObject object = null;
                 try {
-                    object = user.getJSONObject(cont);
-                    volunteer.setNames(object.getString("names"));
-                    volunteer.setLastName1(object.getString("lastName1"));
-                    volunteer.setLastName2(object.getString("lastName2"));
-                    volunteer.setAge(object.getString("age"));
-                    volunteer.setAddressName(object.getString("addressName"));
-                    volunteer.setAddressNumExt(object.getString("addressNumExt"));
-                    volunteer.setAddressNumInt(object.getString("addressNumInt"));
-                    volunteer.setSuburb(object.getString("suburb"));
-                    volunteer.setZipCode(object.getString("zipCode"));
-                    volunteer.setElectorKey(object.getString("electorKey"));
-                    volunteer.setEmail(object.getString("email"));
-                    volunteer.setPhone(object.getString("phone"));
-                    volunteer.setCasillaLocal(object.getBoolean( "question1"));
-                    volunteer.setImgString(object.getString("imgString"));
-                    volunteer.setState(object.getString("stateNumber"));
-                    volunteer.setSection(object.getString("section"));
-                    volunteer.setMunicipality(object.getString("municipality"));
-                    volunteer.setSector(object.getString("sector"));
-                    volunteer.setLocalDistrict(object.getString("localDistrict"));
-                    volunteer.setNotes(object.getString("notes"));
-                    volunteer.setTypeUser(object.getInt("typeUser"));
+                    JSONObject volunteerObject = volunteersArray.getJSONObject(cont);
+
+                    volunteer.setName(volunteerObject.getString("name"));
+                    volunteer.setFathersLastname(volunteerObject.getString("fathersLastname"));
+                    volunteer.setMothersLastname(volunteerObject.getString("mothersLastname"));
+                    Calendar birtdate = Calendar.getInstance();
+                    birtdate.setTimeInMillis(volunteerObject.getLong("birthdate"));
+                    volunteer.setBirthdate(birtdate);
+
+                    JSONObject addressObject = volunteerObject.getJSONObject("address");
+                    Address address = new Address();
+                    address.setStreet(addressObject.getString("street"));
+                    address.setExternalNumber(addressObject.getString("externalNumber"));
+                    address.setInternalNumber(addressObject.getString("internalNumber"));
+                    address.setSuburb(addressObject.getString("suburb"));
+                    address.setZipcode(addressObject.getString("zipcode"));
+                    volunteer.setAddress(address);
+
+                    volunteer.setElectorKey(volunteerObject.getString("electorKey"));
+                    volunteer.setEmail(volunteerObject.getString("email"));
+                    volunteer.setPhone(volunteerObject.getString("phone"));
+
+                    JSONObject sectionObject = volunteerObject.getJSONObject("section");
+                    Section section = new Section();
+                    section.setId(sectionObject.getInt("id"));
+                    section.setSection(sectionObject.getString("section"));
+
+                    JSONObject stateObject = sectionObject.getJSONObject("state");
+                    State state = new State();
+                    state.setId(stateObject.getInt("id"));
+                    state.setName(stateObject.getString("name"));
+                    section.setState(state);
+
+                    JSONObject municipalityObject = sectionObject.getJSONObject("municipality");
+                    Municipality municipality = new Municipality();
+                    municipality.setId(municipalityObject.getInt("id"));
+                    municipality.setName(municipalityObject.getString("name"));
+                    municipality.setNumber(municipalityObject.getInt("number"));
+                    municipality.setState(state);
+                    section.setMunicipality(municipality);
+
+                    JSONObject localDistrictObject = sectionObject.getJSONObject("localDistrict");
+                    LocalDistrict localDistrict = new LocalDistrict();
+                    localDistrict.setId(localDistrictObject.getInt("id"));
+                    localDistrict.setName(localDistrictObject.getString("name"));
+                    localDistrict.setNumber(localDistrictObject.getInt("number"));
+                    localDistrict.setState(state);
+                    section.setLocalDistrict(localDistrict);
+
+                    JSONObject federalDistrictObject = sectionObject.getJSONObject("federalDistrict");
+                    FederalDistrict federalDistrict = new FederalDistrict();
+                    federalDistrict.setId(federalDistrictObject.getInt("id"));
+                    federalDistrict.setName(federalDistrictObject.getString("name"));
+                    federalDistrict.setNumber(federalDistrictObject.getInt("number"));
+                    federalDistrict.setState(state);
+                    section.setFederalDistrict(federalDistrict);
+
+                    volunteer.setSection(section);
+                    volunteer.setSector(volunteerObject.getString("sector"));
+                    volunteer.setNotes(volunteerObject.getString("notes"));
+                    volunteer.setType(volunteerObject.getInt("type"));
+                    volunteer.setLocalVotingBooth(volunteerObject.getBoolean("localVotingBooth"));
+
+                    Image imageFirm = new Image();
+                    imageFirm.setImageBase64(volunteerObject.getString("imageFirm"));
+                    volunteer.setImageFirm(imageFirm);
+                    Image imageCredential = new Image();
+                    imageFirm.setImageBase64(volunteerObject.getString("imageCredential"));
+                    volunteer.setImageFirm(imageCredential);
+
                     volunteers.add(volunteer);
                     cont++;
-                } catch (JSONException e) {
-                    Log.e("" , "" + e.getMessage());
+                } catch ( JSONException ex ) {
+                    Log.e("readJSON()", "" + ex.getMessage());
                     return new ArrayList<>();
                 }
             }
         }
-        catch(JSONException e){
+        catch( JSONException ex ){
+            Log.e("readJSON()", "" + ex.getMessage());
             return new ArrayList<>();
         }
-
         return volunteers;
-        */
-        return null;
     }
 
 }
