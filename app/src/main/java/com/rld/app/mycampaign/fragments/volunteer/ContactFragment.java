@@ -145,11 +145,11 @@ public class ContactFragment extends Fragment {
         volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
         volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
         if ( isValidSection ) {
-            volunteer.setSection(new Section(findSection(lytSections.getEditText().getText().toString().trim())));
+            volunteer.setSection(findSection(lytSections.getEditText().getText().toString().trim()));
         } else {
             Section section = new Section();
             if ( isValidState ) {
-                section.setState(new State(findState(lytStates.getEditText().getText().toString().trim())));
+                section.setState(findState(lytStates.getEditText().getText().toString().trim()));
             } else {
                 State state = new State();
                 state.setName(lytStates.getEditText().getText().toString());

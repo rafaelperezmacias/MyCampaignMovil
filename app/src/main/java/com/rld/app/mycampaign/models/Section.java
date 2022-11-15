@@ -24,16 +24,6 @@ public class Section {
         this.federalDistrict = federalDistrict;
     }
 
-    public Section(Section section)
-    {
-        this.id = section.id;
-        this.section = section.section;
-        this.state = section.state;
-        this.municipality = section.municipality;
-        this.localDistrict = section.localDistrict;
-        this.federalDistrict = section.federalDistrict;
-    }
-
     public int getId() {
         return id;
     }

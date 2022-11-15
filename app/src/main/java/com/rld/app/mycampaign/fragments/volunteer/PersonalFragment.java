@@ -96,6 +96,22 @@ public class PersonalFragment extends Fragment {
         return root;
     }
 
+    public boolean isComplete() {
+//        return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
+//            | !TextInputLayoutUtils.isVali40(lytNames, "Error, revise la información de este campo")
+//            | !TextInputLayoutUtils.isValid(lytLastName1, getString(R.string.fpvbs_lastName1_error))
+//            | !TextInputLayoutUtils.isVali50(lytLastName1, "Error, revise la información de este campo")
+//            | !TextInputLayoutUtils.isValid(lytLastName2, getString(R.string.fpvbs_lastName2_error))
+//            | !TextInputLayoutUtils.isVali50(lytLastName2, "Error, revise la información de este campo")
+//            | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
+//            | !TextInputLayoutUtils.isVali70(lytStreet,"Error, revise la información de este campo")
+//            | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
+//            | !TextInputLayoutUtils.isVali10_1(lytComplement, "Error, revise la información de este campo")
+//            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
+//            | !TextInputLayoutUtils.isVali40(lytSuburb, "Error, revise la información de este campo"));
+        return true;
+    }
+
     public void setVolunteer() {
         volunteer.setFathersLastname(lytFathersLastname.getEditText().getText().toString().trim());
         volunteer.setMothersLastname(lytMothersLastname.getEditText().getText().toString().trim());
@@ -114,22 +130,5 @@ public class PersonalFragment extends Fragment {
         address.setSuburb(lytSuburb.getEditText().getText().toString().trim());
         address.setZipcode(lytZipcode.getEditText().getText().toString().trim());
     }
-
-    public boolean isComplete() {
-//        return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
-//            | !TextInputLayoutUtils.isVali40(lytNames, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytLastName1, getString(R.string.fpvbs_lastName1_error))
-//            | !TextInputLayoutUtils.isVali50(lytLastName1, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytLastName2, getString(R.string.fpvbs_lastName2_error))
-//            | !TextInputLayoutUtils.isVali50(lytLastName2, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
-//            | !TextInputLayoutUtils.isVali70(lytStreet,"Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
-//            | !TextInputLayoutUtils.isVali10_1(lytComplement, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
-//            | !TextInputLayoutUtils.isVali40(lytSuburb, "Error, revise la información de este campo"));
-        return true;
-    }
-
 
 }

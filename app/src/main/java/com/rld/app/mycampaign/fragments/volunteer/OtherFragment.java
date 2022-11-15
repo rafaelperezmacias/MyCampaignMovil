@@ -23,7 +23,6 @@ public class OtherFragment extends Fragment {
 
     private TextInputLayout lytNotes;
     private RadioButton btnRadioYes;
-    private RadioButton btnRadioNo;
     private RadioButton btnRadioVotingBooth;
     private RadioButton btnRadioGeneral;
     private RadioButton btnRadioOther;
@@ -43,7 +42,6 @@ public class OtherFragment extends Fragment {
 
         lytNotes = binding.lytNotes;
         btnRadioYes = binding.btnRadioYes;
-        btnRadioNo = binding.btnRadioNo;
         btnRadioVotingBooth = binding.btnVotingBooth;
         btnRadioGeneral = binding.btnRadioGeneral;
         btnRadioOther = binding.btnRadioOther;
@@ -61,6 +59,10 @@ public class OtherFragment extends Fragment {
         return root;
     }
 
+    public boolean isComplete() {
+        return true;
+    }
+
     public void setVolunteer() {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
@@ -73,10 +75,6 @@ public class OtherFragment extends Fragment {
             volunteer.setType(Volunteer.TYPE_OTHER);
         }
         volunteer.setLocalVotingBooth(btnRadioYes.isSelected());
-    }
-
-    public boolean isComplete() {
-        return true;
     }
 
 }

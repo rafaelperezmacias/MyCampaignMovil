@@ -20,14 +20,6 @@ public class FederalDistrict {
         this.state = state;
     }
 
-    public FederalDistrict(FederalDistrict federalDistrict)
-    {
-        this.id = federalDistrict.id;
-        this.name = federalDistrict.name;
-        this.number = federalDistrict.number;
-        this.state = federalDistrict.state;
-    }
-
     public int getId() {
         return id;
     }
