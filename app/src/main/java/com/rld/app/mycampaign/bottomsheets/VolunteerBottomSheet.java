@@ -20,6 +20,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
+import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.fragments.volunteer.ContactFragment;
 import com.rld.app.mycampaign.fragments.volunteer.OtherFragment;
 import com.rld.app.mycampaign.fragments.volunteer.PersonalFragment;
@@ -36,12 +37,13 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
     private Volunteer volunteer;
     private MainActivity mainActivity;
+    private LocalDataFileManager localDataFileManager;
 
-
-    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity)
+    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager)
     {
         this.volunteer = volunteer;
         this.mainActivity = mainActivity;
+        this.localDataFileManager = localDataFileManager;
     }
 
     @Override
@@ -161,6 +163,8 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
             }
         });
+
+        mainActivity.hideProgressDialog();
 
         setCancelable(false);
         return bottomSheet;

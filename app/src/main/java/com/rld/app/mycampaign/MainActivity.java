@@ -28,6 +28,7 @@ import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
+import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.files.LocalDistrictFileManager;
 import com.rld.app.mycampaign.files.MunicipalityFileManager;
 import com.rld.app.mycampaign.files.SectionFileManager;
@@ -40,6 +41,9 @@ import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONException;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickAddVolunteer {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ActivityResultLauncher<Intent> startFirmActivityIntent;
     
     private VolunteerBottomSheet volunteerBottomSheet;
+    private ProgressDialog progressDialog;
 
     private Volunteer currentVolunteer;
 
@@ -87,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this);
-                                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+                                createFormToCreateVolunteer();
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -178,6 +182,30 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         });
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
+    }
+
+    private void createFormToCreateVolunteer() {
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Cargando datos locales")
+                .setCancelable(false);
+        progressDialog = new ProgressDialog(MainActivity.this, builder);
+        progressDialog.show();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
+                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this, localDataFileManager);
+                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 500);
+    }
+
+    public void hideProgressDialog() {
+        if ( progressDialog != null ) {
+            progressDialog.dismiss();
+        }
     }
 
 }
