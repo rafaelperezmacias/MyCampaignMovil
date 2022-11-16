@@ -94,7 +94,6 @@ public class MessageDialog extends Dialog {
             btnSecondatyAction.setVisibility(View.GONE);
         }
 
-
         setCancelable(isCancelable);
     }
 

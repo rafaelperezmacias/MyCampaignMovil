@@ -25,7 +25,7 @@ public class VolunteerFragment extends Fragment {
 
     private FragmentVolunteerBinding binding;
 
-    private static OnClickAddVolunteer onClickAddVolunteer;
+    private static OnClickMenuVolunteerListener onClickMenuVolunteerListener;
     private ArrayList<Volunteer> volunteers;
     private VolunteersAdapter adapter;
     private RecyclerView volunteersRecyclerview;
@@ -47,7 +47,7 @@ public class VolunteerFragment extends Fragment {
             mainActivity = (MainActivity) parentActivity;
         }
 
-        FloatingActionButton btnAddVolunteer = binding.btnAddVolunteer;
+        FloatingActionButton btnMenuVolunteer = binding.btnMenuVolunteer;
         volunteersRecyclerview = binding.volunteersRecyclerview;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         volunteersRecyclerview.setLayoutManager(linearLayoutManager);
@@ -56,26 +56,26 @@ public class VolunteerFragment extends Fragment {
         adapter = new VolunteersAdapter(parentActivity, volunteers);
         volunteersRecyclerview.setAdapter(adapter);
 
-        btnAddVolunteer.setOnClickListener(v -> {
-            if ( onClickAddVolunteer != null ) {
-                onClickAddVolunteer.addVolunteerFragment();
+        btnMenuVolunteer.setOnClickListener(v -> {
+            if ( onClickMenuVolunteerListener != null ) {
+                onClickMenuVolunteerListener.showMenuVolunteer();
             }
         });
 
-        if ( onClickAddVolunteer != null ) {
-            onClickAddVolunteer.initializeVolunteersList(VolunteerFragment.this);
+        if ( onClickMenuVolunteerListener != null ) {
+            onClickMenuVolunteerListener.initializeVolunteersList(VolunteerFragment.this);
         }
 
         return root;
     }
 
-    public interface OnClickAddVolunteer {
+    public interface OnClickMenuVolunteerListener {
         void initializeVolunteersList(VolunteerFragment volunteerFragment);
-        void addVolunteerFragment();
+        void showMenuVolunteer();
     }
 
-    public static void setOnClickAddVolunteer(OnClickAddVolunteer onClickAddVolunteer) {
-        VolunteerFragment.onClickAddVolunteer = onClickAddVolunteer;
+    public static void setOnClickAddVolunteer(OnClickMenuVolunteerListener onClickMenuVolunteerListener) {
+        VolunteerFragment.onClickMenuVolunteerListener = onClickMenuVolunteerListener;
     }
 
     public void updateVolunteers(ArrayList<Volunteer> volunteers) {

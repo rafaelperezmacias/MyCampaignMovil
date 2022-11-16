@@ -4,12 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,6 +40,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
+import com.rld.app.mycampaign.dialogs.MenuVolunteerDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
@@ -52,7 +65,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickAddVolunteer {
+public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickMenuVolunteerListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -151,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         } else {
             // TODO uptade en un service (background)
         }
+
     }
 
     @Override
@@ -166,8 +180,36 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     @Override
-    public void addVolunteerFragment() {
-        startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+    public void showMenuVolunteer() {
+        MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this);
+        menuVolunteerDialog.setBtnAddVolunteerListener(view -> {
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    menuVolunteerDialog.dismiss();
+                    startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 100);
+        });
+        menuVolunteerDialog.setBtnUploadListener(view -> {
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    menuVolunteerDialog.dismiss();
+                    Toast.makeText(MainActivity.this, "Aqui va la carga :p", Toast.LENGTH_SHORT).show();
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 100);
+        });
+        Window window = menuVolunteerDialog.getWindow();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+        layoutParams.flags &= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(layoutParams);
+        menuVolunteerDialog.show();
     }
 
     private void addLocalVolunteer() {
@@ -218,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
                     MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
                     SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
+                    getSharedPreferences("localData", Context.MODE_PRIVATE).edit().putBoolean("saved", true).apply();
                 }
             } catch ( JSONException ex ) {
                 
