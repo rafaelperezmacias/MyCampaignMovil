@@ -70,9 +70,15 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ArrayList<Volunteer> localVolunteers;
     private ArrayList<Volunteer> remoteVolunteers;
 
+    private VolunteerFragment volunteerFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        localVolunteers = VolunteerFileManager.readJSON(true, MainActivity.this);
+        remoteVolunteers = VolunteerFileManager.readJSON(false, MainActivity.this);
+        VolunteerFragment.setOnClickAddVolunteer(MainActivity.this);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -82,8 +88,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        localVolunteers = VolunteerFileManager.readJSON(true, MainActivity.this);
-        remoteVolunteers = VolunteerFileManager.readJSON(false, MainActivity.this);
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile)
                 .setOpenableLayout(drawer)
@@ -92,8 +96,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        VolunteerFragment.setOnClickAddVolunteer(MainActivity.this);
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
@@ -158,6 +160,12 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     @Override
+    public void initializeVolunteersList(VolunteerFragment volunteerFragment) {
+        this.volunteerFragment = volunteerFragment;
+        volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+    }
+
+    @Override
     public void addVolunteerFragment() {
         startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
     }
@@ -165,9 +173,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private void addLocalVolunteer() {
         localVolunteers.add(currentVolunteer);
         VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
-        currentVolunteer.getImageCredential().deleteImage();
-        currentVolunteer.getImageFirm().deleteImage();
         volunteerBottomSheet.dismiss();
+        if ( volunteerFragment != null ) {
+            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+        }
         SpannableStringBuilder snackbarText = new SpannableStringBuilder();
         snackbarText.append("Voluntario registrado con éxito");
         snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -242,6 +251,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( progressDialog != null ) {
             progressDialog.dismiss();
         }
+    }
+
+    public ArrayList<Volunteer> volunteersToRecyclerView() {
+        ArrayList<Volunteer> volunteers = new ArrayList<>();
+        volunteers.addAll(remoteVolunteers);
+        volunteers.addAll(localVolunteers);
+        return volunteers;
     }
 
 }

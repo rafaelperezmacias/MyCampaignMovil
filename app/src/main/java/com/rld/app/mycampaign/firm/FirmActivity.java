@@ -112,7 +112,7 @@ public class FirmActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        String imageFileName = UUID.randomUUID().toString();
+        String imageFileName = UUID.randomUUID().toString() + System.currentTimeMillis();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName, ".jpg", storageDir);
     }

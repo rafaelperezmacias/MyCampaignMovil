@@ -8,7 +8,7 @@
     tools:context=".fragments.menu.VolunteerFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_volunteers"
+        android:id="@+id/volunteers_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

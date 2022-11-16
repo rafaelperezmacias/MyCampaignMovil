@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.files;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.rld.app.mycampaign.models.Address;
@@ -93,8 +95,8 @@ public class VolunteerFileManager {
                 volunteerObject.put("type", volunteer.getType());
                 volunteerObject.put("localVotingBooth", volunteer.isLocalVotingBooth());
 
-                volunteerObject.put("imageFirm", volunteer.getImageFirm().getImageBase64());
-                volunteerObject.put("imageCredential", volunteer.getImageCredential().getImageBase64());
+                volunteerObject.put("imageFirm", volunteer.getImageFirm().getPath());
+                volunteerObject.put("imageCredential", volunteer.getImageCredential().getPath());
 
                 cont++;
             } catch ( JSONException ex ) {
@@ -191,10 +193,12 @@ public class VolunteerFileManager {
                     volunteer.setLocalVotingBooth(volunteerObject.getBoolean("localVotingBooth"));
 
                     Image imageFirm = new Image();
-                    imageFirm.setImageBase64(volunteerObject.getString("imageFirm"));
+                    imageFirm.setPath(volunteerObject.getString("imageFirm"));
+                    imageFirm.setBlob(BitmapFactory.decodeFile(imageFirm.getPath()));
                     volunteer.setImageFirm(imageFirm);
                     Image imageCredential = new Image();
-                    imageFirm.setImageBase64(volunteerObject.getString("imageCredential"));
+                    imageCredential.setPath(volunteerObject.getString("imageCredential"));
+                    imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
                     volunteer.setImageFirm(imageCredential);
 
                     volunteers.add(volunteer);
