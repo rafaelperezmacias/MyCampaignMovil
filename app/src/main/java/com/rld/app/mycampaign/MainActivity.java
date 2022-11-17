@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         });
         Window window = menuVolunteerDialog.getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();
-        layoutParams.gravity = Gravity.BOTTOM | Gravity.END;
+        layoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER;
         layoutParams.flags &= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(layoutParams);
         menuVolunteerDialog.show();
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this, localDataFileManager);
+                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };
@@ -310,6 +310,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         volunteers.addAll(remoteVolunteers);
         volunteers.addAll(localVolunteers);
         return volunteers;
+    }
+
+    public void showDetailsFromVolunteerInBottomSheet(Volunteer volunteer) {
+        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, VolunteerBottomSheet.TYPE_SHOW);
+        volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
     }
 
 }

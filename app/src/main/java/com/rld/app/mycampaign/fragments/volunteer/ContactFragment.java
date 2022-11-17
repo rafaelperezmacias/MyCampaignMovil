@@ -23,12 +23,14 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentContactVolunteerBsBinding;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
+import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +54,13 @@ public class ContactFragment extends Fragment {
     private boolean isValidSection;
 
     private String currentStateName;
+    private int type;
 
-    public ContactFragment(Volunteer volunteer, LocalDataFileManager localDataFileManager, MainActivity mainActivity)
+    public ContactFragment(Volunteer volunteer, LocalDataFileManager localDataFileManager, MainActivity mainActivity, int type)
     {
         this.volunteer = volunteer;
         this.localDataFileManager = localDataFileManager;
+        this.type = type;
         currentStateName = mainActivity.getSharedPreferences("localData", Context.MODE_PRIVATE).getString("state_name", null);
     }
 
@@ -76,12 +80,25 @@ public class ContactFragment extends Fragment {
         lytElectorKey.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytStates.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
-        if ( localDataFileManager.isEmpty() ) {
+        if ( type == VolunteerBottomSheet.TYPE_INSERT ) {
+            if ( localDataFileManager.isEmpty() ) {
+                lytSearchSection.setVisibility(View.GONE);
+            } else {
+                addStates();
+                addSections();
+                lytSections.setVisibility(View.GONE);
+            }
+        } else if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSearchSection.setVisibility(View.GONE);
-        } else {
-            addStates();
-            addSections();
-            lytSections.setVisibility(View.GONE);
+            TextInputLayoutUtils.setEditableEditText(lytElectorKey.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytEmail.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytPhone.getEditText(), false);
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            lytElectorKey.getEditText().setText(volunteer.getElectorKey());
+            lytPhone.getEditText().setText(volunteer.getPhone());
+            lytEmail.getEditText().setText(volunteer.getEmail());
         }
 
         lytStates.getEditText().addTextChangedListener(new TextWatcher() {

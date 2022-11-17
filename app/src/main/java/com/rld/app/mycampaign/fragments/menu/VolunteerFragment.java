@@ -52,10 +52,12 @@ public class VolunteerFragment extends Fragment {
         btnMenuVolunteer = binding.btnMenuVolunteer;
         volunteersRecyclerview = binding.volunteersRecyclerview;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
         volunteersRecyclerview.setLayoutManager(linearLayoutManager);
         volunteersRecyclerview.setHasFixedSize(true);
 
-        adapter = new VolunteersAdapter(parentActivity, volunteers);
+        adapter = new VolunteersAdapter(mainActivity, volunteers);
         volunteersRecyclerview.setAdapter(adapter);
 
         btnMenuVolunteer.setOnClickListener(v -> {

@@ -32,6 +32,10 @@ import com.rld.app.mycampaign.models.Volunteer;
 
 public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
+    public static final int TYPE_INSERT = 1000;
+    public static final int TYPE_SHOW = 1001;
+    public static final int TYPE_UPDATE = 1002;
+
     private BottomSheetBehavior bottomSheetBehavior;
 
     private FragmentManager fragmentManager;
@@ -40,12 +44,14 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private Volunteer volunteer;
     private MainActivity mainActivity;
     private LocalDataFileManager localDataFileManager;
+    private int type;
 
-    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager)
+    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
     {
         this.volunteer = volunteer;
         this.mainActivity = mainActivity;
         this.localDataFileManager = localDataFileManager;
+        this.type = type;
     }
 
     @Override
@@ -75,16 +81,34 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
 
         MaterialButton btnSave = view.findViewById(R.id.btn_save);
         ImageButton btnClose = view.findViewById(R.id.btn_close);
+        TextView txtTitle = view.findViewById(R.id.txt_title);
         TextView txtSubtitle = view.findViewById(R.id.txt_subtitle);
+        ImageButton btnPrev = view.findViewById(R.id.btn_edit_prev);
+        ImageButton btnNext = view.findViewById(R.id.btn_edit_next);
 
-        PersonalFragment personalFragment = new PersonalFragment(volunteer);
-        ContactFragment contactFragment = new ContactFragment(volunteer, localDataFileManager, mainActivity);
-        SectionFragment sectionFragment = new SectionFragment(volunteer, localDataFileManager);
-        OtherFragment otherFragment = new OtherFragment(volunteer);
+        if ( type == VolunteerBottomSheet.TYPE_INSERT ) {
+            txtTitle.setText("Registro de voluntario");
+            txtSubtitle.setText("Paso 1 de 6");
+            btnSave.setVisibility(View.VISIBLE);
+            btnPrev.setVisibility(View.GONE);
+            btnNext.setVisibility(View.GONE);
+        } else if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+            txtTitle.setText("Detalles del voluntario");
+            txtSubtitle.setText("Parte 1 de 4");
+            btnSave.setVisibility(View.GONE);
+            btnPrev.setVisibility(View.INVISIBLE);
+            btnNext.setVisibility(View.VISIBLE);
+        } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            // txtTitle.setText("Actualizar voluntario");
+        }
+
+        PersonalFragment personalFragment = new PersonalFragment(volunteer, type);
+        ContactFragment contactFragment = new ContactFragment(volunteer, localDataFileManager, mainActivity, type);
+        SectionFragment sectionFragment = new SectionFragment(volunteer, localDataFileManager, type);
+        OtherFragment otherFragment = new OtherFragment(volunteer, type);
         PolicyFragment policyFragment = new PolicyFragment();
 
         currentFragment = personalFragment;
-        txtSubtitle.setText(getString(R.string.fbs_step1));
 
         fragmentManager = getChildFragmentManager();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, personalFragment).commit();
@@ -93,6 +117,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
+        // To create or update ?
         btnSave.setOnClickListener(v -> {
             if ( currentFragment == personalFragment ) {
                 if ( !personalFragment.isComplete() ) {
@@ -133,6 +158,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         });
 
         btnClose.setOnClickListener(v -> {
+            if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+                dismiss();
+                return;
+            }
             if ( currentFragment == personalFragment ) {
                 MessageDialogBuilder builder = new MessageDialogBuilder()
                         .setTitle("Alerta")
@@ -163,6 +192,36 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnSave.setText(getString(R.string.fbs_continue));
                 txtSubtitle.setText(getString(R.string.fbs_step4));
                 showFragment(otherFragment);
+            }
+        });
+
+        // Only show
+        btnNext.setOnClickListener(v -> {
+            if ( currentFragment == personalFragment ) {
+                txtSubtitle.setText("Parte 2 de 4");
+                showFragment(contactFragment);
+                btnPrev.setVisibility(View.VISIBLE);
+            } else if ( currentFragment == contactFragment ) {
+                txtSubtitle.setText("Parte 3 de 4");
+                showFragment(sectionFragment);
+            } else if ( currentFragment == sectionFragment ) {
+                txtSubtitle.setText("Parte 4 de 4");
+                showFragment(otherFragment);
+                btnNext.setVisibility(View.INVISIBLE);
+            }
+        });
+        btnPrev.setOnClickListener(v -> {
+            if ( currentFragment == contactFragment ) {
+                txtSubtitle.setText("Parte 1 de 4");
+                showFragment(personalFragment);
+                btnPrev.setVisibility(View.INVISIBLE);
+            } else if ( currentFragment == sectionFragment ) {
+                txtSubtitle.setText("Parte 2 de 4");
+                showFragment(contactFragment);
+            } else if ( currentFragment == otherFragment ) {
+                txtSubtitle.setText("Parte 3 de 4");
+                showFragment(sectionFragment);
+                btnNext.setVisibility(View.VISIBLE);
             }
         });
 

@@ -16,9 +16,11 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentPersonalVolunteerBsBinding;
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -37,13 +39,15 @@ public class PersonalFragment extends Fragment {
     private TextInputLayout lytSuburb;
     private TextInputLayout lytZipcode;
 
-    private Volunteer volunteer;
-
     private Calendar birthDate;
 
-    public PersonalFragment(Volunteer volunteer)
+    private Volunteer volunteer;
+    private int type;
+
+    public PersonalFragment(Volunteer volunteer, int type)
     {
         this.volunteer = volunteer;
+        this.type = type;
     }
 
     @Nullable
@@ -85,6 +89,31 @@ public class PersonalFragment extends Fragment {
                 lytBirthdate.getEditText().setText(date);
             });
         });
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            lytFathersLastname.getEditText().setText(volunteer.getFathersLastname());
+            lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
+            lytName.getEditText().setText(volunteer.getName());
+            String date = volunteer.getBirthdate().get(Calendar.DAY_OF_MONTH) + "/" + (volunteer.getBirthdate().get(Calendar.MONTH) + 1) + "/" + volunteer.getBirthdate().get(Calendar.YEAR);
+            lytBirthdate.getEditText().setText(date);
+            lytStreet.getEditText().setText(volunteer.getAddress().getStreet());
+            lytInternalNumber.getEditText().setText(volunteer.getAddress().getInternalNumber());
+            lytExternalNumber.getEditText().setText(volunteer.getAddress().getExternalNumber());
+            lytSuburb.getEditText().setText(volunteer.getAddress().getSuburb());
+            lytZipcode.getEditText().setText(volunteer.getAddress().getZipcode());
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+            TextInputLayoutUtils.setEditableEditText(lytFathersLastname.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytMothersLastname.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytName.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytStreet.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytInternalNumber.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytBirthdate.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytExternalNumber.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytSuburb.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytZipcode.getEditText(), false);
+        }
 
         lytFathersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytMothersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });

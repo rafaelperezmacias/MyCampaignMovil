@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
@@ -23,19 +24,19 @@ import java.util.ArrayList;
 
 public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.ViewHolder> {
 
-    private Context context;
     private ArrayList<Volunteer> volunteers;
+    private MainActivity mainActivity;
 
-    public VolunteersAdapter(Context context, ArrayList<Volunteer> volunteers)
+    public VolunteersAdapter(MainActivity mainActivity, ArrayList<Volunteer> volunteers)
     {
-        this.context = context;
         this.volunteers = volunteers;
+        this.mainActivity = mainActivity;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_volunteer_adapter, parent, false);
+        View view = LayoutInflater.from(mainActivity).inflate(R.layout.item_volunteer_adapter, parent, false);
         return new ViewHolder(view);
     }
 
@@ -66,17 +67,17 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         holder.txtSuburb.setText(String.format("COL %s %s", address.getSuburb(), address.getZipcode()));
         holder.txtOtherAddress.setText(String.format("%s, %s.", volunteer.getSection().getMunicipality().getName(), volunteer.getSection().getState().getName()));
 
-        PopupMenu popupMenu = new PopupMenu(context, holder.btnOptions);
+        PopupMenu popupMenu = new PopupMenu(mainActivity, holder.btnOptions);
         popupMenu.inflate(R.menu.volunteers_recyclerview_options);
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_details) {
-                Toast.makeText(context, "Detalles", Toast.LENGTH_SHORT).show();
+                mainActivity.showDetailsFromVolunteerInBottomSheet(volunteer);
                 return false;
             } else if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_edit ) {
-                Toast.makeText(context, "Editar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity, "Editar", Toast.LENGTH_SHORT).show();
                 return false;
             } else if ( menuItem.getItemId() ==  R.id.menu_volunteer_recyclerview_delete) {
-                Toast.makeText(context, "Eliminar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mainActivity, "Eliminar", Toast.LENGTH_SHORT).show();
                 return false;
             }
             return true;

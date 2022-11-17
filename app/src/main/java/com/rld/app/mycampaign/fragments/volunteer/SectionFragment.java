@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentSectionVolunteerBsBinding;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.models.FederalDistrict;
@@ -19,6 +20,7 @@ import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 public class SectionFragment extends Fragment {
 
@@ -37,12 +39,14 @@ public class SectionFragment extends Fragment {
 
     private Volunteer volunteer;
     private LocalDataFileManager localDataFileManager;
+    private int type;
 
     private String currentSection;
 
-    public SectionFragment(Volunteer volunteer, LocalDataFileManager localDataFileManager) {
+    public SectionFragment(Volunteer volunteer, LocalDataFileManager localDataFileManager, int type) {
         this.volunteer = volunteer;
         this.localDataFileManager = localDataFileManager;
+        this.type = type;
     }
 
     @Nullable
@@ -67,6 +71,22 @@ public class SectionFragment extends Fragment {
         lytLocalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         lytFederalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         lytStateName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+            loadData();
+            lytSector.getEditText().setText(volunteer.getSector());
+            lytSection.getEditText().setText(volunteer.getSection().getSection());
+            TextInputLayoutUtils.setEditableEditText(lytSection.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytMunicipalityName.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytMunicipalityNumber.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytSector.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytLocalDistrictName.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytLocalDistrictNumber.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytFederalDistrictName.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytFederalDistrictNumber.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytStateName.getEditText(), false);
+            TextInputLayoutUtils.setEditableEditText(lytStateNumber.getEditText(), false);
+        }
 
         return root;
     }
@@ -188,40 +208,40 @@ public class SectionFragment extends Fragment {
     }
 
     public void loadData() {
-        if (volunteer.getSection() != null) {
+        if ( volunteer.getSection() != null ) {
             Section section = volunteer.getSection();
-            if (volunteer.getSection().getFederalDistrict() != null) {
+            if ( volunteer.getSection().getFederalDistrict() != null ) {
                 lytFederalDistrictName.getEditText().setText(section.getFederalDistrict().getName());
                 lytFederalDistrictNumber.getEditText().setText(String.valueOf(section.getFederalDistrict().getNumber()));
             } else {
                 lytFederalDistrictName.getEditText().setText("");
                 lytFederalDistrictNumber.getEditText().setText("");
             }
-            if (volunteer.getSection().getLocalDistrict() != null) {
+            if ( volunteer.getSection().getLocalDistrict() != null ) {
                 lytLocalDistrictName.getEditText().setText(section.getLocalDistrict().getName());
                 lytLocalDistrictNumber.getEditText().setText(String.valueOf(section.getLocalDistrict().getNumber()));
             } else {
                 lytLocalDistrictName.getEditText().setText("");
                 lytLocalDistrictNumber.getEditText().setText("");
             }
-            if (volunteer.getSection().getMunicipality() != null) {
+            if ( volunteer.getSection().getMunicipality() != null ) {
                 lytMunicipalityName.getEditText().setText(section.getMunicipality().getName());
                 lytMunicipalityNumber.getEditText().setText(String.valueOf(section.getMunicipality().getNumber()));
             } else {
                 lytMunicipalityName.getEditText().setText("");
                 lytMunicipalityNumber.getEditText().setText("");
             }
-            if (volunteer.getSection().getState() != null) {
+            if ( volunteer.getSection().getState() != null ) {
                 lytStateName.getEditText().setText(section.getState().getName());
                 lytStateNumber.getEditText().setText(String.valueOf(section.getState().getId()));
             } else {
                 lytStateName.getEditText().setText("");
                 lytStateNumber.getEditText().setText("");
             }
-            if (currentSection != null && !currentSection.equals(section.getSection())) {
+            if ( currentSection != null && !currentSection.equals(section.getSection()) ) {
                 lytSector.getEditText().setText("");
             }
-            if (section.getId() != 0) {
+            if ( section.getId() != 0 ) {
                 lytSection.getEditText().setText(section.getSection());
                 currentSection = section.getSection();
             } else {

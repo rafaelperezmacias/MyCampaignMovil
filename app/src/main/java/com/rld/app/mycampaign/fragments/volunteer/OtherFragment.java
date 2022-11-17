@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentOtherVolunteerBsBinding;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
@@ -23,15 +24,18 @@ public class OtherFragment extends Fragment {
 
     private TextInputLayout lytNotes;
     private RadioButton btnRadioYes;
+    private RadioButton btnRadioNo;
     private RadioButton btnRadioVotingBooth;
     private RadioButton btnRadioGeneral;
     private RadioButton btnRadioOther;
 
     private Volunteer volunteer;
+    private int type;
 
-    public OtherFragment(Volunteer volunteer)
+    public OtherFragment(Volunteer volunteer, int type)
     {
         this.volunteer = volunteer;
+        this.type = type;
     }
 
     @Nullable
@@ -42,9 +46,25 @@ public class OtherFragment extends Fragment {
 
         lytNotes = binding.lytNotes;
         btnRadioYes = binding.btnRadioYes;
+        btnRadioNo = binding.btnRadioNo;
         btnRadioVotingBooth = binding.btnVotingBooth;
         btnRadioGeneral = binding.btnRadioGeneral;
         btnRadioOther = binding.btnRadioOther;
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+            lytNotes.getEditText().setText(volunteer.getNotes());
+            TextInputLayoutUtils.setEditableEditText(lytNotes.getEditText(), false);
+            btnRadioYes.setChecked(volunteer.isLocalVotingBooth());
+            btnRadioNo.setChecked(!volunteer.isLocalVotingBooth());
+            btnRadioVotingBooth.setChecked(volunteer.getType() == Volunteer.TYPE_VOTING_BOOTH_REPRESENTATIVE);
+            btnRadioGeneral.setChecked(volunteer.getType() == Volunteer.TYPE_GENERAL_REPRESENTATIVE);
+            btnRadioOther.setChecked(volunteer.getType() == Volunteer.TYPE_OTHER);
+            setEditableRadioButton(btnRadioYes, false);
+            setEditableRadioButton(btnRadioNo, false);
+            setEditableRadioButton(btnRadioVotingBooth, false);
+            setEditableRadioButton(btnRadioGeneral, false);
+            setEditableRadioButton(btnRadioOther, false);
+        }
 
         lytNotes.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
             if ( hasFocus ) {
@@ -75,6 +95,13 @@ public class OtherFragment extends Fragment {
             volunteer.setType(Volunteer.TYPE_OTHER);
         }
         volunteer.setLocalVotingBooth(btnRadioYes.isChecked());
+    }
+
+    private void setEditableRadioButton(RadioButton btn, boolean enable) {
+        btn.setSelected(enable);
+        btn.setClickable(enable);
+        btn.setLongClickable(enable);
+        btn.setFocusable(enable);
     }
 
 }

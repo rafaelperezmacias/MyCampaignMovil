@@ -47,20 +47,6 @@ public class Main2Activity extends AppCompatActivity {
         btnCarga = findViewById(R.id.btnCarga);
         btnCrear = findViewById(R.id.btnTest);
 
-//        cont_peticiones = 0;
-//
-//        volunteers = new ArrayList<>();
-//
-//        volunteers = fileManager.readFile(getApplicationContext());
-//
-//        CameraPreview.setLISTENER(MainActivity.this);
-//
-//        if (volunteers.size() > 0) {
-//            btnCarga.setVisibility(View.VISIBLE);
-//            btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
-//        } else {
-//            btnCarga.setVisibility(View.GONE);
-//        }
 //
 //        btnCarga.setOnClickListener(v -> {
 //            btnCarga.setEnabled(false);
@@ -107,10 +93,6 @@ public class Main2Activity extends AppCompatActivity {
 //
     }
 
-    public void enableBtnCarga() {
-        btnCrear.setEnabled(true);
-    }
-
     public void deleteFromServer( String electorKey, boolean isInsert ) {
         int index = -1;
         for ( int i = 0; i < volunteers.size(); i++ ) {
@@ -122,7 +104,6 @@ public class Main2Activity extends AppCompatActivity {
         if ( index != -1 ) {
             volunteers.remove(index);
         }
-        saveVolunteers();
         if ( volunteers.size() > 0 ) {
             btnCarga.setVisibility(View.VISIBLE);
             btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
@@ -137,10 +118,8 @@ public class Main2Activity extends AppCompatActivity {
             alertDialog.dismiss();
             if ( cont_peticiones_pos == peticiones ) {
                 btnCarga.setEnabled(true);
-                createSnackBar("Datos actualizados con exito");
             } else {
                 btnCarga.setEnabled(true);
-                createSnackBar("No todos los registros fueron cargados, intentelo más tarde");
                 // ArrayList<Volunteer> tmp = new ArrayList<>(volunteers);
                 // fileManager.saveFile(tmp, getApplicationContext());
                 // volunteers = fileManager.readFile(Main2Activity.this);
@@ -148,43 +127,6 @@ public class Main2Activity extends AppCompatActivity {
             cont_peticiones = 0;
             cont_peticiones_pos = 0;
         }
-    }
-
-    public void addVoluteerWithoutImage(Volunteer volunteer) {
-        volunteers.add(volunteer);
-        saveVolunteers();
-        createSnackBar(getString(R.string.fbs_snackbar));
-        btnCrear.setEnabled(true);
-    }
-
-    public void createSnackBar(String text) {
-        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-        snackbarText.append(text);
-        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        Snackbar.make(this.findViewById(R.id.am_main_lyt), snackbarText, Snackbar.LENGTH_LONG)
-                .setBackgroundTint(getResources().getColor(R.color.dark_orange_liane))
-                .setTextColor(getResources().getColor(R.color.white))
-                .show();
-    }
-
-    public void saveVolunteers() {
-        btnCarga.setText("Carga al servidor (" + volunteers.size()+")");
-        // fileManager.saveFile(volunteers, getApplicationContext());
-        for ( Volunteer v : volunteers ) {
-            // v.deleteImage();
-        }
-        if ( volunteers.size() > 0 ) {
-            btnCarga.setVisibility(View.VISIBLE);
-        } else {
-            btnCarga.setVisibility(View.GONE);
-        }
-    }
-
-    public void saveVolunteer(Volunteer volunteer) {
-        volunteers.add(volunteer);
-        saveVolunteers();
-        createSnackBar(getString(R.string.fbs_snackbar));
-        btnCrear.setEnabled(true);
     }
 
 }

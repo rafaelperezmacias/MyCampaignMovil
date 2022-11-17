@@ -37,6 +37,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txt_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/fbs_title"
@@ -50,8 +51,31 @@
 
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/btn_edit_prev"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:contentDescription="@string/icon"
+                android:minWidth="48dp"
+                android:src="@drawable/ic_baseline_chevron_left_24" />
+
+            <ImageButton
+                android:id="@+id/btn_edit_next"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:contentDescription="@string/icon"
+                android:minWidth="48dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="16dp"
+                android:src="@drawable/ic_baseline_chevron_right_24" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
+                android:visibility="gone"
                 android:backgroundTint="@color/blue"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"

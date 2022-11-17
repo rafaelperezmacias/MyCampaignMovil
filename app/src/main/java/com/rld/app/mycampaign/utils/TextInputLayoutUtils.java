@@ -1,5 +1,8 @@
 package com.rld.app.mycampaign.utils;
 
+import android.widget.EditText;
+
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class TextInputLayoutUtils {
@@ -107,4 +110,13 @@ public class TextInputLayoutUtils {
         lyt.setError(null);
         return true;
     }
+
+    public static void setEditableEditText(EditText editText, boolean editable) {
+        editText.setCursorVisible(editable);
+        editText.setLongClickable(editable);
+        editText.setFocusable(editable);
+        editText.setClickable(editable);
+    }
+
 }
+
