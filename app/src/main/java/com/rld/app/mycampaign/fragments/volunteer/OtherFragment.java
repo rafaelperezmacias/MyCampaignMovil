@@ -67,14 +67,14 @@ public class OtherFragment extends Fragment {
         if ( !lytNotes.getEditText().getText().toString().isEmpty() ) {
             volunteer.setNotes(lytNotes.getEditText().getText().toString().trim());
         }
-        if ( btnRadioVotingBooth.isSelected() )         {
+        if ( btnRadioVotingBooth.isChecked() )         {
             volunteer.setType(Volunteer.TYPE_VOTING_BOOTH_REPRESENTATIVE);
-        } else if ( btnRadioGeneral.isSelected() )  {
+        } else if ( btnRadioGeneral.isChecked() )  {
             volunteer.setType(Volunteer.TYPE_GENERAL_REPRESENTATIVE);
-        } else if ( btnRadioOther.isSelected() )  {
+        } else if ( btnRadioOther.isChecked() )  {
             volunteer.setType(Volunteer.TYPE_OTHER);
         }
-        volunteer.setLocalVotingBooth(btnRadioYes.isSelected());
+        volunteer.setLocalVotingBooth(btnRadioYes.isChecked());
     }
 
 }

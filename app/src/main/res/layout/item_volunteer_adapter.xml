@@ -47,7 +47,7 @@
                     android:id="@+id/txt_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginBottom="2dp"
                     tools:text="rafael.perez7499@alumnos.udg.mx"/>
 
                 <TextView
@@ -148,12 +148,58 @@
 
             <TextView
                 android:id="@+id/section_title"
-                android:text="sección"
+                android:text="INFORMACIÓN"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"/>
+
+            <LinearLayout
+                android:id="@+id/lyt_volunteer_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_below="@+id/section_title">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/txt_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        tools:text="SECCIÓN 2716"/>
+
+                    <TextView
+                        android:id="@+id/txt_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        tools:text="Representante de casilla"/>
+
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/btn_defense"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/blue"
+                    android:padding="0dp"
+                    android:text="Defensa local"
+                    android:layout_marginStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layoutDirection="rtl"
+                    android:clickable="false"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/address_title"
@@ -161,7 +207,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:layout_below="@+id/section_title"
+                android:layout_below="@+id/lyt_volunteer_section"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"/>
 
@@ -178,6 +224,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txt_street"
+                android:layout_marginBottom="2dp"
                 tools:text="COL LOMA DORADA 45402"/>
 
             <TextView
@@ -205,7 +252,7 @@
             android:contentDescription="@string/icon"/>
 
         <ImageButton
-            android:id="@+id/btn_mostrar_precios"
+            android:id="@+id/btn_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btn_options"

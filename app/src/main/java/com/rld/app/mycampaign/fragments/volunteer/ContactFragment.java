@@ -103,6 +103,7 @@ public class ContactFragment extends Fragment {
                     }
                 } else {
                     isValidState = false;
+                    lytSections.setVisibility(View.GONE);
                 }
             }
 

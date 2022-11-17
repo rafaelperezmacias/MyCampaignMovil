@@ -199,7 +199,7 @@ public class VolunteerFileManager {
                     Image imageCredential = new Image();
                     imageCredential.setPath(volunteerObject.getString("imageCredential"));
                     imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
-                    volunteer.setImageFirm(imageCredential);
+                    volunteer.setImageCredential(imageCredential);
 
                     volunteers.add(volunteer);
                     cont++;

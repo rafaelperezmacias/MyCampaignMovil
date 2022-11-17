@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
 
@@ -42,9 +45,6 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         holder.txtName.setText(String.format("%s %s %s", volunteer.getName(), volunteer.getFathersLastname(), volunteer.getMothersLastname()));
         holder.txtEmail.setText(volunteer.getEmail());
         holder.txtPhone.setText(volunteer.getPhone());
-        PopupMenu popupMenu = new PopupMenu(context, holder.btnOptions);
-        popupMenu.inflate(R.menu.volunteers_recyclerview_options);
-
         if ( volunteer.getId() == 0 ) {
             holder.localCard.setVisibility(View.VISIBLE);
             holder.serverCard.setVisibility(View.GONE);
@@ -52,7 +52,22 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             holder.localCard.setVisibility(View.GONE);
             holder.serverCard.setVisibility(View.VISIBLE);
         }
+        holder.txtSection.setText(String.format("SECCIÓN %s", volunteer.getSection().getSection()));
+        if ( volunteer.getType() == Volunteer.TYPE_VOTING_BOOTH_REPRESENTATIVE ) {
+            holder.txtType.setText("Representante de casilla");
+        } else if ( volunteer.getType() == Volunteer.TYPE_GENERAL_REPRESENTATIVE ) {
+            holder.txtType.setText("Representante general");
+        } else {
+            holder.txtType.setText("Otro");
+        }
+        holder.btnDefense.setChecked(volunteer.isLocalVotingBooth());
+        Address address = volunteer.getAddress();
+        holder.txtStreet.setText(String.format("C %s %s %s", address.getStreet(), address.getExternalNumber(), address.getInternalNumber()));
+        holder.txtSuburb.setText(String.format("COL %s %s", address.getSuburb(), address.getZipcode()));
+        holder.txtOtherAddress.setText(String.format("%s, %s.", volunteer.getSection().getMunicipality().getName(), volunteer.getSection().getState().getName()));
 
+        PopupMenu popupMenu = new PopupMenu(context, holder.btnOptions);
+        popupMenu.inflate(R.menu.volunteers_recyclerview_options);
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_details) {
                 Toast.makeText(context, "Detalles", Toast.LENGTH_SHORT).show();
@@ -68,6 +83,15 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         });
 
         holder.btnOptions.setOnClickListener(view -> popupMenu.show());
+        holder.btnDetails.setOnClickListener(view -> {
+            if ( holder.lytOtherData.getVisibility() == View.GONE ) {
+                holder.btnDetails.setImageResource(R.drawable.ic_baseline_expand_less_24);
+                holder.lytOtherData.setVisibility(View.VISIBLE);
+            } else {
+                holder.btnDetails.setImageResource(R.drawable.ic_baseline_expand_more_24);
+                holder.lytOtherData.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -81,6 +105,15 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         private TextView txtEmail;
         private TextView txtPhone;
         private ImageButton btnOptions;
+        private ImageButton btnDetails;
+
+        private RelativeLayout lytOtherData;
+        private TextView txtSection;
+        private TextView txtType;
+        private CheckBox btnDefense;
+        private TextView txtStreet;
+        private TextView txtSuburb;
+        private TextView txtOtherAddress;
 
         private MaterialCardView localCard;
         private MaterialCardView serverCard;
@@ -92,6 +125,14 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             txtEmail = itemView.findViewById(R.id.txt_email);
             txtPhone = itemView.findViewById(R.id.txt_phone);
             btnOptions = itemView.findViewById(R.id.btn_options);
+            btnDetails = itemView.findViewById(R.id.btn_details);
+            lytOtherData = itemView.findViewById(R.id.lyt_other_data);
+            txtSection = itemView.findViewById(R.id.txt_section);
+            txtType = itemView.findViewById(R.id.txt_type);
+            btnDefense = itemView.findViewById(R.id.btn_defense);
+            txtStreet = itemView.findViewById(R.id.txt_street);
+            txtSuburb = itemView.findViewById(R.id.txt_suburb);
+            txtOtherAddress = itemView.findViewById(R.id.txt_other_address);
             localCard = itemView.findViewById(R.id.card_local);
             serverCard = itemView.findViewById(R.id.card_server);
             errorCard = itemView.findViewById(R.id.card_error);

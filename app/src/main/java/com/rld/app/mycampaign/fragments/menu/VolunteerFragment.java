@@ -32,6 +32,8 @@ public class VolunteerFragment extends Fragment {
 
     private MainActivity mainActivity;
 
+    private FloatingActionButton btnMenuVolunteer;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class VolunteerFragment extends Fragment {
             mainActivity = (MainActivity) parentActivity;
         }
 
-        FloatingActionButton btnMenuVolunteer = binding.btnMenuVolunteer;
+        btnMenuVolunteer = binding.btnMenuVolunteer;
         volunteersRecyclerview = binding.volunteersRecyclerview;
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         volunteersRecyclerview.setLayoutManager(linearLayoutManager);
@@ -59,6 +61,7 @@ public class VolunteerFragment extends Fragment {
         btnMenuVolunteer.setOnClickListener(v -> {
             if ( onClickMenuVolunteerListener != null ) {
                 onClickMenuVolunteerListener.showMenuVolunteer();
+                btnMenuVolunteer.setVisibility(View.GONE);
             }
         });
 
@@ -81,5 +84,11 @@ public class VolunteerFragment extends Fragment {
     public void updateVolunteers(ArrayList<Volunteer> volunteers) {
         adapter = new VolunteersAdapter(mainActivity, volunteers);
         volunteersRecyclerview.setAdapter(adapter);
+    }
+
+    public void showMenuVolunteer() {
+        if ( btnMenuVolunteer != null ) {
+            btnMenuVolunteer.setVisibility(View.VISIBLE);
+        }
     }
 }

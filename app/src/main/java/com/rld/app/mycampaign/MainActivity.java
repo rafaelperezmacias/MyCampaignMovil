@@ -1,12 +1,16 @@
 package com.rld.app.mycampaign;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -186,23 +191,27 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    menuVolunteerDialog.dismiss();
+                    if ( volunteerFragment != null ) {
+                        volunteerFragment.showMenuVolunteer();
+                    }
                     startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
                 }
             };
             Timer timer = new Timer();
             timer.schedule(task, 100);
+            menuVolunteerDialog.dismiss();
         });
         menuVolunteerDialog.setBtnUploadListener(view -> {
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    menuVolunteerDialog.dismiss();
-                    Toast.makeText(MainActivity.this, "Aqui va la carga :p", Toast.LENGTH_SHORT).show();
-                }
-            };
-            Timer timer = new Timer();
-            timer.schedule(task, 100);
+            menuVolunteerDialog.dismiss();
+            if ( volunteerFragment != null ) {
+                volunteerFragment.showMenuVolunteer();
+            }
+            Toast.makeText(MainActivity.this, "Aqui va la carga :p", Toast.LENGTH_SHORT).show();
+        });
+        menuVolunteerDialog.setOnDismissListener(dialogInterface -> {
+            if ( volunteerFragment != null ) {
+                volunteerFragment.showMenuVolunteer();
+            }
         });
         Window window = menuVolunteerDialog.getWindow();
         WindowManager.LayoutParams layoutParams = window.getAttributes();

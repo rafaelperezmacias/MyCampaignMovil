@@ -95,7 +95,7 @@ public class CameraPreview extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        String imageFileName = UUID.randomUUID().toString() + System.currentTimeMillis();
+        String imageFileName = UUID.randomUUID().toString();
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
         imagePath = imageFile.getAbsolutePath();
