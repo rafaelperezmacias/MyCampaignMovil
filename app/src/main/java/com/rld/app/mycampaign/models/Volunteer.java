@@ -35,6 +35,33 @@ public class Volunteer {
 
     }
 
+    public Volunteer(Volunteer volunteer)
+    {
+        this.id = volunteer.id;
+        this.name = volunteer.name;
+        this.fathersLastname = volunteer.fathersLastname;
+        this.mothersLastname = volunteer.mothersLastname;
+        Calendar birthdate = Calendar.getInstance();
+        birthdate.setTimeInMillis(volunteer.getBirthdate().getTimeInMillis());
+        this.birthdate = birthdate;
+
+        this.address = new Address(volunteer.address);
+
+        this.electorKey = volunteer.electorKey;
+        this.email = volunteer.email;
+        this.phone = volunteer.phone;
+
+        this.section = new Section(volunteer.section);
+
+        this.sector = volunteer.sector;
+        this.notes = volunteer.notes;
+        this.type = volunteer.type;
+        this.localVotingBooth = volunteer.localVotingBooth;
+
+        this.imageFirm = volunteer.imageFirm;
+        this.imageCredential = volunteer.imageCredential;
+    }
+
     public int getId() {
         return id;
     }

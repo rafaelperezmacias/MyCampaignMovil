@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                createFormToCreateVolunteer();
+                                showFormVolunteerWithLocalData(currentVolunteer, VolunteerBottomSheet.TYPE_INSERT);
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 .setBackgroundTint(getResources().getColor(R.color.blue))
                 .setTextColor(getResources().getColor(R.color.light_white))
                 .setAction("DETALLES", view -> {
-
+                    showFormVolunteerWithoutLocalData(currentVolunteer, VolunteerBottomSheet.TYPE_SHOW);
                 })
                 .setActionTextColor(getResources().getColor(R.color.white))
                 .show();
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         requestQueue.add(request);
     }
 
-    private void createFormToCreateVolunteer() {
+    public void showFormVolunteerWithLocalData(Volunteer volunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos locales")
                 .setCancelable(false);
@@ -297,12 +297,17 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                volunteerBottomSheet = new VolunteerBottomSheet(currentVolunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
+                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };
         Timer timer = new Timer();
         timer.schedule(task, 100);
+    }
+
+    public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
+        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, type);
+        volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
     }
 
     public void hideProgressDialog() {
@@ -318,17 +323,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         return volunteers;
     }
 
-    public void showDetailsFromVolunteerInBottomSheet(Volunteer volunteer) {
-        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, VolunteerBottomSheet.TYPE_SHOW);
-        volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
-    }
-
     private void uploadVolunteersToServer() {
         JSONArray volunteersArray = VolunteerFileManager.arrayListToJsonArray(localVolunteers, true);
-        nextVolunteerRequest(volunteersArray, 0);
+        ArrayList<Volunteer> volunteersToRemove = new ArrayList<>();
+        nextVolunteerRequest(volunteersArray, 0, volunteersToRemove);
     }
 
-    private void requestInsertVolunteer(JSONArray volunteeers, int index) {
+    private void requestInsertVolunteer(JSONArray volunteeers, int index, ArrayList<Volunteer> volunteersToRemove) {
         JSONObject bodyRequest = new JSONObject();
         JSONObject campaign = new JSONObject();
         JSONObject sympathizer = new JSONObject();
@@ -343,24 +344,38 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
         String url = AppConfig.INSERT_VOLUNTEER;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bodyRequest, response -> {
-            Log.e("Error", "" + response.toString());
-            nextVolunteerRequest(volunteeers, index + 1);
+            try {
+                if ( response.getBoolean("success") ) {
+                    Volunteer volunteer = localVolunteers.get(index);
+                    volunteer.setId( response.getJSONObject("volunteer").getInt("id") );
+                    volunteersToRemove.add(volunteer);
+                }
+            } catch ( JSONException ex ) {
+                ex.printStackTrace();
+            }
+            nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         }, error -> {
-            Log.e("Error", "" + error.getMessage());
-            nextVolunteerRequest(volunteeers, index + 1);
+            nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         });
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
     }
 
-    private void nextVolunteerRequest(JSONArray volunteeers, int index) {
+    private void nextVolunteerRequest(JSONArray volunteeers, int index, ArrayList<Volunteer> volunteersToRemove) {
         if ( index >= volunteeers.length() ) {
+            localVolunteers.removeAll(volunteersToRemove);
+            remoteVolunteers.addAll(volunteersToRemove);
+            VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+            VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
+            if ( volunteerFragment != null ) {
+                volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+            }
             return;
         }
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                requestInsertVolunteer(volunteeers, index);
+                requestInsertVolunteer(volunteeers, index, volunteersToRemove);
             }
         };
         Timer timer = new Timer();

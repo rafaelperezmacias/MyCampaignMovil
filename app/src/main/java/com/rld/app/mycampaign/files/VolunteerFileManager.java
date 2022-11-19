@@ -36,6 +36,7 @@ public class VolunteerFileManager {
             JSONObject volunteerObject = new JSONObject();
             try {
                 Volunteer volunteer = volunteers.get(cont);
+                volunteerObject.put("id", volunteer.getId());
                 volunteerObject.put("name", volunteer.getName());
                 volunteerObject.put("fathersLastname", volunteer.getFathersLastname());
                 volunteerObject.put("mothersLastname", volunteer.getMothersLastname());
@@ -156,12 +157,13 @@ public class VolunteerFileManager {
                 try {
                     JSONObject volunteerObject = volunteersArray.getJSONObject(cont);
 
+                    volunteer.setId(volunteerObject.getInt("id"));
                     volunteer.setName(volunteerObject.getString("name"));
                     volunteer.setFathersLastname(volunteerObject.getString("fathersLastname"));
                     volunteer.setMothersLastname(volunteerObject.getString("mothersLastname"));
-                    Calendar birtdate = Calendar.getInstance();
-                    birtdate.setTimeInMillis(volunteerObject.getLong("birthdate"));
-                    volunteer.setBirthdate(birtdate);
+                    Calendar birthdate = Calendar.getInstance();
+                    birthdate.setTimeInMillis(volunteerObject.getLong("birthdate"));
+                    volunteer.setBirthdate(birthdate);
 
                     JSONObject addressObject = volunteerObject.getJSONObject("address");
                     Address address = new Address();

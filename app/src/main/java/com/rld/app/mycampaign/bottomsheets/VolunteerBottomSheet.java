@@ -99,7 +99,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             btnPrev.setVisibility(View.INVISIBLE);
             btnNext.setVisibility(View.VISIBLE);
         } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
-            // txtTitle.setText("Actualizar voluntario");
+            txtTitle.setText("Editar voluntario");
+            txtSubtitle.setText("Parte 1 de 4");
+            btnSave.setVisibility(View.VISIBLE);
+            btnPrev.setVisibility(View.GONE);
+            btnNext.setVisibility(View.GONE);
         }
 
         PersonalFragment personalFragment = new PersonalFragment(volunteer, type);
@@ -117,8 +121,8 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, sectionFragment).hide(sectionFragment).commit();
         fragmentManager.beginTransaction().add(R.id.volunteer_bs_container, policyFragment).hide(policyFragment).commit();
 
-        // To create or update ?
-        btnSave.setOnClickListener(v -> {
+        // Create
+        View.OnClickListener createClickListener = v -> {
             if ( currentFragment == personalFragment ) {
                 if ( !personalFragment.isComplete() ) {
                     return;
@@ -155,9 +159,43 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 mainActivity.firmActivityForVolunteer();
             }
-        });
+        };
 
-        btnClose.setOnClickListener(v -> {
+        // Update
+        View.OnClickListener updateClickListener = v -> {
+            if ( currentFragment == personalFragment ) {
+                if ( !personalFragment.isComplete() ) {
+                    return;
+                }
+                showFragment(contactFragment);
+                // personalFragment.setVolunteer();
+                txtSubtitle.setText("Paso 2 de 4");
+                btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
+            } else if ( currentFragment == contactFragment ) {
+                if ( !contactFragment.isComplete() ) {
+                    return;
+                }
+                showFragment(sectionFragment);
+                // contactFragment.setVolunteer();
+                // sectionFragment.loadData();
+                txtSubtitle.setText("Paso 3 de 4");
+            } else if ( currentFragment == sectionFragment ) {
+                if ( !sectionFragment.isComplete() ) {
+                    return;
+                }
+                showFragment(otherFragment);
+                // sectionFragment.setVolunter();
+                txtSubtitle.setText("Paso 4 de 4");
+            } else if ( currentFragment == otherFragment ) {
+                if ( !otherFragment.isComplete() ) {
+                    return;
+                }
+                // otherFragment.setVolunteer();
+                Toast.makeText(mainActivity, "Actualizar", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        View.OnClickListener closeInsertClickListener = v -> {
             if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
                 dismiss();
                 return;
@@ -193,7 +231,45 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 txtSubtitle.setText(getString(R.string.fbs_step4));
                 showFragment(otherFragment);
             }
-        });
+        };
+
+        View.OnClickListener closeUpdateClickListener = v -> {
+            if ( currentFragment == personalFragment ) {
+                MessageDialogBuilder builder = new MessageDialogBuilder()
+                        .setTitle("Alerta")
+                        .setMessage("¿Esta seguro de querer cancelar el proceso de actualización del voluntario?")
+                        .setCancelable(false)
+                        .setPrimaryButtonText("Cancelar")
+                        .setSecondaryButtonText("Quedarme");
+                MessageDialog messageDialog = new MessageDialog(mainActivity, builder);
+                messageDialog.setPrimaryButtonListener(view1 -> {
+                    messageDialog.dismiss();
+                    dismiss();
+                });
+                messageDialog.setSecondaryButtonListener(view1 -> {
+                    messageDialog.dismiss();
+                });
+                messageDialog.show();
+            } else if ( currentFragment == contactFragment ) {
+                btnClose.setImageResource(R.drawable.ic_sharp_close_24);
+                txtSubtitle.setText("Paso 1 de 4");
+                showFragment(personalFragment);
+            } else if ( currentFragment == sectionFragment ) {
+                txtSubtitle.setText("Paso 2 de 4");
+                showFragment(contactFragment);
+            } else if ( currentFragment == otherFragment ) {
+                txtSubtitle.setText("Paso 3 de 4");
+                showFragment(sectionFragment);
+            }
+        };
+
+        if ( type == VolunteerBottomSheet.TYPE_INSERT || type  == VolunteerBottomSheet.TYPE_SHOW ) {
+            btnSave.setOnClickListener(createClickListener);
+            btnClose.setOnClickListener(closeInsertClickListener);
+        } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            btnSave.setOnClickListener(updateClickListener);
+            btnClose.setOnClickListener(closeUpdateClickListener);
+        }
 
         // Only show
         btnNext.setOnClickListener(v -> {
@@ -210,6 +286,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 btnNext.setVisibility(View.INVISIBLE);
             }
         });
+
         btnPrev.setOnClickListener(v -> {
             if ( currentFragment == contactFragment ) {
                 txtSubtitle.setText("Parte 1 de 4");

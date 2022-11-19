@@ -22,6 +22,15 @@ public class Address {
         this.zipcode = zipcode;
     }
 
+    public Address(Address address)
+    {
+        this.street = address.street;
+        this.externalNumber = address.externalNumber;
+        this.internalNumber = address.internalNumber;
+        this.suburb = address.suburb;
+        this.zipcode = address.zipcode;
+    }
+
     public String getStreet() {
         return street;
     }

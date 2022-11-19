@@ -1,6 +1,5 @@
 package com.rld.app.mycampaign.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
@@ -68,13 +68,18 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         holder.txtOtherAddress.setText(String.format("%s, %s.", volunteer.getSection().getMunicipality().getName(), volunteer.getSection().getState().getName()));
 
         PopupMenu popupMenu = new PopupMenu(mainActivity, holder.btnOptions);
-        popupMenu.inflate(R.menu.volunteers_recyclerview_options);
+        if ( volunteer.getId() != 0 ) {
+            popupMenu.inflate(R.menu.volunteers_recyclerview_options_remote);
+        } else {
+            popupMenu.inflate(R.menu.volunteers_recyclerview_options_local);
+        }
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_details) {
-                mainActivity.showDetailsFromVolunteerInBottomSheet(volunteer);
+                mainActivity.showFormVolunteerWithoutLocalData(volunteer, VolunteerBottomSheet.TYPE_SHOW);
                 return false;
             } else if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_edit ) {
-                Toast.makeText(mainActivity, "Editar", Toast.LENGTH_SHORT).show();
+                Volunteer editVolunteer = new Volunteer(volunteer);
+                mainActivity.showFormVolunteerWithLocalData(editVolunteer, VolunteerBottomSheet.TYPE_UPDATE);
                 return false;
             } else if ( menuItem.getItemId() ==  R.id.menu_volunteer_recyclerview_delete) {
                 Toast.makeText(mainActivity, "Eliminar", Toast.LENGTH_SHORT).show();
