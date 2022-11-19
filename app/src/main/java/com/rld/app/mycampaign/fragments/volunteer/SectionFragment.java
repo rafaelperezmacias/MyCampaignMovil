@@ -101,7 +101,7 @@ public class SectionFragment extends Fragment {
         State state = getState();
         if ( state == null ) {
             state = new State();
-            state.setName(lytFederalDistrictName.getEditText().getText().toString().trim());
+            state.setName(lytStateName.getEditText().getText().toString().trim());
             state.setId(Integer.parseInt(lytStateNumber.getEditText().getText().toString().trim()));
         }
         // Distrito federal

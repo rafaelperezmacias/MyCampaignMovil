@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -36,6 +37,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -51,6 +53,7 @@ import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
+import com.rld.app.mycampaign.files.FileManager;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.files.LocalDistrictFileManager;
 import com.rld.app.mycampaign.files.MunicipalityFileManager;
@@ -63,10 +66,13 @@ import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -206,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             if ( volunteerFragment != null ) {
                 volunteerFragment.showMenuVolunteer();
             }
-            Toast.makeText(MainActivity.this, "Aqui va la carga :p", Toast.LENGTH_SHORT).show();
+            uploadVolunteersToServer();
         });
         menuVolunteerDialog.setOnDismissListener(dialogInterface -> {
             if ( volunteerFragment != null ) {
@@ -315,6 +321,50 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     public void showDetailsFromVolunteerInBottomSheet(Volunteer volunteer) {
         VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, VolunteerBottomSheet.TYPE_SHOW);
         volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+    }
+
+    private void uploadVolunteersToServer() {
+        JSONArray volunteersArray = VolunteerFileManager.arrayListToJsonArray(localVolunteers, true);
+        nextVolunteerRequest(volunteersArray, 0);
+    }
+
+    private void requestInsertVolunteer(JSONArray volunteeers, int index) {
+        JSONObject bodyRequest = new JSONObject();
+        JSONObject campaign = new JSONObject();
+        JSONObject sympathizer = new JSONObject();
+        try {
+            sympathizer.put("id", 1);
+            campaign.put("id", 1);
+            bodyRequest.put("volunteer", volunteeers.get(index));
+            bodyRequest.put("campaign", campaign);
+            bodyRequest.put("sympathizer", sympathizer);
+        } catch ( JSONException ex ) {
+
+        }
+        String url = AppConfig.INSERT_VOLUNTEER;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bodyRequest, response -> {
+            Log.e("Error", "" + response.toString());
+            nextVolunteerRequest(volunteeers, index + 1);
+        }, error -> {
+            Log.e("Error", "" + error.getMessage());
+            nextVolunteerRequest(volunteeers, index + 1);
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
+    }
+
+    private void nextVolunteerRequest(JSONArray volunteeers, int index) {
+        if ( index >= volunteeers.length() ) {
+            return;
+        }
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                requestInsertVolunteer(volunteeers, index);
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 5000);
     }
 
 }

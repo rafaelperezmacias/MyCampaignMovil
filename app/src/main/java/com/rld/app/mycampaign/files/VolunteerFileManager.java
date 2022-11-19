@@ -29,7 +29,7 @@ public class VolunteerFileManager {
     private static final String REMOTE_FILE_NAME = "data-remote-volunteers.json";
     private static final String REMOTE_JSON_ID = "remote-volunteers";
 
-    public static void writeJSON(ArrayList<Volunteer> volunteers, boolean isLocal, Context context) {
+    public static JSONArray arrayListToJsonArray(ArrayList<Volunteer> volunteers, boolean server) {
         JSONArray volunteersArray = new JSONArray();
         int cont = 0;
         while ( cont < volunteers.size() ) {
@@ -39,7 +39,15 @@ public class VolunteerFileManager {
                 volunteerObject.put("name", volunteer.getName());
                 volunteerObject.put("fathersLastname", volunteer.getFathersLastname());
                 volunteerObject.put("mothersLastname", volunteer.getMothersLastname());
-                volunteerObject.put("birthdate", volunteer.getBirthdate().getTimeInMillis());
+                if ( server ) {
+                    JSONObject birthdateObject = new JSONObject();
+                    birthdateObject.put("year", volunteer.getBirthdate().get(Calendar.YEAR));
+                    birthdateObject.put("month", volunteer.getBirthdate().get(Calendar.MONTH) + 1);
+                    birthdateObject.put("day", volunteer.getBirthdate().get(Calendar.DAY_OF_MONTH));
+                    volunteerObject.put("birthdate", birthdateObject);
+                } else {
+                    volunteerObject.put("birthdate", volunteer.getBirthdate().getTimeInMillis());
+                }
 
                 JSONObject addressObject = new JSONObject();
                 Address address = volunteer.getAddress();
@@ -92,19 +100,36 @@ public class VolunteerFileManager {
                 volunteerObject.put("section", sectionObject);
                 volunteerObject.put("sector", volunteer.getSector());
                 volunteerObject.put("notes", volunteer.getNotes() == null ? "" : volunteer.getNotes());
-                volunteerObject.put("type", volunteer.getType());
+
+                if ( server ) {
+                    volunteerObject.put("type", String.valueOf(volunteer.getType()));
+                } else {
+                    volunteerObject.put("type", volunteer.getType());
+                }
+
                 volunteerObject.put("localVotingBooth", volunteer.isLocalVotingBooth());
 
-                volunteerObject.put("imageFirm", volunteer.getImageFirm().getPath());
-                volunteerObject.put("imageCredential", volunteer.getImageCredential().getPath());
+                if ( server ) {
+                    volunteerObject.put("imageFirm", volunteer.getImageFirm().getImageBase64());
+                    volunteerObject.put("imageCredential", volunteer.getImageCredential().getImageBase64());
+                } else {
+                    volunteerObject.put("imageFirm", volunteer.getImageFirm().getPath());
+                    volunteerObject.put("imageCredential", volunteer.getImageCredential().getPath());
+                }
 
                 cont++;
             } catch ( JSONException ex ) {
-                Log.e("writeJSON()", "" + ex.getMessage());
+                Log.e("arrayListToJsonArray()", "" + ex.getMessage());
+                return new JSONArray();
             }
             volunteersArray.put(volunteerObject);
         }
-        if ( isLocal ) {
+        return volunteersArray;
+    }
+
+    public static void writeJSON(ArrayList<Volunteer> volunteers, boolean local, Context context) {
+        JSONArray volunteersArray = arrayListToJsonArray(volunteers, false);
+        if ( local ) {
             FileManager.writeJSON(volunteersArray, LOCAL_FILE_NAME, LOCAL_JSON_ID, context);
         } else {
             FileManager.writeJSON(volunteersArray, REMOTE_FILE_NAME, REMOTE_JSON_ID, context);
