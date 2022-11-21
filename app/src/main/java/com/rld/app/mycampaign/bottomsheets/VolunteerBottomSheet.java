@@ -41,14 +41,16 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
 
-    private Volunteer volunteer;
+    private Volunteer editableVolunteer;
+    private Volunteer noEditableVolunteer;
     private MainActivity mainActivity;
     private LocalDataFileManager localDataFileManager;
     private int type;
 
-    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
+    public VolunteerBottomSheet(Volunteer editableVolunteer, Volunteer noEditableVolunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
     {
-        this.volunteer = volunteer;
+        this.editableVolunteer = editableVolunteer;
+        this.noEditableVolunteer = noEditableVolunteer;
         this.mainActivity = mainActivity;
         this.localDataFileManager = localDataFileManager;
         this.type = type;
@@ -106,10 +108,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             btnNext.setVisibility(View.GONE);
         }
 
-        PersonalFragment personalFragment = new PersonalFragment(volunteer, type);
-        ContactFragment contactFragment = new ContactFragment(volunteer, localDataFileManager, mainActivity, type);
-        SectionFragment sectionFragment = new SectionFragment(volunteer, localDataFileManager, type);
-        OtherFragment otherFragment = new OtherFragment(volunteer, type);
+        PersonalFragment personalFragment = new PersonalFragment(editableVolunteer, type);
+        ContactFragment contactFragment = new ContactFragment(editableVolunteer, localDataFileManager, mainActivity, type);
+        SectionFragment sectionFragment = new SectionFragment(editableVolunteer, localDataFileManager, type);
+        OtherFragment otherFragment = new OtherFragment(editableVolunteer, type);
         PolicyFragment policyFragment = new PolicyFragment();
 
         currentFragment = personalFragment;
@@ -168,7 +170,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
                 showFragment(contactFragment);
-                // personalFragment.setVolunteer();
+                personalFragment.setVolunteer();
                 txtSubtitle.setText("Paso 2 de 4");
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
             } else if ( currentFragment == contactFragment ) {
@@ -176,22 +178,23 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
                 showFragment(sectionFragment);
-                // contactFragment.setVolunteer();
-                // sectionFragment.loadData();
+                contactFragment.setVolunteer();
+                sectionFragment.loadData();
                 txtSubtitle.setText("Paso 3 de 4");
             } else if ( currentFragment == sectionFragment ) {
                 if ( !sectionFragment.isComplete() ) {
                     return;
                 }
                 showFragment(otherFragment);
-                // sectionFragment.setVolunter();
+                sectionFragment.setVolunter();
                 txtSubtitle.setText("Paso 4 de 4");
+                btnSave.setText("ACTUALIZAR");
             } else if ( currentFragment == otherFragment ) {
                 if ( !otherFragment.isComplete() ) {
                     return;
                 }
-                // otherFragment.setVolunteer();
-                Toast.makeText(mainActivity, "Actualizar", Toast.LENGTH_SHORT).show();
+                otherFragment.setVolunteer();
+                mainActivity.updateVolunteer(editableVolunteer, noEditableVolunteer, VolunteerBottomSheet.this);
             }
         };
 
@@ -260,6 +263,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             } else if ( currentFragment == otherFragment ) {
                 txtSubtitle.setText("Paso 3 de 4");
                 showFragment(sectionFragment);
+                btnSave.setText("CONTINUAR");
             }
         };
 
@@ -269,6 +273,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
             btnSave.setOnClickListener(updateClickListener);
             btnClose.setOnClickListener(closeUpdateClickListener);
+            sectionFragment.setCurrentSection(editableVolunteer.getSection().getSection());
         }
 
         // Only show

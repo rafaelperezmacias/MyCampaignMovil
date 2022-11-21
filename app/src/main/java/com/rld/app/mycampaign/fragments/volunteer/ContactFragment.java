@@ -80,13 +80,24 @@ public class ContactFragment extends Fragment {
         lytElectorKey.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytStates.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
-        if ( type == VolunteerBottomSheet.TYPE_INSERT ) {
+        if ( type == VolunteerBottomSheet.TYPE_INSERT || type == VolunteerBottomSheet.TYPE_UPDATE ) {
             if ( localDataFileManager.isEmpty() ) {
                 lytSearchSection.setVisibility(View.GONE);
             } else {
                 addStates();
                 addSections();
                 lytSections.setVisibility(View.GONE);
+                if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+                    if ( isValidState(volunteer.getSection().getState().getName()) ) {
+                        lytStates.getEditText().setText(volunteer.getSection().getState().getName());
+                        isValidState = true;
+                        if ( isValidSection(volunteer.getSection().getSection()) ) {
+                            lytSections.getEditText().setText(volunteer.getSection().getSection());
+                            lytSections.setVisibility(View.VISIBLE);
+                            isValidSection = true;
+                        }
+                    }
+                }
             }
         } else if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSearchSection.setVisibility(View.GONE);
@@ -203,7 +214,6 @@ public class ContactFragment extends Fragment {
         }
         return null;
     }
-
 
     private State findState(String nameState) {
         for ( State state : localDataFileManager.getStates() ) {

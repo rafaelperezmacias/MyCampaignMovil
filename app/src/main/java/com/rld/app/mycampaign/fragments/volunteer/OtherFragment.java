@@ -51,14 +51,17 @@ public class OtherFragment extends Fragment {
         btnRadioGeneral = binding.btnRadioGeneral;
         btnRadioOther = binding.btnRadioOther;
 
-        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
             lytNotes.getEditText().setText(volunteer.getNotes());
-            TextInputLayoutUtils.setEditableEditText(lytNotes.getEditText(), false);
             btnRadioYes.setChecked(volunteer.isLocalVotingBooth());
             btnRadioNo.setChecked(!volunteer.isLocalVotingBooth());
             btnRadioVotingBooth.setChecked(volunteer.getType() == Volunteer.TYPE_VOTING_BOOTH_REPRESENTATIVE);
             btnRadioGeneral.setChecked(volunteer.getType() == Volunteer.TYPE_GENERAL_REPRESENTATIVE);
             btnRadioOther.setChecked(volunteer.getType() == Volunteer.TYPE_OTHER);
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+            TextInputLayoutUtils.setEditableEditText(lytNotes.getEditText(), false);
             setEditableRadioButton(btnRadioYes, false);
             setEditableRadioButton(btnRadioNo, false);
             setEditableRadioButton(btnRadioVotingBooth, false);

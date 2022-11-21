@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                showFormVolunteerWithLocalData(currentVolunteer, VolunteerBottomSheet.TYPE_INSERT);
+                                showFormVolunteerWithLocalData(currentVolunteer, null, VolunteerBottomSheet.TYPE_INSERT);
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( !localDataSaved ) {
             downloadDataOfSections();
         } else {
-            // TODO uptade en un service (background)
+            // TODO uptade en un service (background) (ignore)
         }
 
     }
@@ -234,17 +234,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( volunteerFragment != null ) {
             volunteerFragment.updateVolunteers(volunteersToRecyclerView());
         }
-        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-        snackbarText.append("Voluntario registrado con éxito");
-        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
-                .setBackgroundTint(getResources().getColor(R.color.blue))
-                .setTextColor(getResources().getColor(R.color.light_white))
-                .setAction("DETALLES", view -> {
-                    showFormVolunteerWithoutLocalData(currentVolunteer, VolunteerBottomSheet.TYPE_SHOW);
-                })
-                .setActionTextColor(getResources().getColor(R.color.white))
-                .show();
+        showSnackBarWithVolunteer("Voluntario registrado con éxito", currentVolunteer);
     }
 
     private void initializeImageOfVolunteer(Volunteer volunteer, String path, boolean credential) {
@@ -287,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         requestQueue.add(request);
     }
 
-    public void showFormVolunteerWithLocalData(Volunteer volunteer, int type) {
+    public void showFormVolunteerWithLocalData(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos locales")
                 .setCancelable(false);
@@ -297,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
+                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, type);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };
@@ -306,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
-        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, type);
+        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, null, MainActivity.this, null, type);
         volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
     }
 
@@ -382,4 +372,35 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 5000);
     }
 
+    public void updateVolunteer(Volunteer editableVolunteer, Volunteer noEditableVolunteer, VolunteerBottomSheet volunteerBottomSheet) {
+        int idx = 0;
+        for ( int i = 0; i < localVolunteers.size(); i++ ) {
+            if ( localVolunteers.get(i).equals(noEditableVolunteer) ) {
+                idx = i;
+                break;
+            }
+        }
+        localVolunteers.remove(idx);
+        localVolunteers.add(idx, editableVolunteer);
+        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+        volunteerBottomSheet.dismiss();
+        if ( volunteerFragment != null ) {
+            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+        }
+        showSnackBarWithVolunteer("Voluntario actualizado con éxito", editableVolunteer);
+    }
+
+    private void showSnackBarWithVolunteer(String message, Volunteer volunteer) {
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+        snackbarText.append(message);
+        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.blue))
+                .setTextColor(getResources().getColor(R.color.light_white))
+                .setAction("DETALLES", view -> {
+                    showFormVolunteerWithoutLocalData(volunteer, VolunteerBottomSheet.TYPE_SHOW);
+                })
+                .setActionTextColor(getResources().getColor(R.color.white))
+                .show();
+    }
 }

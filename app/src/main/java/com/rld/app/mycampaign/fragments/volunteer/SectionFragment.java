@@ -72,9 +72,12 @@ public class SectionFragment extends Fragment {
         lytFederalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         lytStateName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
             loadData();
             lytSector.getEditText().setText(volunteer.getSector());
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSection.getEditText().setText(volunteer.getSection().getSection());
             TextInputLayoutUtils.setEditableEditText(lytSection.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytMunicipalityName.getEditText(), false);
@@ -198,15 +201,6 @@ public class SectionFragment extends Fragment {
         return null;
     }
 
-    private Section findSection(String numberSection) {
-        for ( Section section : localDataFileManager.getSections() ) {
-            if ( section.getSection().equals(numberSection) ) {
-                return section;
-            }
-        }
-        return null;
-    }
-
     public void loadData() {
         if ( volunteer.getSection() != null ) {
             Section section = volunteer.getSection();
@@ -250,4 +244,7 @@ public class SectionFragment extends Fragment {
         }
     }
 
+    public void setCurrentSection(String currentSection) {
+        this.currentSection = currentSection;
+    }
 }

@@ -155,6 +155,8 @@ public class PersonalFragment extends Fragment {
         address.setExternalNumber(lytExternalNumber.getEditText().getText().toString().trim());
         if ( !lytInternalNumber.getEditText().getText().toString().isEmpty() ) {
             address.setInternalNumber(lytInternalNumber.getEditText().getText().toString().trim());
+        } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            address.setInternalNumber("");
         }
         address.setSuburb(lytSuburb.getEditText().getText().toString().trim());
         address.setZipcode(lytZipcode.getEditText().getText().toString().trim());
