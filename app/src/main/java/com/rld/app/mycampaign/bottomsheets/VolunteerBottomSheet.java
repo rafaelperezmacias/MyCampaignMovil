@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -17,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.dialogs.MessageDialog;
@@ -126,7 +124,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         // Create
         View.OnClickListener createClickListener = v -> {
             if ( currentFragment == personalFragment ) {
-                if ( !personalFragment.isComplete() ) {
+                if ( personalFragment.isComplete() ) {
                     return;
                 }
                 showFragment(contactFragment);
@@ -166,7 +164,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         // Update
         View.OnClickListener updateClickListener = v -> {
             if ( currentFragment == personalFragment ) {
-                if ( !personalFragment.isComplete() ) {
+                if (personalFragment.isComplete()) {
                     return;
                 }
                 showFragment(contactFragment);

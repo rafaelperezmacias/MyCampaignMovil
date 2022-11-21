@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon1"
+            android:id="@+id/icon_fathers_lastname"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -35,12 +35,11 @@
             android:id="@+id/lyt_fathers_lastname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon1"
+            android:layout_toEndOf="@+id/icon_fathers_lastname"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_lastName1"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:errorTextColor="@color/red_liane"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +97,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon2"
+            android:id="@+id/icon_birthdate"
             android:visibility="visible"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -112,7 +111,7 @@
             android:id="@+id/lyt_birthdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon2"
+            android:layout_toEndOf="@+id/icon_birthdate"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Fecha de nacimiento"
             android:paddingStart="16dp"
@@ -153,7 +152,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon3"
+            android:id="@+id/icon_street"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -166,7 +165,7 @@
             android:id="@+id/lyt_street"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon3"
+            android:layout_toEndOf="@+id/icon_street"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_street"
             android:paddingStart="16dp"
@@ -189,7 +188,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon4"
+            android:id="@+id/icon_external_number"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -202,7 +201,7 @@
             android:id="@+id/lyt_external_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon4"
+            android:layout_toEndOf="@+id/icon_external_number"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_out_number"
             android:paddingStart="16dp"
@@ -264,7 +263,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon5"
+            android:id="@+id/icon_zipcode"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -277,7 +276,7 @@
             android:id="@+id/lyt_zipcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon5"
+            android:layout_toEndOf="@+id/icon_zipcode"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fpvbs_cp"
             android:paddingStart="16dp"

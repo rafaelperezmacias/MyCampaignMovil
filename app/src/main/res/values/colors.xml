@@ -10,7 +10,9 @@
 
     <color name="error_r_background">#FFDCE0</color>
     <color name="error_r_text">#86181D</color>
-    <color name="error_r">#d9534f</color>
+    <color name="error_r">#B00020</color>
+
+    <color name="error">#B00020</color>
 
     <color name="error_y_background">#ffe69c</color>
     <color name="error_y_text">#cc9a06</color>

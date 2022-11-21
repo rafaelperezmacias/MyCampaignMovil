@@ -1,20 +1,18 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentPersonalVolunteerBsBinding;
@@ -23,9 +21,17 @@ import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class PersonalFragment extends Fragment {
+
+    private static final int FATHERS_LASTNAME_MAX_LIMIT = 40;
+    private static final int MOTHERS_LASTNAME_MAX_LIMIT = 40;
+    private static final int NAME_MAX_LIMIT = 70;
+    private static final int STREET_MAX_LIMIT = 70;
+    private static final int EXTERNAL_NUMBER_MAX_LIMIT = 10;
+    private static final int INTERNAL_NUMBER_MAX_LIMIT = 10;
+    private static final int SUBURB_MAX_LIMIT = 50;
+    private static final int ZIPCODE_MAX_LIMIT = 10;
 
     private FragmentPersonalVolunteerBsBinding binding;
 
@@ -39,13 +45,18 @@ public class PersonalFragment extends Fragment {
     private TextInputLayout lytSuburb;
     private TextInputLayout lytZipcode;
 
+    private AppCompatImageView iconFathersLastname;
+    private AppCompatImageView iconBirthdate;
+    private AppCompatImageView iconStreet;
+    private AppCompatImageView iconExternalNumber;
+    private AppCompatImageView iconZipcode;
+
     private Calendar birthDate;
 
     private Volunteer volunteer;
     private int type;
 
-    public PersonalFragment(Volunteer volunteer, int type)
-    {
+    public PersonalFragment(Volunteer volunteer, int type) {
         this.volunteer = volunteer;
         this.type = type;
     }
@@ -66,13 +77,19 @@ public class PersonalFragment extends Fragment {
         lytSuburb = binding.lytSuburb;
         lytZipcode = binding.lytZipcode;
 
+        iconFathersLastname = binding.iconFathersLastname;
+        iconBirthdate = binding.iconBirthdate;
+        iconStreet = binding.iconStreet;
+        iconExternalNumber = binding.iconExternalNumber;
+        iconZipcode = binding.iconZipcode;
+
         birthDate = Calendar.getInstance();
 
-        lytBirthdate.getEditText().setOnFocusChangeListener((view, focus) -> {
+        /* lytBirthdate.getEditText().setOnFocusChangeListener((view, focus) -> {
             if ( focus ) {
                 lytBirthdate.getEditText().callOnClick();
             }
-        });
+        }); */
 
         lytBirthdate.getEditText().setOnClickListener(view -> {
             CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
@@ -90,7 +107,7 @@ public class PersonalFragment extends Fragment {
             });
         });
 
-        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+        if (type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE) {
             lytFathersLastname.getEditText().setText(volunteer.getFathersLastname());
             lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
             lytName.getEditText().setText(volunteer.getName());
@@ -103,7 +120,7 @@ public class PersonalFragment extends Fragment {
             lytZipcode.getEditText().setText(volunteer.getAddress().getZipcode());
         }
 
-        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+        if (type == VolunteerBottomSheet.TYPE_SHOW) {
             TextInputLayoutUtils.setEditableEditText(lytFathersLastname.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytMothersLastname.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytName.getEditText(), false);
@@ -115,30 +132,64 @@ public class PersonalFragment extends Fragment {
             TextInputLayoutUtils.setEditableEditText(lytZipcode.getEditText(), false);
         }
 
-        lytFathersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytMothersLastname.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytName.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytStreet.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytInternalNumber.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
-        lytSuburb.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
+        TextInputLayoutUtils.initializeFilters(lytFathersLastname.getEditText(), true, FATHERS_LASTNAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytMothersLastname.getEditText(), true, MOTHERS_LASTNAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytName.getEditText(), true, NAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytStreet.getEditText(), true, STREET_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytExternalNumber.getEditText(), false, EXTERNAL_NUMBER_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytInternalNumber.getEditText(), true, INTERNAL_NUMBER_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytSuburb.getEditText(), true, SUBURB_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytZipcode.getEditText(), false, ZIPCODE_MAX_LIMIT);
 
         return root;
     }
 
     public boolean isComplete() {
-//        return  !(!TextInputLayoutUtils.isValid(lytNames, getString(R.string.fpvbs_names_error))
-//            | !TextInputLayoutUtils.isVali40(lytNames, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytLastName1, getString(R.string.fpvbs_lastName1_error))
-//            | !TextInputLayoutUtils.isVali50(lytLastName1, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytLastName2, getString(R.string.fpvbs_lastName2_error))
-//            | !TextInputLayoutUtils.isVali50(lytLastName2, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytStreet, getString(R.string.fpvbs_street_error))
-//            | !TextInputLayoutUtils.isVali70(lytStreet,"Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytOutNumber, getString(R.string.fpvbs_out_number_error))
-//            | !TextInputLayoutUtils.isVali10_1(lytComplement, "Error, revise la información de este campo")
-//            | !TextInputLayoutUtils.isValid(lytSuburb, getString(R.string.fpvbs_suburb_error))
-//            | !TextInputLayoutUtils.isVali40(lytSuburb, "Error, revise la información de este campo"));
         return true;
+        // return !isFathersLastnameComplete() | !isMothersLastnameComplete() | !isNameComplete() | !isCompleteBirthdate()
+        //        | !isCompleteStreet() | !isCompleteExternalNumber();
+    }
+
+    private boolean isFathersLastnameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytFathersLastname, "Ingrese el apellido paterno", iconFathersLastname, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytFathersLastname, "Rellene el campo con solo letras mayúsculas", iconFathersLastname, getContext());
+    }
+
+    private boolean isMothersLastnameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytMothersLastname, "Ingrese el apellido materno", null, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytMothersLastname, "Rellene el campo con solo letras mayúsculas", null, getContext());
+    }
+
+    private boolean isNameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytName, "Ingrese el nombre", null, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytName, "Rellene el campo con solo letras mayúsculas", null, getContext());
+    }
+
+    private boolean isCompleteBirthdate() {
+        return TextInputLayoutUtils.isNotEmpty(lytBirthdate, "Ingrese la fecha de nacimiento", iconBirthdate, getContext());
+    }
+
+    private boolean isCompleteStreet() {
+        return TextInputLayoutUtils.isNotEmpty(lytStreet, "Ingrese la calle", iconStreet, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytStreet, "Rellene el campo con solo letras mayúsculas", iconStreet, getContext());
+    }
+
+    private boolean isCompleteExternalNumber() {
+        return TextInputLayoutUtils.isNotEmpty(lytExternalNumber, "Ingrese el número exterior", iconExternalNumber, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytExternalNumber, "Rellene el campo con solo números", iconExternalNumber, getContext());
+    }
+
+    private boolean isCompleteInternalNumber() {
+        return TextInputLayoutUtils.isValidMayusWithNumbers(lytInternalNumber, "Rellene el campo solo con letras y números", null, getContext());
+    }
+
+    private boolean isCompleteSuburb() {
+        return TextInputLayoutUtils.isNotEmpty(lytSuburb, "Ingrese la colonia", null, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytSuburb, "Rellene el campo con solo letras mayúsculas", null, getContext());
+    }
+
+    private boolean isCompleteZipcode() {
+        return false;
     }
 
     public void setVolunteer() {
@@ -153,7 +204,7 @@ public class PersonalFragment extends Fragment {
         }
         address.setStreet(lytStreet.getEditText().getText().toString().trim());
         address.setExternalNumber(lytExternalNumber.getEditText().getText().toString().trim());
-        if ( !lytInternalNumber.getEditText().getText().toString().isEmpty() ) {
+        if ( !lytInternalNumber.getEditText().getText().toString().trim().isEmpty() ) {
             address.setInternalNumber(lytInternalNumber.getEditText().getText().toString().trim());
         } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
             address.setInternalNumber("");
