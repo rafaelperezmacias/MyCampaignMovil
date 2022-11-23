@@ -102,17 +102,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private VolunteerFragment volunteerFragment;
 
-    private static String TAG = "MainActivity";
-
-    static {
-        if( OpenCVLoader.initDebug() ) {
-            Log.d(TAG, "OpenCv activo");
-        }
-        else{
-            Log.d(TAG, "OpenCV falló");
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                showFormVolunteerWithOCR(currentVolunteer, null, VolunteerBottomSheet.TYPE_INSERT);
+                                showFormVolunteerWithOCR(currentVolunteer, null);
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -189,8 +178,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         boolean localDataSaved = getSharedPreferences("localData", Context.MODE_PRIVATE).getBoolean("saved", false);
         if ( !localDataSaved ) {
             downloadDataOfSections();
-        } else {
-            // TODO uptade en un service (background) (ignore)
         }
     }
 
@@ -243,6 +230,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         menuVolunteerDialog.show();
     }
 
+    public void firmActivityForVolunteer() {
+        startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
+    }
+
     public void hideProgressDialog() {
         if ( progressDialog != null ) {
             progressDialog.dismiss();
@@ -278,10 +269,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
     }
 
-    public void firmActivityForVolunteer() {
-        startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
-    }
-
     public void showFormVolunteerWithLocalData(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos locales")
@@ -300,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
-    public void showFormVolunteerWithOCR(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
+    public void showFormVolunteerWithOCR(Volunteer editableVolunteer, Volunteer noEditableVolunteer) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos locales")
                 .setCancelable(false);
@@ -311,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, type);
+                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };

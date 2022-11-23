@@ -77,17 +77,23 @@ public class ContactFragment extends Fragment {
         lytSections = binding.lytSections;
         LinearLayout lytSearchSection = binding.lytSearchSection;
 
+        lytElectorKey.getEditText().setText(volunteer.getElectorKey());
+        lytPhone.getEditText().setText(volunteer.getPhone());
+        lytEmail.getEditText().setText(volunteer.getEmail());
+
         lytElectorKey.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
         lytStates.getEditText().setFilters(new InputFilter[] { new InputFilter.AllCaps() });
 
-        if ( type == VolunteerBottomSheet.TYPE_INSERT || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+        isValidState = false;
+        isValidSection = false;
+        if ( type == VolunteerBottomSheet.TYPE_UPDATE || type == VolunteerBottomSheet.TYPE_INSERT ) {
             if ( localDataFileManager.isEmpty() ) {
                 lytSearchSection.setVisibility(View.GONE);
             } else {
                 addStates();
                 addSections();
                 lytSections.setVisibility(View.GONE);
-                if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+                if ( volunteer.getSection() != null && volunteer.getSection().getState() != null ) {
                     if ( isValidState(volunteer.getSection().getState().getName()) ) {
                         lytStates.getEditText().setText(volunteer.getSection().getState().getName());
                         isValidState = true;
@@ -99,17 +105,13 @@ public class ContactFragment extends Fragment {
                     }
                 }
             }
-        } else if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSearchSection.setVisibility(View.GONE);
             TextInputLayoutUtils.setEditableEditText(lytElectorKey.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytEmail.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytPhone.getEditText(), false);
-        }
-
-        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
-            lytElectorKey.getEditText().setText(volunteer.getElectorKey());
-            lytPhone.getEditText().setText(volunteer.getPhone());
-            lytEmail.getEditText().setText(volunteer.getEmail());
         }
 
         lytStates.getEditText().addTextChangedListener(new TextWatcher() {
@@ -189,24 +191,6 @@ public class ContactFragment extends Fragment {
         }
     }
 
-    private void addSections() {
-        List<String> stringsSections = new ArrayList<>();
-        for ( Section section : localDataFileManager.getSections() ) {
-            stringsSections.add(section.getSection());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringsSections);
-        ((AutoCompleteTextView) lytSections.getEditText()).setAdapter(adapter);
-    }
-
-    private void addStates() {
-        List<String> stringStates = new ArrayList<>();
-        for ( State state : localDataFileManager.getStates() ) {
-            stringStates.add(state.getName());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringStates);
-        ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter);
-    }
-
     private Section findSection(String numberSection) {
         for ( Section section : localDataFileManager.getSections() ) {
             if ( section.getSection().equals(numberSection) ) {
@@ -242,4 +226,23 @@ public class ContactFragment extends Fragment {
         }
         return false;
     }
+
+    private void addSections() {
+        List<String> stringsSections = new ArrayList<>();
+        for ( Section section : localDataFileManager.getSections() ) {
+            stringsSections.add(section.getSection());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringsSections);
+        ((AutoCompleteTextView) lytSections.getEditText()).setAdapter(adapter);
+    }
+
+    private void addStates() {
+        List<String> stringStates = new ArrayList<>();
+        for ( State state : localDataFileManager.getStates() ) {
+            stringStates.add(state.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringStates);
+        ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter);
+    }
+
 }

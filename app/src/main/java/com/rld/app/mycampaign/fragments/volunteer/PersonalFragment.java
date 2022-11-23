@@ -85,12 +85,8 @@ public class PersonalFragment extends Fragment {
 
         birthDate = Calendar.getInstance();
 
-        /* lytBirthdate.getEditText().setOnFocusChangeListener((view, focus) -> {
-            if ( focus ) {
-                lytBirthdate.getEditText().callOnClick();
-            }
-        }); */
-
+        lytBirthdate.getEditText().setClickable(true);
+        lytBirthdate.getEditText().setFocusable(false);
         lytBirthdate.getEditText().setOnClickListener(view -> {
             CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
                     .setValidator(DateValidatorPointBackward.now());
@@ -110,10 +106,11 @@ public class PersonalFragment extends Fragment {
         lytFathersLastname.getEditText().setText(volunteer.getFathersLastname());
         lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
         lytName.getEditText().setText(volunteer.getName());
-
-        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+        if ( volunteer.getBirthdate() != null ) {
             String date = volunteer.getBirthdate().get(Calendar.DAY_OF_MONTH) + "/" + (volunteer.getBirthdate().get(Calendar.MONTH) + 1) + "/" + volunteer.getBirthdate().get(Calendar.YEAR);
             lytBirthdate.getEditText().setText(date);
+        }
+        if ( volunteer.getAddress() != null ) {
             lytStreet.getEditText().setText(volunteer.getAddress().getStreet());
             lytInternalNumber.getEditText().setText(volunteer.getAddress().getInternalNumber());
             lytExternalNumber.getEditText().setText(volunteer.getAddress().getExternalNumber());

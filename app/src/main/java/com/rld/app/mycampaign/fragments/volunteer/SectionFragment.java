@@ -72,12 +72,9 @@ public class SectionFragment extends Fragment {
         lytFederalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         lytStateName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             loadData();
             lytSector.getEditText().setText(volunteer.getSector());
-        }
-
-        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSection.getEditText().setText(volunteer.getSection().getSection());
             TextInputLayoutUtils.setEditableEditText(lytSection.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytMunicipalityName.getEditText(), false);
@@ -141,6 +138,7 @@ public class SectionFragment extends Fragment {
             section.setLocalDistrict(localDistrict);
             section.setMunicipality(municipality);
         }
+        currentSection = section.getSection();
         volunteer.setSection(section);
     }
 

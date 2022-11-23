@@ -119,7 +119,7 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="date"
+                android:inputType="none"
                 android:cursorVisible="false"
                 android:autoHandwritingEnabled="false"
                 android:layout_width="match_parent"
