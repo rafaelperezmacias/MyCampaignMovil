@@ -73,5 +73,9 @@ public class TextInputLayoutUtils {
         editText.setFilters(filterArray);
     }
 
+    public static void cursorToEnd(EditText editText) {
+        editText.setSelection(editText.getText().toString().length());
+    }
+
 }
 

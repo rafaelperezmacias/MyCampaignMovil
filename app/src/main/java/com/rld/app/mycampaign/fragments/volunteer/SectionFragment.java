@@ -72,6 +72,13 @@ public class SectionFragment extends Fragment {
         lytFederalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         lytStateName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
+        if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            loadData();
+            lytSector.getEditText().setText(volunteer.getSector());
+            lytSection.getEditText().setText(volunteer.getSection().getSection());
+            currentSection = volunteer.getSection().getSection();
+        }
+
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             loadData();
             lytSector.getEditText().setText(volunteer.getSector());
@@ -245,4 +252,10 @@ public class SectionFragment extends Fragment {
     public void setCurrentSection(String currentSection) {
         this.currentSection = currentSection;
     }
+
+    public void setFocus() {
+        lytSection.getEditText().requestFocus();
+        TextInputLayoutUtils.cursorToEnd(lytSection.getEditText());
+    }
+
 }

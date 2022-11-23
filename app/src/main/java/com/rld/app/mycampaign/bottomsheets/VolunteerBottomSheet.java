@@ -202,10 +202,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         // Update
         View.OnClickListener updateClickListener = v -> {
             if ( currentFragment == personalFragment ) {
-                if (personalFragment.isComplete()) {
+                if ( !personalFragment.isComplete() ) {
                     return;
                 }
                 showFragment(contactFragment);
+                contactFragment.setFocus();
                 personalFragment.setVolunteer();
                 txtSubtitle.setText("Paso 2 de 4");
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
@@ -214,14 +215,15 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
                 showFragment(sectionFragment);
+                sectionFragment.setFocus();
                 contactFragment.setVolunteer();
-                sectionFragment.loadData();
                 txtSubtitle.setText("Paso 3 de 4");
             } else if ( currentFragment == sectionFragment ) {
                 if ( !sectionFragment.isComplete() ) {
                     return;
                 }
                 showFragment(otherFragment);
+                otherFragment.setFocus();
                 sectionFragment.setVolunter();
                 txtSubtitle.setText("Paso 4 de 4");
                 btnSave.setText("ACTUALIZAR");
@@ -230,7 +232,21 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                     return;
                 }
                 otherFragment.setVolunteer();
-                mainActivity.updateVolunteer(editableVolunteer, noEditableVolunteer, VolunteerBottomSheet.this);
+                MessageDialogBuilder builder = new MessageDialogBuilder()
+                        .setTitle("Alerta")
+                        .setMessage("¿Esta seguro de querer actualizar la información del voluntario?")
+                        .setCancelable(false)
+                        .setPrimaryButtonText("Actualizar")
+                        .setSecondaryButtonText("Cancelar");
+                MessageDialog messageDialog = new MessageDialog(mainActivity, builder);
+                messageDialog.setPrimaryButtonListener(view1 -> {
+                    mainActivity.updateVolunteer(editableVolunteer, noEditableVolunteer, VolunteerBottomSheet.this);
+                    messageDialog.dismiss();
+                });
+                messageDialog.setSecondaryButtonListener(view1 -> {
+                    messageDialog.dismiss();
+                });
+                messageDialog.show();
             }
         };
 

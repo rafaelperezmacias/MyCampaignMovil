@@ -86,7 +86,7 @@ public class ContactFragment extends Fragment {
 
         isValidState = false;
         isValidSection = false;
-        if ( type == VolunteerBottomSheet.TYPE_UPDATE || type == VolunteerBottomSheet.TYPE_INSERT ) {
+        if ( type == VolunteerBottomSheet.TYPE_INSERT ) {
             if ( localDataFileManager.isEmpty() ) {
                 lytSearchSection.setVisibility(View.GONE);
             } else {
@@ -105,6 +105,10 @@ public class ContactFragment extends Fragment {
                     }
                 }
             }
+        }
+
+        if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            lytSearchSection.setVisibility(View.GONE);
         }
 
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
@@ -176,18 +180,20 @@ public class ContactFragment extends Fragment {
         volunteer.setElectorKey(lytElectorKey.getEditText().getText().toString().trim());
         volunteer.setEmail(lytEmail.getEditText().getText().toString().trim());
         volunteer.setPhone(lytPhone.getEditText().getText().toString().trim());
-        if ( isValidSection ) {
-            volunteer.setSection(findSection(lytSections.getEditText().getText().toString().trim()));
-        } else {
-            Section section = new Section();
-            if ( isValidState ) {
-                section.setState(findState(lytStates.getEditText().getText().toString().trim()));
+        if ( type == VolunteerBottomSheet.TYPE_INSERT ) {
+            if ( isValidSection ) {
+                volunteer.setSection(findSection(lytSections.getEditText().getText().toString().trim()));
             } else {
-                State state = new State();
-                state.setName(lytStates.getEditText().getText().toString());
-                section.setState(state);
+                Section section = new Section();
+                if ( isValidState ) {
+                    section.setState(findState(lytStates.getEditText().getText().toString().trim()));
+                } else {
+                    State state = new State();
+                    state.setName(lytStates.getEditText().getText().toString());
+                    section.setState(state);
+                }
+                volunteer.setSection(section);
             }
-            volunteer.setSection(section);
         }
     }
 
@@ -243,6 +249,11 @@ public class ContactFragment extends Fragment {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringStates);
         ((AutoCompleteTextView) lytStates.getEditText()).setAdapter(adapter);
+    }
+
+    public void setFocus() {
+        lytElectorKey.getEditText().requestFocus();
+        TextInputLayoutUtils.cursorToEnd(lytElectorKey.getEditText());
     }
 
 }

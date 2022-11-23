@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     public void showFormVolunteerWithLocalData(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                .setTitle("Cargando datos locales")
+                .setTitle("Cargando datos")
                 .setCancelable(false);
         progressDialog = new ProgressDialog(MainActivity.this, builder);
         progressDialog.show();
@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     public void showFormVolunteerWithOCR(Volunteer editableVolunteer, Volunteer noEditableVolunteer) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                .setTitle("Cargando datos locales")
+                .setTitle("Cargando datos")
                 .setCancelable(false);
         progressDialog = new ProgressDialog(MainActivity.this, builder);
         progressDialog.show();

@@ -118,6 +118,10 @@ public class PersonalFragment extends Fragment {
             lytZipcode.getEditText().setText(volunteer.getAddress().getZipcode());
         }
 
+        if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
+            TextInputLayoutUtils.cursorToEnd(lytFathersLastname.getEditText());
+        }
+
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             TextInputLayoutUtils.setEditableEditText(lytFathersLastname.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytMothersLastname.getEditText(), false);

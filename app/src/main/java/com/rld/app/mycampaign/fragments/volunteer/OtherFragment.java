@@ -69,6 +69,7 @@ public class OtherFragment extends Fragment {
             setEditableRadioButton(btnRadioOther, false);
         }
 
+        /*
         lytNotes.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
             if ( hasFocus ) {
                 lytNotes.setHint("");
@@ -77,7 +78,7 @@ public class OtherFragment extends Fragment {
                     lytNotes.setHint(getString(R.string.fovbs_notes));
                 }
             }
-        });
+        }); */
 
         return root;
     }
@@ -105,6 +106,11 @@ public class OtherFragment extends Fragment {
         btn.setClickable(enable);
         btn.setLongClickable(enable);
         btn.setFocusable(enable);
+    }
+
+    public void setFocus() {
+        lytNotes.getEditText().requestFocus();
+        TextInputLayoutUtils.cursorToEnd(lytNotes.getEditText());
     }
 
 }
