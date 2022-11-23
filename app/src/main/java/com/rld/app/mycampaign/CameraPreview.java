@@ -79,19 +79,17 @@ public class CameraPreview extends AppCompatActivity {
 
     public void takePhoto() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if ( takePictureIntent.resolveActivity(getPackageManager()) != null ) {
-            File photoFile;
-            try {
-                photoFile = createImageFile();
-            } catch ( IOException ex ) {
-                setResult(RESULT_IMAGE_FILE_NOT_CREATE);
-                finish();
-                return;
-            }
-            Uri photoURI = FileProvider.getUriForFile(this, "com.rld.app.mycampaign.provider", photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startCameraIntent.launch(takePictureIntent);
+        File photoFile;
+        try {
+            photoFile = createImageFile();
+        } catch ( IOException ex ) {
+            setResult(RESULT_IMAGE_FILE_NOT_CREATE);
+            finish();
+            return;
         }
+        Uri photoURI = FileProvider.getUriForFile(this, "com.rld.app.mycampaign.provider", photoFile);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        startCameraIntent.launch(takePictureIntent);
     }
 
     private File createImageFile() throws IOException {

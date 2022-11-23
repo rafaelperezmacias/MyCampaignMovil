@@ -107,10 +107,11 @@ public class PersonalFragment extends Fragment {
             });
         });
 
-        if (type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE) {
-            lytFathersLastname.getEditText().setText(volunteer.getFathersLastname());
-            lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
-            lytName.getEditText().setText(volunteer.getName());
+        lytFathersLastname.getEditText().setText(volunteer.getFathersLastname());
+        lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
+        lytName.getEditText().setText(volunteer.getName());
+
+        if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
             String date = volunteer.getBirthdate().get(Calendar.DAY_OF_MONTH) + "/" + (volunteer.getBirthdate().get(Calendar.MONTH) + 1) + "/" + volunteer.getBirthdate().get(Calendar.YEAR);
             lytBirthdate.getEditText().setText(date);
             lytStreet.getEditText().setText(volunteer.getAddress().getStreet());
@@ -120,7 +121,7 @@ public class PersonalFragment extends Fragment {
             lytZipcode.getEditText().setText(volunteer.getAddress().getZipcode());
         }
 
-        if (type == VolunteerBottomSheet.TYPE_SHOW) {
+        if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             TextInputLayoutUtils.setEditableEditText(lytFathersLastname.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytMothersLastname.getEditText(), false);
             TextInputLayoutUtils.setEditableEditText(lytName.getEditText(), false);

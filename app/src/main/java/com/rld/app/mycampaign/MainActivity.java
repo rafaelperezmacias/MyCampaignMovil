@@ -1,8 +1,10 @@
 package com.rld.app.mycampaign;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -31,6 +33,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -64,11 +68,13 @@ import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.ocr.ReadINE;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.OpenCVLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private ActivityResultLauncher<Intent> startCameraPreviewIntent;
     private ActivityResultLauncher<Intent> startFirmActivityIntent;
-    
+
     private VolunteerBottomSheet volunteerBottomSheet;
     private ProgressDialog progressDialog;
 
@@ -95,6 +101,17 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ArrayList<Volunteer> remoteVolunteers;
 
     private VolunteerFragment volunteerFragment;
+
+    private static String TAG = "MainActivity";
+
+    static {
+        if( OpenCVLoader.initDebug() ) {
+            Log.d(TAG, "OpenCv activo");
+        }
+        else{
+            Log.d(TAG, "OpenCV falló");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                showFormVolunteerWithLocalData(currentVolunteer, null, VolunteerBottomSheet.TYPE_INSERT);
+                                showFormVolunteerWithOCR(currentVolunteer, null, VolunteerBottomSheet.TYPE_INSERT);
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -175,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         } else {
             // TODO uptade en un service (background) (ignore)
         }
-
     }
 
     @Override
@@ -194,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     public void showMenuVolunteer() {
         MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this);
         menuVolunteerDialog.setBtnAddVolunteerListener(view -> {
+            menuVolunteerDialog.dismiss();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
@@ -205,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             };
             Timer timer = new Timer();
             timer.schedule(task, 100);
-            menuVolunteerDialog.dismiss();
         });
         menuVolunteerDialog.setBtnUploadListener(view -> {
             menuVolunteerDialog.dismiss();
@@ -225,6 +241,19 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         layoutParams.flags &= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(layoutParams);
         menuVolunteerDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if ( progressDialog != null ) {
+            progressDialog.dismiss();
+        }
+    }
+
+    public ArrayList<Volunteer> volunteersToRecyclerView() {
+        ArrayList<Volunteer> volunteers = new ArrayList<>();
+        volunteers.addAll(remoteVolunteers);
+        volunteers.addAll(localVolunteers);
+        return volunteers;
     }
 
     private void addLocalVolunteer() {
@@ -253,30 +282,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
     }
 
-    private void downloadDataOfSections() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
-            try {
-                if ( response.getInt("code") == 200 ) {
-                    StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
-                    JSONObject state = response.getJSONObject("state");
-                    getSharedPreferences("localData", MODE_PRIVATE).edit().putInt("state_id", state.getInt("id")).apply();
-                    getSharedPreferences("localData", MODE_PRIVATE).edit().putString("state_name", state.getString("name")).apply();
-                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), state.getInt("id"), MainActivity.this);
-                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
-                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
-                    SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
-                    getSharedPreferences("localData", Context.MODE_PRIVATE).edit().putBoolean("saved", true).apply();
-                }
-            } catch ( JSONException ex ) {
-                
-            }
-        }, error -> {
-            Log.e("Error", "" + error.getMessage());
-        });
-        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(request);
-    }
-
     public void showFormVolunteerWithLocalData(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos locales")
@@ -295,22 +300,61 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
+    public void showFormVolunteerWithOCR(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Cargando datos locales")
+                .setCancelable(false);
+        progressDialog = new ProgressDialog(MainActivity.this, builder);
+        progressDialog.show();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                // OCR
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
+                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, type);
+                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 100);
+    }
+
+
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
         VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, null, MainActivity.this, null, type);
         volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
     }
 
-    public void hideProgressDialog() {
-        if ( progressDialog != null ) {
-            progressDialog.dismiss();
+    public void updateVolunteer(Volunteer editableVolunteer, Volunteer noEditableVolunteer, VolunteerBottomSheet volunteerBottomSheet) {
+        int idx = 0;
+        for ( int i = 0; i < localVolunteers.size(); i++ ) {
+            if ( localVolunteers.get(i).equals(noEditableVolunteer) ) {
+                idx = i;
+                break;
+            }
         }
+        localVolunteers.remove(idx);
+        localVolunteers.add(idx, editableVolunteer);
+        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+        volunteerBottomSheet.dismiss();
+        if ( volunteerFragment != null ) {
+            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+        }
+        showSnackBarWithVolunteer("Voluntario actualizado con éxito", editableVolunteer);
     }
 
-    public ArrayList<Volunteer> volunteersToRecyclerView() {
-        ArrayList<Volunteer> volunteers = new ArrayList<>();
-        volunteers.addAll(remoteVolunteers);
-        volunteers.addAll(localVolunteers);
-        return volunteers;
+    private void showSnackBarWithVolunteer(String message, Volunteer volunteer) {
+        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+        snackbarText.append(message);
+        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.blue))
+                .setTextColor(getResources().getColor(R.color.light_white))
+                .setAction("DETALLES", view -> {
+                    showFormVolunteerWithoutLocalData(volunteer, VolunteerBottomSheet.TYPE_SHOW);
+                })
+                .setActionTextColor(getResources().getColor(R.color.white))
+                .show();
     }
 
     private void uploadVolunteersToServer() {
@@ -372,35 +416,27 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 5000);
     }
 
-    public void updateVolunteer(Volunteer editableVolunteer, Volunteer noEditableVolunteer, VolunteerBottomSheet volunteerBottomSheet) {
-        int idx = 0;
-        for ( int i = 0; i < localVolunteers.size(); i++ ) {
-            if ( localVolunteers.get(i).equals(noEditableVolunteer) ) {
-                idx = i;
-                break;
-            }
-        }
-        localVolunteers.remove(idx);
-        localVolunteers.add(idx, editableVolunteer);
-        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
-        volunteerBottomSheet.dismiss();
-        if ( volunteerFragment != null ) {
-            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
-        }
-        showSnackBarWithVolunteer("Voluntario actualizado con éxito", editableVolunteer);
-    }
+    private void downloadDataOfSections() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
+            try {
+                if ( response.getInt("code") == 200 ) {
+                    StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
+                    JSONObject state = response.getJSONObject("state");
+                    getSharedPreferences("localData", MODE_PRIVATE).edit().putInt("state_id", state.getInt("id")).apply();
+                    getSharedPreferences("localData", MODE_PRIVATE).edit().putString("state_name", state.getString("name")).apply();
+                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), state.getInt("id"), MainActivity.this);
+                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
+                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
+                    SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
+                    getSharedPreferences("localData", Context.MODE_PRIVATE).edit().putBoolean("saved", true).apply();
+                }
+            } catch ( JSONException ex ) {
 
-    private void showSnackBarWithVolunteer(String message, Volunteer volunteer) {
-        SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-        snackbarText.append(message);
-        snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
-                .setBackgroundTint(getResources().getColor(R.color.blue))
-                .setTextColor(getResources().getColor(R.color.light_white))
-                .setAction("DETALLES", view -> {
-                    showFormVolunteerWithoutLocalData(volunteer, VolunteerBottomSheet.TYPE_SHOW);
-                })
-                .setActionTextColor(getResources().getColor(R.color.white))
-                .show();
+            }
+        }, error -> {
+            Log.e("Error", "" + error.getMessage());
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
     }
 }
