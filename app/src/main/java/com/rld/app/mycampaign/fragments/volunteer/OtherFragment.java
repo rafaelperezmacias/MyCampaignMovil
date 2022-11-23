@@ -1,14 +1,17 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -20,6 +23,8 @@ import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 public class OtherFragment extends Fragment {
 
+    private static final int NOTES_MAX_LIMIT = 512;
+
     private FragmentOtherVolunteerBsBinding binding;
 
     private TextInputLayout lytNotes;
@@ -29,15 +34,20 @@ public class OtherFragment extends Fragment {
     private RadioButton btnRadioGeneral;
     private RadioButton btnRadioOther;
 
+    private AppCompatImageView iconNotes;
+
     private Volunteer volunteer;
     private int type;
+    private VolunteerBottomSheet parent;
 
-    public OtherFragment(Volunteer volunteer, int type)
+    public OtherFragment(Volunteer volunteer, int type, VolunteerBottomSheet parent)
     {
         this.volunteer = volunteer;
         this.type = type;
+        this.parent = parent;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +60,8 @@ public class OtherFragment extends Fragment {
         btnRadioVotingBooth = binding.btnVotingBooth;
         btnRadioGeneral = binding.btnRadioGeneral;
         btnRadioOther = binding.btnRadioOther;
+
+        iconNotes = binding.iconNotes;
 
         if ( type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE ) {
             lytNotes.getEditText().setText(volunteer.getNotes());
@@ -69,21 +81,23 @@ public class OtherFragment extends Fragment {
             setEditableRadioButton(btnRadioOther, false);
         }
 
-        /*
-        lytNotes.getEditText().setOnFocusChangeListener((v, hasFocus) -> {
-            if ( hasFocus ) {
-                lytNotes.setHint("");
-            } else {
-                if ( lytNotes.getEditText().getText().toString().isEmpty() ) {
-                    lytNotes.setHint(getString(R.string.fovbs_notes));
-                }
+        lytNotes.getEditText().setOnTouchListener((view, motionEvent) -> {
+            parent.setScrollingEnable(true);
+            if ( ( motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                parent.setScrollingEnable(false);
             }
-        }); */
+            return false;
+        });
+
+        TextInputLayoutUtils.initializeFilters(lytNotes.getEditText(), false, NOTES_MAX_LIMIT);
 
         return root;
     }
 
     public boolean isComplete() {
+        if ( !lytNotes.getEditText().getText().toString().trim().isEmpty() ) {
+            return TextInputLayoutUtils.isValidNotes(lytNotes, iconNotes, getContext());
+        }
         return true;
     }
 

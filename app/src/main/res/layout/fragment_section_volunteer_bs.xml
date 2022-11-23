@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_1"
+            android:id="@+id/icon_section"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -35,12 +35,11 @@
             android:id="@+id/lyt_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon_1"
+            android:layout_toEndOf="@+id/icon_section"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Sección"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:errorTextColor="@color/red_liane"
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -102,7 +101,6 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:maxLength="30"
                     android:inputType="textCapCharacters"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -125,7 +123,6 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:maxLength="50"
                     android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -143,7 +140,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_5"
+            android:id="@+id/icon_sector"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -156,7 +153,7 @@
             android:id="@+id/lyt_sector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon_5"
+            android:layout_toEndOf="@+id/icon_sector"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Sector"
             android:paddingStart="16dp"
@@ -191,7 +188,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_2"
+            android:id="@+id/icon_local_disctict"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -201,7 +198,7 @@
             android:contentDescription="@string/icon"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_toEndOf="@id/icon_2"
+            android:layout_toEndOf="@id/icon_local_disctict"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -276,7 +273,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_3"
+            android:id="@+id/icon_federal_district"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -286,7 +283,7 @@
             android:contentDescription="@string/icon"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_toEndOf="@id/icon_3"
+            android:layout_toEndOf="@id/icon_federal_district"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -361,7 +358,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_4"
+            android:id="@+id/icon_state"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -371,7 +368,7 @@
             android:contentDescription="@string/icon"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_toEndOf="@id/icon_4"
+            android:layout_toEndOf="@id/icon_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

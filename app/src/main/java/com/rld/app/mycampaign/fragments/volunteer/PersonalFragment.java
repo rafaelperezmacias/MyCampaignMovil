@@ -147,24 +147,25 @@ public class PersonalFragment extends Fragment {
     }
 
     public boolean isComplete() {
-        return true;
-        // return !isFathersLastnameComplete() | !isMothersLastnameComplete() | !isNameComplete() | !isCompleteBirthdate()
-        //        | !isCompleteStreet() | !isCompleteExternalNumber();
+        // return true;
+        return isFathersLastnameComplete() & isMothersLastnameComplete() & isNameComplete() & isCompleteBirthdate()
+                & isCompleteStreet() & isCompleteExternalNumber() & isCompleteInternalNumber()
+                & isCompleteSuburb() & isCompleteZipcode();
     }
 
     private boolean isFathersLastnameComplete() {
         return TextInputLayoutUtils.isNotEmpty(lytFathersLastname, "Ingrese el apellido paterno", iconFathersLastname, getContext())
-                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytFathersLastname, "Rellene el campo con solo letras mayúsculas", iconFathersLastname, getContext());
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytFathersLastname, iconFathersLastname, getContext());
     }
 
     private boolean isMothersLastnameComplete() {
         return TextInputLayoutUtils.isNotEmpty(lytMothersLastname, "Ingrese el apellido materno", null, getContext())
-                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytMothersLastname, "Rellene el campo con solo letras mayúsculas", null, getContext());
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytMothersLastname, null, getContext());
     }
 
     private boolean isNameComplete() {
         return TextInputLayoutUtils.isNotEmpty(lytName, "Ingrese el nombre", null, getContext())
-                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytName, "Rellene el campo con solo letras mayúsculas", null, getContext());
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytName, null, getContext());
     }
 
     private boolean isCompleteBirthdate() {
@@ -173,25 +174,26 @@ public class PersonalFragment extends Fragment {
 
     private boolean isCompleteStreet() {
         return TextInputLayoutUtils.isNotEmpty(lytStreet, "Ingrese la calle", iconStreet, getContext())
-                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytStreet, "Rellene el campo con solo letras mayúsculas", iconStreet, getContext());
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytStreet, iconStreet, getContext());
     }
 
     private boolean isCompleteExternalNumber() {
         return TextInputLayoutUtils.isNotEmpty(lytExternalNumber, "Ingrese el número exterior", iconExternalNumber, getContext())
-                && TextInputLayoutUtils.isValidNumbers(lytExternalNumber, "Rellene el campo con solo números", iconExternalNumber, getContext());
+                && TextInputLayoutUtils.isValidNumbers(lytExternalNumber, iconExternalNumber, getContext());
     }
 
     private boolean isCompleteInternalNumber() {
-        return TextInputLayoutUtils.isValidMayusWithNumbers(lytInternalNumber, "Rellene el campo solo con letras y números", null, getContext());
+        return TextInputLayoutUtils.isValidMayusWithNumbers(lytInternalNumber, null, getContext());
     }
 
     private boolean isCompleteSuburb() {
         return TextInputLayoutUtils.isNotEmpty(lytSuburb, "Ingrese la colonia", null, getContext())
-                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytSuburb, "Rellene el campo con solo letras mayúsculas", null, getContext());
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytSuburb, null, getContext());
     }
 
     private boolean isCompleteZipcode() {
-        return false;
+        return TextInputLayoutUtils.isNotEmpty(lytZipcode, "Ingrese el código postal", iconZipcode, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytZipcode, iconZipcode, getContext());
     }
 
     public void setVolunteer() {

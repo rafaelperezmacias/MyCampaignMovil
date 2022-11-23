@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,6 +25,17 @@ import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 public class SectionFragment extends Fragment {
 
+    private static final int SECTION_MAX_LIMIT = 10;
+    private static final int MUNICIPALITY_NAME_MAX_LIMIT = 60;
+    private static final int MUNICIPALITY_NUMBER_MAX_LIMIT = 4;
+    private static final int SECTOR_MAX_LIMIT = 50;
+    private static final int LOCAL_DISTRICT_NAME_MAX_LIMIT = 60;
+    private static final int LOCAL_DISTRICT_NUMBER_MAX_LIMIT = 4;
+    private static final int FEDERAL_DISTRICT_NAME_MAX_LIMIT = 60;
+    private static final int FEDERAL_DISTRICT_NUMBER_MAX_LIMIT = 4;
+    private static final int STATE_NAME_MAX_LIMIT = 30;
+    private static final int STATE_NUMBER_MAX_LIMIT = 3;
+
     private FragmentSectionVolunteerBsBinding binding;
 
     private TextInputLayout lytSection;
@@ -36,6 +48,12 @@ public class SectionFragment extends Fragment {
     private TextInputLayout lytFederalDistrictNumber;
     private TextInputLayout lytStateName;
     private TextInputLayout lytStateNumber;
+
+    private AppCompatImageView iconSection;
+    private AppCompatImageView iconSector;
+    private AppCompatImageView iconLocalDistrict;
+    private AppCompatImageView iconFederalDistrict;
+    private AppCompatImageView iconState;
 
     private Volunteer volunteer;
     private LocalDataFileManager localDataFileManager;
@@ -66,11 +84,11 @@ public class SectionFragment extends Fragment {
         lytStateName = binding.lytStateName;
         lytStateNumber = binding.lytStateNumber;
 
-        lytMunicipalityName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        lytSector.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        lytLocalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        lytFederalDistrictName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        lytStateName.getEditText().setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+        iconSection = binding.iconSection;
+        iconSector = binding.iconSector;
+        iconLocalDistrict = binding.iconLocalDisctict;
+        iconFederalDistrict = binding.iconFederalDistrict;
+        iconState = binding.iconState;
 
         if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
             loadData();
@@ -95,11 +113,75 @@ public class SectionFragment extends Fragment {
             TextInputLayoutUtils.setEditableEditText(lytStateNumber.getEditText(), false);
         }
 
+        TextInputLayoutUtils.initializeFilters(lytSection.getEditText(), false, SECTION_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytMunicipalityName.getEditText(), true, MUNICIPALITY_NAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytMunicipalityNumber.getEditText(), false, MUNICIPALITY_NUMBER_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytSector.getEditText(), true, SECTOR_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytLocalDistrictName.getEditText(), true, LOCAL_DISTRICT_NAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytLocalDistrictNumber.getEditText(), false, LOCAL_DISTRICT_NUMBER_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytFederalDistrictName.getEditText(), true, FEDERAL_DISTRICT_NAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytFederalDistrictNumber.getEditText(), false, FEDERAL_DISTRICT_NUMBER_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytStateName.getEditText(), true, STATE_NAME_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytStateNumber.getEditText(), false, STATE_NUMBER_MAX_LIMIT);
+
         return root;
     }
 
     public boolean isComplete() {
-        return true;
+        // return true;
+        return isSectionComplete() & isMunicipalityNameComplete() & isMunicipalityNumberComplete() & isSectorComplete()
+                & isLocalDistrictNameComplete() & isLocalDistricNumberComplete() & isFederalDistrictNameComplete()
+                & isFederalDistrictNumberComplete() & isStateNameComplete() & isStateNumberComplete();
+    }
+
+    private boolean isSectionComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytSection, "Ingrese la sección", iconSection, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytSection, iconSection, getContext());
+    }
+
+    private boolean isMunicipalityNameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytMunicipalityName, "Ingrese el nombre", null, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytMunicipalityName, null, getContext());
+    }
+
+    private boolean isMunicipalityNumberComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytMunicipalityNumber, "Ingrese el número", null, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytMunicipalityNumber, null, getContext());
+    }
+
+    private boolean isSectorComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytSector, "Ingrese el sector", iconSector, getContext())
+                && TextInputLayoutUtils.isValidMayusWithNumbers(lytSector, iconSector, getContext());
+    }
+
+    private boolean isLocalDistrictNameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytLocalDistrictName, "Ingrese el nombre", iconLocalDistrict, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytLocalDistrictName, iconLocalDistrict, getContext());
+    }
+
+    private boolean isLocalDistricNumberComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytLocalDistrictNumber, "Ingrese el número", iconLocalDistrict, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytLocalDistrictNumber, iconLocalDistrict, getContext());
+    }
+
+    private boolean isFederalDistrictNameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytFederalDistrictName, "Ingrese el nombre", iconFederalDistrict, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytFederalDistrictName, iconFederalDistrict, getContext());
+    }
+
+    private boolean isFederalDistrictNumberComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytFederalDistrictNumber, "Ingrese el número", iconFederalDistrict, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytFederalDistrictNumber, iconFederalDistrict, getContext());
+    }
+
+    private boolean isStateNameComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytStateName, "Ingrese el nombre", iconState, getContext())
+                && TextInputLayoutUtils.isValidMayusWithoutNumbers(lytStateName, iconState, getContext());
+    }
+
+    private boolean isStateNumberComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytStateNumber, "Ingrese el número", iconState, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytStateNumber, iconState, getContext());
     }
 
     public void setVolunter() {

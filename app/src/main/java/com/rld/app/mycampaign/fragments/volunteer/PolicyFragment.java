@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,14 +18,15 @@ import com.rld.app.mycampaign.databinding.FragmentPolicyVolunteerBsBinding;
 public class PolicyFragment extends Fragment {
 
     private FragmentPolicyVolunteerBsBinding binding;
-
+    private CheckBox btnChecked;
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentPolicyVolunteerBsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        CheckBox btnChecked = binding.btnChecked;
+        btnChecked = binding.btnChecked;
         TextView txtPrivacyPolicy = binding.txtPrivacyPolicy;
 
         txtPrivacyPolicy.setText(R.string.aviso_privacidad);
@@ -33,6 +35,10 @@ public class PolicyFragment extends Fragment {
     }
 
     public boolean isComplete() {
+        if ( !btnChecked.isChecked() ) {
+            Toast.makeText(getContext(), "Lea y confirme las politicas de privacidad", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 

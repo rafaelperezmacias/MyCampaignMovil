@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -35,6 +36,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     public static final int TYPE_UPDATE = 1002;
 
     private BottomSheetBehavior bottomSheetBehavior;
+    private NestedScrollView scroll;
 
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
@@ -44,6 +46,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private MainActivity mainActivity;
     private LocalDataFileManager localDataFileManager;
     private int type;
+
 
     public VolunteerBottomSheet(Volunteer editableVolunteer, Volunteer noEditableVolunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
     {
@@ -79,6 +82,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             toolbar.setElevation(12.0f);
         }
 
+        scroll = view.findViewById(R.id.volunteer_bs_nested);
         MaterialButton btnSave = view.findViewById(R.id.btn_save);
         ImageButton btnClose = view.findViewById(R.id.btn_close);
         TextView txtTitle = view.findViewById(R.id.txt_title);
@@ -109,7 +113,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         PersonalFragment personalFragment = new PersonalFragment(editableVolunteer, type);
         ContactFragment contactFragment = new ContactFragment(editableVolunteer, localDataFileManager, mainActivity, type);
         SectionFragment sectionFragment = new SectionFragment(editableVolunteer, localDataFileManager, type);
-        OtherFragment otherFragment = new OtherFragment(editableVolunteer, type);
+        OtherFragment otherFragment = new OtherFragment(editableVolunteer, type, VolunteerBottomSheet.this);
         PolicyFragment policyFragment = new PolicyFragment();
 
         currentFragment = personalFragment;
@@ -336,6 +340,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         super.onStart();
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         mainActivity.hideProgressDialog();
+    }
+
+    public void setScrollingEnable(boolean enable) {
+        scroll.requestDisallowInterceptTouchEvent(enable);
     }
 
 }

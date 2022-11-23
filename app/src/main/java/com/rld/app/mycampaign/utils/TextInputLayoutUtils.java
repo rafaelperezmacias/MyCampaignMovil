@@ -13,6 +13,13 @@ import com.rld.app.mycampaign.R;
 
 public class TextInputLayoutUtils {
 
+    // RFC 5322 Format
+    private static final String EMAIL_EXPRESSION = "^(?=.{1,64}@)(?:(\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\"@)|([0-9a-z](?:\\.(?!\\.)|[-!#\\$%&'\\*\\+\\/=\\?\\^`\\{\\}\\|~\\w])*@))(?=.{1,255}$)(?:(\\[(?:\\d{1,3}\\.){3}\\d{1,3}\\])|((?:(?=.{1,63}\\.)[0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9])|((?=.{1,63}$)[0-9a-z][-\\w]*))$";
+
+    private static final String ELECTORAL_KEY_EXPRESSION = "[A-Z]{6}[0-9]{8}[A-Z]{1}[0-9]{3}";
+
+    private static final String NOTES_EXPRESSION = "([A-Z]|[a-z]|[ ñÑ(),.-]|[\\\\=+*%$#&\"^@/_!¡'¿?{}:;<>\\[\\]\\|~]|[0-9]|[\\n\\r]|[Á-Úá-ú])*";
+
     public static boolean isNotEmpty(TextInputLayout lyt, String error, AppCompatImageView icon, Context context) {
         if ( lyt.getEditText().getText().toString().trim().isEmpty() ) {
             if ( icon != null ) {
@@ -43,16 +50,28 @@ public class TextInputLayoutUtils {
         return true;
     }
 
-    public static boolean isValidMayusWithNumbers(TextInputLayout lyt, String error, AppCompatImageView icon, Context context) {
-        return isValidWithRegularExpression(lyt, error, icon, context, "([A-Z]|[ Ñ]|[Á-Ú][0-9])*");
+    public static boolean isValidMayusWithNumbers(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+        return isValidWithRegularExpression(lyt, "Rellene el campo solo con letras y números", icon, context, "([A-Z]|[ Ñ]|[Á-Ú]|[0-9])*");
     }
 
-    public static boolean isValidMayusWithoutNumbers(TextInputLayout lyt, String error, AppCompatImageView icon, Context context) {
-       return isValidWithRegularExpression(lyt, error, icon, context, "([A-Z]|[ Ñ]|[Á-Ú])*");
+    public static boolean isValidMayusWithoutNumbers(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+       return isValidWithRegularExpression(lyt, "Rellene el campo con solo letras mayúsculas", icon, context, "([A-Z]|[ Ñ]|[Á-Ú])*");
     }
 
-    public static boolean isValidNumbers(TextInputLayout lyt, String error, AppCompatImageView icon, Context context) {
-        return isValidWithRegularExpression(lyt, error, icon, context, "([0-9])*");
+    public static boolean isValidNumbers(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+        return isValidWithRegularExpression(lyt, "Rellene el campo con solo números", icon, context, "([0-9])*");
+    }
+
+    public static boolean isValidEmail(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+        return isValidWithRegularExpression(lyt, "Ingrese un correo electrónico válido", icon, context, EMAIL_EXPRESSION);
+    }
+
+    public static boolean isValidElectoralKey(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+        return isValidWithRegularExpression(lyt, "Ingrese la clave en el formato correcto", icon, context, ELECTORAL_KEY_EXPRESSION);
+    }
+
+    public static boolean isValidNotes(TextInputLayout lyt, AppCompatImageView icon, Context context) {
+        return isValidWithRegularExpression(lyt, "Elimine los caracteres no permitidos", icon, context, NOTES_EXPRESSION);
     }
 
     public static void setEditableEditText(EditText editText, boolean editable) {

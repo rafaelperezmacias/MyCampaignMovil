@@ -37,6 +37,10 @@ import java.util.List;
 
 public class ContactFragment extends Fragment {
 
+    private static final int ELECTORAL_KEY_SIZE = 18;
+    private static final int EMAIL_MAX_LIMIT = 50;
+    private static final int PHONE_MAX_LIMIT = 20;
+
     private FragmentContactVolunteerBsBinding binding;
 
     private TextInputLayout lytElectorKey;
@@ -45,6 +49,10 @@ public class ContactFragment extends Fragment {
 
     private TextInputLayout lytStates;
     private TextInputLayout lytSections;
+
+    private AppCompatImageView iconEmail;
+    private AppCompatImageView iconPhone;
+    private AppCompatImageView iconElectoralKey;
 
     private Volunteer volunteer;
 
@@ -76,6 +84,10 @@ public class ContactFragment extends Fragment {
         lytStates = binding.lytStates;
         lytSections = binding.lytSections;
         LinearLayout lytSearchSection = binding.lytSearchSection;
+
+        iconEmail = binding.iconEmail;
+        iconPhone = binding.iconPhone;
+        iconElectoralKey = binding.iconElectoralKey;
 
         lytElectorKey.getEditText().setText(volunteer.getElectorKey());
         lytPhone.getEditText().setText(volunteer.getPhone());
@@ -169,11 +181,31 @@ public class ContactFragment extends Fragment {
             }
         });
 
+        TextInputLayoutUtils.initializeFilters(lytElectorKey.getEditText(), true, ELECTORAL_KEY_SIZE);
+        TextInputLayoutUtils.initializeFilters(lytPhone.getEditText(), false, PHONE_MAX_LIMIT);
+        TextInputLayoutUtils.initializeFilters(lytEmail.getEditText(), false, EMAIL_MAX_LIMIT);
+
         return root;
     }
 
     public boolean isComplete() {
-        return true;
+        // return true;
+        return isElectoralKeyComplete() & isEmailComplete() & isPhoneComplete();
+    }
+
+    private boolean isElectoralKeyComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytElectorKey, "Ingrese la clave de elector", iconElectoralKey, getContext())
+                && TextInputLayoutUtils.isValidElectoralKey(lytElectorKey, iconElectoralKey, getContext());
+    }
+
+    private boolean isEmailComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytEmail, "Ingrese el correo electrónico", iconEmail, getContext())
+                && TextInputLayoutUtils.isValidEmail(lytEmail, iconEmail, getContext());
+    }
+
+    private boolean isPhoneComplete() {
+        return TextInputLayoutUtils.isNotEmpty(lytPhone, "Ingrese el número teléfonico", iconPhone, getContext())
+                && TextInputLayoutUtils.isValidNumbers(lytPhone, iconPhone, getContext());
     }
 
     public void setVolunteer() {
@@ -187,12 +219,13 @@ public class ContactFragment extends Fragment {
                 Section section = new Section();
                 if ( isValidState ) {
                     section.setState(findState(lytStates.getEditText().getText().toString().trim()));
-                } else {
+                    volunteer.setSection(section);
+                } else if ( !lytStates.getEditText().getText().toString().trim().isEmpty() ) {
                     State state = new State();
-                    state.setName(lytStates.getEditText().getText().toString());
+                    state.setName(lytStates.getEditText().getText().toString().trim());
                     section.setState(state);
+                    volunteer.setSection(section);
                 }
-                volunteer.setSection(section);
             }
         }
     }
