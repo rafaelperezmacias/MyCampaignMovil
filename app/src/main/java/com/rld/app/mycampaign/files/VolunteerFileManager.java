@@ -118,6 +118,19 @@ public class VolunteerFileManager {
                     volunteerObject.put("imageCredential", volunteer.getImageCredential().getPath());
                 }
 
+                if ( volunteer.getError() != null ) {
+                    Volunteer.Error error = volunteer.getError();
+                    JSONObject errorObject = new JSONObject();
+                    // Estado
+                    if ( error.getState() != null ) {
+                        JSONObject stateObjectError = new JSONObject();
+                        stateObjectError.put("id", error.getState().getId());
+                        stateObjectError.put("name", error.getState().getName());
+                        errorObject.put("state", stateObjectError);
+                    }
+                    volunteerObject.put("errors", errorObject);
+                }
+
                 cont++;
             } catch ( JSONException ex ) {
                 Log.e("arrayListToJsonArray()", "" + ex.getMessage());
@@ -227,6 +240,20 @@ public class VolunteerFileManager {
                     imageCredential.setPath(volunteerObject.getString("imageCredential"));
                     imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
                     volunteer.setImageCredential(imageCredential);
+
+                    if ( !volunteerObject.isNull("errors") ) {
+                        JSONObject errorObject = volunteerObject.getJSONObject("errors");
+                        Volunteer.Error error = new Volunteer.Error();
+                        // Estado
+                        if ( !errorObject.isNull("state") ) {
+                            JSONObject stateErrorObject = errorObject.getJSONObject("state");
+                            State stateError = new State();
+                            stateError.setId(stateErrorObject.getInt("id"));
+                            stateError.setName(stateErrorObject.getString("name"));
+                            error.setState(stateError);
+                        }
+                        volunteer.setError(error);
+                    }
 
                     volunteers.add(volunteer);
                     cont++;

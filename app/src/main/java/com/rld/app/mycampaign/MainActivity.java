@@ -1,47 +1,28 @@
 package com.rld.app.mycampaign;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -52,12 +33,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.MenuVolunteerDialog;
-import com.rld.app.mycampaign.dialogs.MessageDialog;
-import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
-import com.rld.app.mycampaign.files.FileManager;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
 import com.rld.app.mycampaign.files.LocalDistrictFileManager;
 import com.rld.app.mycampaign.files.MunicipalityFileManager;
@@ -67,18 +45,15 @@ import com.rld.app.mycampaign.files.VolunteerFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
+import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.ocr.ReadINE;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.opencv.android.OpenCVLoader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -370,6 +345,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     Volunteer volunteer = localVolunteers.get(index);
                     volunteer.setId( response.getJSONObject("volunteer").getInt("id") );
                     volunteersToRemove.add(volunteer);
+                } else {
+                    addErrorsFromRequest(localVolunteers.get(index), response.getJSONObject("errors"));
                 }
             } catch ( JSONException ex ) {
                 ex.printStackTrace();
@@ -400,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             }
         };
         Timer timer = new Timer();
-        timer.schedule(task, 5000);
+        timer.schedule(task, 1000);
     }
 
     private void downloadDataOfSections() {
@@ -426,4 +403,33 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
     }
+
+    private void addErrorsFromRequest(Volunteer volunteer, JSONObject errors) {
+        Log.e("a", errors.toString());
+        Volunteer.Error error = volunteer.getError();
+        if ( error == null ) {
+            error = new Volunteer.Error();
+            volunteer.setError(error);
+        }
+        try {
+            // Estado
+            if ( !errors.isNull("state") ) {
+                JSONObject stateObject = errors.getJSONObject("state");
+                int id = stateObject.getInt("id");
+                State state = new State();
+                state.setId(id);
+                if ( id != 0 ) {
+                    state.setName(stateObject.getString("name"));
+                } else {
+                    state.setName("");
+                }
+                error.setState(state);
+            } else {
+                error.setState(null);
+            }
+        } catch ( JSONException ex ) {
+            ex.printStackTrace();
+        }
+    }
+
 }

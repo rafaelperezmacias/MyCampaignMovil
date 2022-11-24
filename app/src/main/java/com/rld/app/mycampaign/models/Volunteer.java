@@ -30,6 +30,8 @@ public class Volunteer {
     private Image imageFirm;
     private Image imageCredential;
 
+    private Volunteer.Error error;
+
     public Volunteer()
     {
 
@@ -60,6 +62,8 @@ public class Volunteer {
 
         this.imageFirm = volunteer.imageFirm;
         this.imageCredential = volunteer.imageCredential;
+
+        this.error = new Error(volunteer.error);
     }
 
     public int getId() {
@@ -190,6 +194,14 @@ public class Volunteer {
         this.imageCredential = imageCredential;
     }
 
+    public Error getError() {
+        return error;
+    }
+
+    public void setError(Error error) {
+        this.error = error;
+    }
+
     @Override
     public String toString() {
         return "Volunteer{" +
@@ -210,6 +222,32 @@ public class Volunteer {
                 ", imageFirm=" + imageFirm +
                 ", imageCredential=" + imageCredential +
                 '}';
+    }
+
+    public static class Error {
+
+        private State state;
+
+        public Error()
+        {
+
+        }
+
+        public Error(Error error)
+        {
+            if ( error.state != null ) {
+                this.state = new State(error.state);
+            }
+        }
+
+        public State getState() {
+            return state;
+        }
+
+        public void setState(State state) {
+            this.state = state;
+        }
+
     }
 
 }

@@ -43,7 +43,6 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull VolunteersAdapter.ViewHolder holder, int position) {
         Volunteer volunteer = volunteers.get(position);
-        holder.txtName.setText(String.format("%s %s %s", volunteer.getName(), volunteer.getFathersLastname(), volunteer.getMothersLastname()));
         holder.txtEmail.setText(volunteer.getEmail());
         holder.txtPhone.setText(volunteer.getPhone());
         if ( volunteer.getId() == 0 ) {
@@ -98,6 +97,17 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
                 holder.lytOtherData.setVisibility(View.GONE);
             }
         });
+
+        if ( volunteer.getError() != null ) {
+            holder.txtName.setText(String.format("(*) %s %s %s", volunteer.getName(), volunteer.getFathersLastname(), volunteer.getMothersLastname()));
+            holder.txtName.setTextColor(mainActivity.getResources().getColor(R.color.error));
+            holder.errorCard.setVisibility(View.VISIBLE);
+        } else {
+            holder.errorCard.setVisibility(View.GONE);
+            holder.txtName.setText(String.format("%s %s %s", volunteer.getName(), volunteer.getFathersLastname(), volunteer.getMothersLastname()));
+            holder.txtName.setTextColor(mainActivity.getResources().getColor(R.color.black));
+        }
+
     }
 
     @Override
