@@ -47,11 +47,13 @@ import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.ocr.ReadINE;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.opencv.android.OpenCVLoader;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -76,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ArrayList<Volunteer> remoteVolunteers;
 
     private VolunteerFragment volunteerFragment;
+
+    static {
+        OpenCVLoader.initDebug();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -273,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
+                initialiceVolunteerWithOCRData(localDataFileManager, editableVolunteer);
                 volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
@@ -281,6 +288,20 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
+    private void initialiceVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
+        /* ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
+        Log.e("OCR", readINE.getString("nacimiento"));
+        Log.e("OCR", readINE.getString("sexo"));
+        Log.e("OCR", readINE.getString("nombre"));
+        Log.e("OCR", readINE.getString("domicilio"));
+        Log.e("OCR", readINE.getString("clave"));
+        Log.e("OCR", readINE.getString("curp"));
+        Log.e("OCR", readINE.getString("estado"));
+        Log.e("OCR", readINE.getString("municipio"));
+        Log.e("OCR", readINE.getString("seccion"));
+        Log.e("OCR", readINE.getString("localidad"));
+        readINE.kill(); */
+    }
 
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
         VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, null, MainActivity.this, null, type);

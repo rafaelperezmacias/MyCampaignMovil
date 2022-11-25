@@ -224,7 +224,7 @@ public class ReadINE {
         return new Size(new Point(averageWidth, averageHeight));
     }
 
-    protected void finalize(){
+    public void kill() {
         readImageText.recycle();
     }
 
