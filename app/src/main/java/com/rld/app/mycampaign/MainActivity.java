@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private VolunteerFragment volunteerFragment;
 
     static {
-        OpenCVLoader.initDebug();
+        // OpenCVLoader.initDebug();
     }
 
     @Override
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
-                                showFormVolunteerWithOCR(currentVolunteer, null);
+                                showFormVolunteerWithOCR(currentVolunteer);
                             }
                         } break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
     }
 
-    public void showFormVolunteerWithLocalData(Volunteer editableVolunteer, Volunteer noEditableVolunteer, int type) {
+    public void showFormVolunteerWithLocalData(Volunteer volunteer, int type) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos")
                 .setCancelable(false);
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, type);
+                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
-    public void showFormVolunteerWithOCR(Volunteer editableVolunteer, Volunteer noEditableVolunteer) {
+    public void showFormVolunteerWithOCR(Volunteer volunteer) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos")
                 .setCancelable(false);
@@ -294,8 +294,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                initialiceVolunteerWithOCRData(localDataFileManager, editableVolunteer);
-                volunteerBottomSheet = new VolunteerBottomSheet(editableVolunteer, noEditableVolunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
+                initializeVolunteerWithOCRData(localDataFileManager, volunteer);
+                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
         };
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
-    private void initialiceVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
+    private void initializeVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
         ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
         if (!readINE.isFourSides()) {
             return;
@@ -449,26 +449,17 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
-        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, null, MainActivity.this, null, type);
+        VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, type);
         volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
     }
 
-    public void updateVolunteer(Volunteer editableVolunteer, Volunteer noEditableVolunteer, VolunteerBottomSheet volunteerBottomSheet) {
-        int idx = 0;
-        for ( int i = 0; i < localVolunteers.size(); i++ ) {
-            if ( localVolunteers.get(i).equals(noEditableVolunteer) ) {
-                idx = i;
-                break;
-            }
-        }
-        localVolunteers.remove(idx);
-        localVolunteers.add(idx, editableVolunteer);
+    public void updateVolunteer(Volunteer volunteer, VolunteerBottomSheet volunteerBottomSheet) {
         VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
         volunteerBottomSheet.dismiss();
         if ( volunteerFragment != null ) {
             volunteerFragment.updateVolunteers(volunteersToRecyclerView());
         }
-        showSnackBarWithVolunteer("Voluntario actualizado con éxito", editableVolunteer);
+        showSnackBarWithVolunteer("Voluntario actualizado con éxito", volunteer);
     }
 
     private void showSnackBarWithVolunteer(String message, Volunteer volunteer) {

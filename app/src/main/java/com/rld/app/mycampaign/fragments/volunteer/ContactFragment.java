@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +112,7 @@ public class ContactFragment extends Fragment {
                             lytSections.setVisibility(View.VISIBLE);
                             isValidSection = true;
                         } else if ( currentStateName.equals(volunteer.getSection().getState().getName()) ) {
+                            lytSections.getEditText().setText(volunteer.getSection().getSection());
                             lytSections.setVisibility(View.VISIBLE);
                         }
                     }

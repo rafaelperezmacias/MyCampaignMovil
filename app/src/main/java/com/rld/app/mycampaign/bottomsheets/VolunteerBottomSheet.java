@@ -41,17 +41,15 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
     private FragmentManager fragmentManager;
     private Fragment currentFragment;
 
-    private Volunteer editableVolunteer;
-    private Volunteer noEditableVolunteer;
+    private Volunteer volunteer;
     private MainActivity mainActivity;
     private LocalDataFileManager localDataFileManager;
     private int type;
 
 
-    public VolunteerBottomSheet(Volunteer editableVolunteer, Volunteer noEditableVolunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
+    public VolunteerBottomSheet(Volunteer volunteer, MainActivity mainActivity, LocalDataFileManager localDataFileManager, int type)
     {
-        this.editableVolunteer = editableVolunteer;
-        this.noEditableVolunteer = noEditableVolunteer;
+        this.volunteer = volunteer;
         this.mainActivity = mainActivity;
         this.localDataFileManager = localDataFileManager;
         this.type = type;
@@ -110,10 +108,10 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
             btnNext.setVisibility(View.GONE);
         }
 
-        PersonalFragment personalFragment = new PersonalFragment(editableVolunteer, type);
-        ContactFragment contactFragment = new ContactFragment(editableVolunteer, localDataFileManager, mainActivity, type);
-        SectionFragment sectionFragment = new SectionFragment(editableVolunteer, localDataFileManager, type);
-        OtherFragment otherFragment = new OtherFragment(editableVolunteer, type, VolunteerBottomSheet.this);
+        PersonalFragment personalFragment = new PersonalFragment(volunteer, type);
+        ContactFragment contactFragment = new ContactFragment(volunteer, localDataFileManager, mainActivity, type);
+        SectionFragment sectionFragment = new SectionFragment(volunteer, localDataFileManager, type);
+        OtherFragment otherFragment = new OtherFragment(volunteer, type, VolunteerBottomSheet.this);
         PolicyFragment policyFragment = new PolicyFragment();
 
         currentFragment = personalFragment;
@@ -211,7 +209,6 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 showFragment(contactFragment);
                 contactFragment.setFocus();
-                personalFragment.setVolunteer();
                 txtSubtitle.setText("Paso 2 de 4");
                 btnClose.setImageResource(R.drawable.ic_baseline_arrow_back_24);
             } else if ( currentFragment == contactFragment ) {
@@ -220,7 +217,6 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 showFragment(sectionFragment);
                 sectionFragment.setFocus();
-                contactFragment.setVolunteer();
                 txtSubtitle.setText("Paso 3 de 4");
             } else if ( currentFragment == sectionFragment ) {
                 if ( !sectionFragment.isComplete() ) {
@@ -228,14 +224,12 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                 }
                 showFragment(otherFragment);
                 otherFragment.setFocus();
-                sectionFragment.setVolunter();
                 txtSubtitle.setText("Paso 4 de 4");
                 btnSave.setText("ACTUALIZAR");
             } else if ( currentFragment == otherFragment ) {
                 if ( !otherFragment.isComplete() ) {
                     return;
                 }
-                otherFragment.setVolunteer();
                 MessageDialogBuilder builder = new MessageDialogBuilder()
                         .setTitle("Alerta")
                         .setMessage("¿Esta seguro de querer actualizar la información del voluntario?")
@@ -244,7 +238,11 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                         .setSecondaryButtonText("Cancelar");
                 MessageDialog messageDialog = new MessageDialog(mainActivity, builder);
                 messageDialog.setPrimaryButtonListener(view1 -> {
-                    mainActivity.updateVolunteer(editableVolunteer, noEditableVolunteer, VolunteerBottomSheet.this);
+                    personalFragment.setVolunteer();
+                    contactFragment.setVolunteer();
+                    sectionFragment.setVolunter();
+                    otherFragment.setVolunteer();
+                    mainActivity.updateVolunteer(volunteer, VolunteerBottomSheet.this);
                     messageDialog.dismiss();
                 });
                 messageDialog.setSecondaryButtonListener(view1 -> {
@@ -292,7 +290,7 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
         } else if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
             btnSave.setOnClickListener(updateClickListener);
             btnClose.setOnClickListener(closeUpdateClickListener);
-            sectionFragment.setCurrentSection(editableVolunteer.getSection().getSection());
+            sectionFragment.setCurrentSection(volunteer.getSection().getSection());
         }
 
         // Show

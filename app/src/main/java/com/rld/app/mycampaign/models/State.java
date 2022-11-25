@@ -16,13 +16,6 @@ public class State {
         this.name = name;
     }
 
-    public State(State state)
-    {
-        this();
-        this.id = state.id;
-        this.name = state.name;
-    }
-
     public int getId() {
         return id;
     }

@@ -77,8 +77,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
                 mainActivity.showFormVolunteerWithoutLocalData(volunteer, VolunteerBottomSheet.TYPE_SHOW);
                 return false;
             } else if ( menuItem.getItemId() == R.id.menu_volunteer_recyclerview_edit ) {
-                Volunteer editableVolunteer = new Volunteer(volunteer);
-                mainActivity.showFormVolunteerWithLocalData(editableVolunteer, volunteer, VolunteerBottomSheet.TYPE_UPDATE);
+                mainActivity.showFormVolunteerWithLocalData(volunteer, VolunteerBottomSheet.TYPE_UPDATE);
                 return false;
             } else if ( menuItem.getItemId() ==  R.id.menu_volunteer_recyclerview_delete) {
                 Toast.makeText(mainActivity, "Eliminar", Toast.LENGTH_SHORT).show();
