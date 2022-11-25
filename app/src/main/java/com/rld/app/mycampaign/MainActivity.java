@@ -46,7 +46,10 @@ import com.rld.app.mycampaign.files.StateFileManager;
 import com.rld.app.mycampaign.files.VolunteerFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
+import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Image;
+import com.rld.app.mycampaign.models.Municipality;
+import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.ocr.ReadINE;
@@ -58,6 +61,7 @@ import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.Theme_FuturoApp);
 
         localVolunteers = VolunteerFileManager.readJSON(true, MainActivity.this);
         remoteVolunteers = VolunteerFileManager.readJSON(false, MainActivity.this);
@@ -302,17 +305,147 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private void initialiceVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
         ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
-        Log.e("OCR", readINE.getString("nacimiento"));
-        Log.e("OCR", readINE.getString("sexo"));
-        Log.e("OCR", readINE.getString("nombre"));
-        Log.e("OCR", readINE.getString("domicilio"));
-        Log.e("OCR", readINE.getString("clave"));
-        Log.e("OCR", readINE.getString("curp"));
-        Log.e("OCR", readINE.getString("estado"));
-        Log.e("OCR", readINE.getString("municipio"));
-        Log.e("OCR", readINE.getString("seccion"));
-        Log.e("OCR", readINE.getString("localidad"));
+        if (!readINE.isFourSides()) {
+            return;
+        }
+        Log.e("nacimiento", readINE.getString("nacimiento"));
+        Log.e("sexo", readINE.getString("sexo"));
+        Log.e("nombre", readINE.getString("nombre"));
+        Log.e("domicilio", readINE.getString("domicilio"));
+        Log.e("clave", readINE.getString("clave"));
+        Log.e("curp", readINE.getString("curp"));
+        Log.e("estado", readINE.getString("estado"));
+        Log.e("municipio", readINE.getString("municipio"));
+        Log.e("seccion", readINE.getString("seccion"));
+        Log.e("localidad", readINE.getString("localidad"));
+
+        // Nombre
+        String[] ocrFullName = readINE.getString("nombre").split("\n");
+        if (ocrFullName.length == 3) {
+            volunteer.setFathersLastname(removeInvalidCharacters(ocrFullName[0].trim(), "[A-ZÑ]"));
+            volunteer.setMothersLastname(removeInvalidCharacters(ocrFullName[1].trim(), "[A-ZÑ]"));
+            volunteer.setName(removeInvalidCharacters(ocrFullName[2].trim(), "[A-ZÑ]"));
+        }
+        // Fecha de nacimiento
+        String ocrBirthdate = removeInvalidCharacters(readINE.getString("nacimiento"), "[0-9/]");
+        if ( ocrBirthdate.matches("[0-3]*[0-9]{1}/[0-1]{1}[0-9]{1}/[0-9]{4}") ) {
+            Calendar calendar = Calendar.getInstance();
+            String[] birthdate = ocrBirthdate.split("/");
+            calendar.set(Calendar.YEAR, Integer.parseInt(birthdate[2]));
+            calendar.set(Calendar.MONTH, Integer.parseInt(birthdate[1]) - 1);
+            calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(birthdate[0]));
+            volunteer.setBirthdate(calendar);
+        }
+        // Domicilio
+        String[] ocrAddress = readINE.getString("domicilio").split("\n");
+        if ( ocrAddress.length == 2 ) {
+            Address address = new Address();
+            // Calle
+            String ocrStreet = removeInvalidCharacters(ocrAddress[0].trim(), "[A-ZÑ0-9 ]");
+            if ( ocrStreet.startsWith("C ") ) {
+                ocrStreet = ocrStreet.substring(ocrStreet.indexOf("C ") + "C ".length());
+            }
+            String[] streetFields = ocrStreet.split(" ");
+            int idxExternalNumber = 0;
+            for ( int i = 0; i < streetFields.length; i++ ) {
+                if ( streetFields[i].matches("[0-9]+") ) {
+                    idxExternalNumber = i;
+                    break;
+                }
+            }
+            StringBuilder street = new StringBuilder();
+            for ( int i = 0; i < idxExternalNumber; i++ ) {
+                street.append(streetFields[i]).append(" ");
+            }
+            address.setStreet(street.toString());
+            address.setExternalNumber(streetFields[idxExternalNumber]);
+            if ( idxExternalNumber == streetFields.length - 2 ) {
+                address.setInternalNumber(streetFields[idxExternalNumber + 1]);
+            }
+            // Colonia y codigo postal
+            String ocrSuburb = removeInvalidCharacters(ocrAddress[1].trim(), "[A-ZÑ0-9 ]");
+            if ( ocrSuburb.startsWith("COL ") ) {
+                ocrSuburb = ocrSuburb.substring(ocrSuburb.indexOf("COL ") + "COL ".length());
+            }
+            String[] suburbFields = ocrSuburb.split(" ");
+            if ( suburbFields.length > 1 ) {
+                StringBuilder suburb = new StringBuilder();
+                for ( int i = 0; i < suburbFields.length - 1; i++ ) {
+                    suburb.append(suburbFields[i]).append(" ");
+                }
+                address.setSuburb(suburb.toString());
+                address.setZipcode(suburbFields[suburbFields.length - 1]);
+            } else {
+                address.setSuburb(suburbFields[0]);
+            }
+            volunteer.setAddress(address);
+        }
+        // Seccion
+        String ocrState = removeInvalidCharacters(readINE.getString("estado").trim(), "[0-9]");
+        String stateId = findBiggestString(ocrState, "[0-9]+");
+        String ocrMunicipality = removeInvalidCharacters(readINE.getString("municipio").trim(), "[0-9]");
+        String municipalityNumber = findBiggestString(ocrMunicipality,"[0-9]+");
+        String ocrSection = removeInvalidCharacters(readINE.getString("seccion").trim(), "[0-9]");
+        String sectionNumber = findBiggestString(ocrSection, "[0-9]+");
+
+        State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId));
+        if ( state != null ) {
+            Section section = null;
+            String currentStateName = getSharedPreferences("localData", Context.MODE_PRIVATE).getString("state_name", null);
+            if ( currentStateName.equals(state.getName()) ) {
+                for ( int i = 0; i < localDataFileManager.getSections().size(); i++ ) {
+                    if ( localDataFileManager.getSections().get(i).getSection().equals(String.valueOf(sectionNumber))
+                            && localDataFileManager.getSections().get(i).getMunicipality().getNumber() == Integer.parseInt(municipalityNumber)) {
+                        section = localDataFileManager.getSections().get(i);
+                        break;
+                    }
+                }
+            }
+            if ( section == null ) {
+                section = new Section();
+                section.setState(state);
+                Municipality municipality = new Municipality();
+                municipality.setNumber(Integer.parseInt(municipalityNumber));
+                section.setMunicipality(municipality);
+                section.setSection(sectionNumber);
+            }
+            volunteer.setSection(section);
+        }
+        // Clave de elector
+        String ocrElectoralKey = removeInvalidCharacters(readINE.getString("clave"), "[0-9A-ZÑ ]");
+        String electoralKey = findBiggestString(ocrElectoralKey, "[0-9A-ZN ]+");
+        volunteer.setElectorKey(electoralKey);
         readINE.kill();
+    }
+
+    private String removeInvalidCharacters(String field, String expression) {
+        StringBuilder result = new StringBuilder();
+        String[] characters = field.split("");
+        for ( String character : characters ) {
+            if ( character.matches(expression) ) {
+                result.append(character);
+            }
+        }
+        return result.toString();
+    }
+
+    private String findBiggestString(String field, String expression) {
+        String[] fields = field.split(" ");
+        if ( fields.length == 1 && fields[0].matches(expression) ) {
+            return fields[0];
+        }
+        int idxBiggest = -1;
+        int maxLength = Integer.MIN_VALUE;
+        for ( int i = fields.length - 1; i >= 0; i-- ) {
+            if ( fields[i].length() > maxLength ) {
+                maxLength = fields[i].length();
+                idxBiggest = i;
+            }
+        }
+        if ( fields[idxBiggest].matches(expression) ) {
+            return fields[idxBiggest];
+        }
+        return null;
     }
 
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {

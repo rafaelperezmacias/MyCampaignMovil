@@ -42,7 +42,7 @@ public class LocalDataFileManager {
         return localDataFileManager;
     }
 
-    protected static State findState(ArrayList<State> states, int id) {
+    public static State findState(ArrayList<State> states, int id) {
         for ( State state : states ) {
             if ( state.getId() == id ) {
                 return state;
@@ -51,7 +51,7 @@ public class LocalDataFileManager {
         return null;
     }
 
-    protected static Municipality findMunicipality(ArrayList<Municipality> municipalities, int id) {
+    public static Municipality findMunicipality(ArrayList<Municipality> municipalities, int id) {
         for ( Municipality municipality : municipalities ) {
             if ( municipality.getId() == id ) {
                 return municipality;
@@ -60,7 +60,7 @@ public class LocalDataFileManager {
         return null;
     }
 
-    protected static FederalDistrict findFederalDistrict(ArrayList<FederalDistrict> federalDistricts, int id) {
+    public static FederalDistrict findFederalDistrict(ArrayList<FederalDistrict> federalDistricts, int id) {
         for ( FederalDistrict federalDistrict : federalDistricts ) {
             if ( federalDistrict.getId() == id ) {
                 return federalDistrict;
@@ -69,7 +69,7 @@ public class LocalDataFileManager {
         return null;
     }
 
-    protected static LocalDistrict findLocalDistrict(ArrayList<LocalDistrict> localDistricts, int id) {
+    public static LocalDistrict findLocalDistrict(ArrayList<LocalDistrict> localDistricts, int id) {
         for ( LocalDistrict localDistrict : localDistricts ) {
             if ( localDistrict.getId() == id ) {
                 return localDistrict;

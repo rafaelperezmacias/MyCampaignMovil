@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/SplashScreenTheme"
+        android:theme="@style/Theme.FuturoApp"
         android:usesCleartextTraffic="true">
 
         <activity
@@ -30,18 +30,17 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.FuturoApp.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity android:name=".CameraPreview" />
 
         <activity android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

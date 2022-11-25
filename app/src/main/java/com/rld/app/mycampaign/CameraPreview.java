@@ -38,7 +38,6 @@ public class CameraPreview extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.Theme_FuturoApp);
         setContentView(R.layout.activity_camera_preview);
 
         startCameraIntent = registerForActivityResult(

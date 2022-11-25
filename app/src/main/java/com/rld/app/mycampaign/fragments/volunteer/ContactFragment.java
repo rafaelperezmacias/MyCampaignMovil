@@ -109,6 +109,8 @@ public class ContactFragment extends Fragment {
                             lytSections.getEditText().setText(volunteer.getSection().getSection());
                             lytSections.setVisibility(View.VISIBLE);
                             isValidSection = true;
+                        } else if ( currentStateName.equals(volunteer.getSection().getState().getName()) ) {
+                            lytSections.setVisibility(View.VISIBLE);
                         }
                     }
                 }

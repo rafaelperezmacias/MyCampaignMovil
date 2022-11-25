@@ -194,6 +194,7 @@
             app:errorEnabled="true">
 
             <AutoCompleteTextView
+                android:dropDownAnchor="@id/lyt_sections"
                 android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

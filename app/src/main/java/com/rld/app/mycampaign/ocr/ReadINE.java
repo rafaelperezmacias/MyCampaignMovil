@@ -29,6 +29,8 @@ public class ReadINE {
     private ReadImageText readImageText;
     private Bundle fields;
 
+    private boolean fourSides;
+
     public Bundle getFields(){
         return fields;
     }
@@ -36,6 +38,7 @@ public class ReadINE {
     public String getString(String key){
         return fields.getString(key);
     }
+
 
     public ReadINE(Context context, Bitmap bitmap) {
         fields = new Bundle();
@@ -92,8 +95,11 @@ public class ReadINE {
 
                 dst = transform(imgGray,approx2f);
 
+                fourSides = true;
+
             }else{
                 //Si se detecta que la figura no tiene 4 lados, el programa falla
+                fourSides = false;
                 Log.d(TAG, "Se detectó un numero diferente a los 4 lados de la credencial");
                 return;
             }
@@ -226,6 +232,10 @@ public class ReadINE {
 
     public void kill() {
         readImageText.recycle();
+    }
+
+    public boolean isFourSides() {
+        return fourSides;
     }
 
 }
