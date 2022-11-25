@@ -22,14 +22,19 @@
         android:textColor="@color/blue"
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title" />
 
-    <ProgressBar
-        android:id="@+id/progressbar"
+    <LinearLayout
         android:layout_below="@+id/txt_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/blue"
-        android:paddingBottom="16dp"
-        style="?android:attr/progressBarStyleLargeInverse" />
+        android:gravity="center">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:indicatorSize="60dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -14,9 +14,9 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_profile" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_logout"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_volunteer" />
+            android:title="Cerrar sessión" />
     </group>
 
 </menu>

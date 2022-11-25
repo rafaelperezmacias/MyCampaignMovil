@@ -7,7 +7,6 @@ import android.widget.EditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.R;
 
@@ -74,11 +73,11 @@ public class TextInputLayoutUtils {
         return isValidWithRegularExpression(lyt, "Elimine los caracteres no permitidos", icon, context, NOTES_EXPRESSION);
     }
 
-    public static void setEditableEditText(EditText editText, boolean editable) {
-        editText.setCursorVisible(editable);
-        editText.setLongClickable(editable);
-        editText.setFocusable(editable);
-        editText.setClickable(editable);
+    public static void disableEditText(EditText editText) {
+        editText.setCursorVisible(false);
+        editText.setLongClickable(false);
+        editText.setFocusable(false);
+        editText.setClickable(false);
     }
 
     public static void initializeFilters(EditText editText, boolean allCaps, int maxLimit) {

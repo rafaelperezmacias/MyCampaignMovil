@@ -1,7 +1,6 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,16 +100,16 @@ public class SectionFragment extends Fragment {
             loadData();
             lytSector.getEditText().setText(volunteer.getSector());
             lytSection.getEditText().setText(volunteer.getSection().getSection());
-            TextInputLayoutUtils.setEditableEditText(lytSection.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytMunicipalityName.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytMunicipalityNumber.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytSector.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytLocalDistrictName.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytLocalDistrictNumber.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytFederalDistrictName.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytFederalDistrictNumber.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytStateName.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytStateNumber.getEditText(), false);
+            TextInputLayoutUtils.disableEditText(lytSection.getEditText());
+            TextInputLayoutUtils.disableEditText(lytMunicipalityName.getEditText());
+            TextInputLayoutUtils.disableEditText(lytMunicipalityNumber.getEditText());
+            TextInputLayoutUtils.disableEditText(lytSector.getEditText());
+            TextInputLayoutUtils.disableEditText(lytLocalDistrictName.getEditText());
+            TextInputLayoutUtils.disableEditText(lytLocalDistrictNumber.getEditText());
+            TextInputLayoutUtils.disableEditText(lytFederalDistrictName.getEditText());
+            TextInputLayoutUtils.disableEditText(lytFederalDistrictNumber.getEditText());
+            TextInputLayoutUtils.disableEditText(lytStateName.getEditText());
+            TextInputLayoutUtils.disableEditText(lytStateNumber.getEditText());
         }
 
         TextInputLayoutUtils.initializeFilters(lytSection.getEditText(), false, SECTION_MAX_LIMIT);

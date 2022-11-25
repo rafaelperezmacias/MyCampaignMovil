@@ -143,19 +143,27 @@ public class VolunteerFileManager {
 
     public static void writeJSON(ArrayList<Volunteer> volunteers, boolean local, Context context) {
         JSONArray volunteersArray = arrayListToJsonArray(volunteers, false);
+        String sympathizerId = context.getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null);
+        String campaignId = context.getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null);
         if ( local ) {
-            FileManager.writeJSON(volunteersArray, LOCAL_FILE_NAME, LOCAL_JSON_ID, context);
+            String file = sympathizerId + "-" + campaignId + "-" + LOCAL_FILE_NAME;
+            FileManager.writeJSON(volunteersArray, file, LOCAL_JSON_ID, context);
         } else {
-            FileManager.writeJSON(volunteersArray, REMOTE_FILE_NAME, REMOTE_JSON_ID, context);
+            String file = sympathizerId + "-" + campaignId + "-" + REMOTE_FILE_NAME;
+            FileManager.writeJSON(volunteersArray, file, REMOTE_JSON_ID, context);
         }
     }
 
     public static ArrayList<Volunteer> readJSON(boolean isLocal, Context context){
         String fileString;
+        String sympathizerId = context.getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null);
+        String campaignId = context.getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null);
         if ( isLocal ) {
-            fileString = FileManager.readJSON(LOCAL_FILE_NAME, context);
+            String file = sympathizerId + "-" + campaignId + "-" + LOCAL_FILE_NAME;
+            fileString = FileManager.readJSON(file, context);
         } else {
-            fileString = FileManager.readJSON(REMOTE_FILE_NAME, context);
+            String file = sympathizerId + "-" + campaignId + "-" + REMOTE_FILE_NAME;
+            fileString = FileManager.readJSON(file, context);
         }
         if ( fileString == null || fileString.isEmpty() ) {
             return new ArrayList<>();

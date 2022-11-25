@@ -5,22 +5,18 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
@@ -125,9 +121,9 @@ public class ContactFragment extends Fragment {
 
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
             lytSearchSection.setVisibility(View.GONE);
-            TextInputLayoutUtils.setEditableEditText(lytElectorKey.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytEmail.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytPhone.getEditText(), false);
+            TextInputLayoutUtils.disableEditText(lytElectorKey.getEditText());
+            TextInputLayoutUtils.disableEditText(lytEmail.getEditText());
+            TextInputLayoutUtils.disableEditText(lytPhone.getEditText());
         }
 
         lytStates.getEditText().addTextChangedListener(new TextWatcher() {

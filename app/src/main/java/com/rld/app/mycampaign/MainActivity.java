@@ -10,12 +10,14 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_FuturoApp);
 
         localVolunteers = VolunteerFileManager.readJSON(true, MainActivity.this);
         remoteVolunteers = VolunteerFileManager.readJSON(false, MainActivity.this);
@@ -99,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile)
                 .setOpenableLayout(drawer)
                 .build();
@@ -107,6 +109,16 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                getSharedPreferences("sessions", Context.MODE_PRIVATE).edit().putString("sympathizerId", null).apply();
+                getSharedPreferences("campaign", Context.MODE_PRIVATE).edit().putString("id", null).apply();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                return false;
+            }
+        });
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
@@ -289,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     private void initialiceVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
-        /* ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
+        ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
         Log.e("OCR", readINE.getString("nacimiento"));
         Log.e("OCR", readINE.getString("sexo"));
         Log.e("OCR", readINE.getString("nombre"));
@@ -300,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         Log.e("OCR", readINE.getString("municipio"));
         Log.e("OCR", readINE.getString("seccion"));
         Log.e("OCR", readINE.getString("localidad"));
-        readINE.kill(); */
+        readINE.kill();
     }
 
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
@@ -351,8 +363,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         JSONObject campaign = new JSONObject();
         JSONObject sympathizer = new JSONObject();
         try {
-            sympathizer.put("id", 1);
-            campaign.put("id", 1);
+            sympathizer.put("id", getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null));
+            campaign.put("id", getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null));
             bodyRequest.put("volunteer", volunteeers.get(index));
             bodyRequest.put("campaign", campaign);
             bodyRequest.put("sympathizer", sympathizer);

@@ -2,7 +2,6 @@ package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentOtherVolunteerBsBinding;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 public class OtherFragment extends Fragment {
@@ -73,7 +71,7 @@ public class OtherFragment extends Fragment {
         }
 
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
-            TextInputLayoutUtils.setEditableEditText(lytNotes.getEditText(), false);
+            TextInputLayoutUtils.disableEditText(lytNotes.getEditText());
             setEditableRadioButton(btnRadioYes, false);
             setEditableRadioButton(btnRadioNo, false);
             setEditableRadioButton(btnRadioVotingBooth, false);

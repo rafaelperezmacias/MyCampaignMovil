@@ -123,15 +123,15 @@ public class PersonalFragment extends Fragment {
         }
 
         if ( type == VolunteerBottomSheet.TYPE_SHOW ) {
-            TextInputLayoutUtils.setEditableEditText(lytFathersLastname.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytMothersLastname.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytName.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytStreet.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytInternalNumber.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytBirthdate.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytExternalNumber.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytSuburb.getEditText(), false);
-            TextInputLayoutUtils.setEditableEditText(lytZipcode.getEditText(), false);
+            TextInputLayoutUtils.disableEditText(lytFathersLastname.getEditText());
+            TextInputLayoutUtils.disableEditText(lytMothersLastname.getEditText());
+            TextInputLayoutUtils.disableEditText(lytName.getEditText());
+            TextInputLayoutUtils.disableEditText(lytStreet.getEditText());
+            TextInputLayoutUtils.disableEditText(lytInternalNumber.getEditText());
+            TextInputLayoutUtils.disableEditText(lytBirthdate.getEditText());
+            TextInputLayoutUtils.disableEditText(lytExternalNumber.getEditText());
+            TextInputLayoutUtils.disableEditText(lytSuburb.getEditText());
+            TextInputLayoutUtils.disableEditText(lytZipcode.getEditText());
         }
 
         TextInputLayoutUtils.initializeFilters(lytFathersLastname.getEditText(), true, FATHERS_LASTNAME_MAX_LIMIT);
