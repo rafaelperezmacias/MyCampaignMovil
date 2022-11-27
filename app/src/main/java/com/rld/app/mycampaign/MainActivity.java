@@ -11,6 +11,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -35,6 +36,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.MenuVolunteerDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.FederalDistrictFileManager;
@@ -47,7 +50,9 @@ import com.rld.app.mycampaign.files.VolunteerFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
 import com.rld.app.mycampaign.models.Address;
+import com.rld.app.mycampaign.models.FederalDistrict;
 import com.rld.app.mycampaign.models.Image;
+import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private VolunteerFragment volunteerFragment;
 
     static {
-        // OpenCVLoader.initDebug();
+        OpenCVLoader.initDebug();
     }
 
     @Override
@@ -479,6 +484,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private void uploadVolunteersToServer() {
         JSONArray volunteersArray = VolunteerFileManager.arrayListToJsonArray(localVolunteers, true);
         ArrayList<Volunteer> volunteersToRemove = new ArrayList<>();
+        for ( Volunteer volunteer : localVolunteers ) {
+            volunteer.setLoad(true);
+            volunteer.setError(null);
+        }
+        if ( volunteerFragment != null ) {
+            volunteerFragment.notifyChangeOnRecyclerView();
+        }
         nextVolunteerRequest(volunteersArray, 0, volunteersToRemove);
     }
 
@@ -501,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 if ( response.getBoolean("success") ) {
                     Volunteer volunteer = localVolunteers.get(index);
                     volunteer.setId( response.getJSONObject("volunteer").getInt("id") );
+                    volunteer.setError(null);
                     volunteersToRemove.add(volunteer);
                 } else {
                     addErrorsFromRequest(localVolunteers.get(index), response.getJSONObject("errors"));
@@ -508,8 +521,16 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             } catch ( JSONException ex ) {
                 ex.printStackTrace();
             }
+            localVolunteers.get(index).setLoad(false);
+            if ( volunteerFragment != null ) {
+                volunteerFragment.notifyChangeOnRecyclerView(index + remoteVolunteers.size());
+            }
             nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         }, error -> {
+            localVolunteers.get(index).setLoad(false);
+            if ( volunteerFragment != null ) {
+                volunteerFragment.notifyChangeOnRecyclerView(index);
+            }
             nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         });
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -534,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             }
         };
         Timer timer = new Timer();
-        timer.schedule(task, 1000);
+        timer.schedule(task, 2000);
     }
 
     private void downloadDataOfSections() {
@@ -584,9 +605,113 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             } else {
                 error.setState(null);
             }
+            // Municipio
+            if ( !errors.isNull("municipality") ) {
+                JSONObject municipalityObject = errors.getJSONObject("municipality");
+                int id = municipalityObject.getInt("id");
+                Municipality municipality = new Municipality();
+                municipality.setId(id);
+                if ( id != 0 ) {
+                    municipality.setNumber(municipalityObject.getInt("number"));
+                    municipality.setName(municipalityObject.getString("name"));
+                } else {
+                    municipality.setNumber(0);
+                    municipality.setName("");
+                }
+                error.setMunicipality(municipality);
+            } else {
+                error.setMunicipality(null);
+            }
+            // Distrito local
+            if ( !errors.isNull("localDistrict") ) {
+                JSONObject localDistrictObject = errors.getJSONObject("localDistrict");
+                int id = localDistrictObject.getInt("id");
+                LocalDistrict localDistrict = new LocalDistrict();
+                localDistrict.setId(id);
+                if ( id != 0 ) {
+                    localDistrict.setNumber(localDistrictObject.getInt("number"));
+                    localDistrict.setName(localDistrictObject.getString("name"));
+                } else {
+                    localDistrict.setNumber(0);
+                    localDistrict.setName("");
+                }
+                error.setLocalDistrict(localDistrict);
+            } else {
+                error.setLocalDistrict(null);
+            }
+            // Distrito federal
+            if ( !errors.isNull("federalDistrict") ) {
+                JSONObject federalDistrictObject = errors.getJSONObject("federalDistrict");
+                int id = federalDistrictObject.getInt("id");
+                FederalDistrict federalDistrict = new FederalDistrict();
+                federalDistrict.setId(id);
+                if ( id != 0 ) {
+                    federalDistrict.setNumber(federalDistrictObject.getInt("number"));
+                    federalDistrict.setName(federalDistrictObject.getString("name"));
+                } else {
+                    federalDistrict.setNumber(0);
+                    federalDistrict.setName("");
+                }
+                error.setFederalDistrict(federalDistrict);
+            } else {
+                error.setFederalDistrict(null);
+            }
+            if ( !errors.isNull("section") ) {
+                JSONObject sectionObject = errors.getJSONObject("section");
+                int id = sectionObject.getInt("id");
+                Section section = new Section();
+                section.setId(id);
+                error.setSection(section);
+            } else {
+                error.setSection(null);
+            }
         } catch ( JSONException ex ) {
             ex.printStackTrace();
         }
+    }
+
+    public void deleteVolunteer(Volunteer volunteer) {
+        MessageDialogBuilder builder = new MessageDialogBuilder()
+                .setTitle("Alerta")
+                .setMessage("¿Esta seguro de querer eliminar el registro del voluntario?")
+                .setPrimaryButtonText("Eliminar")
+                .setSecondaryButtonText("Cancelar")
+                .setCancelable(false);
+        MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
+        messageDialog.setPrimaryButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                localVolunteers.remove(volunteer);
+                VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+                if ( volunteerFragment != null ) {
+                    volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                }
+                SpannableStringBuilder snackbarText = new SpannableStringBuilder();
+                snackbarText.append("Voluntario eliminado con éxito!");
+                snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getResources().getColor(R.color.blue))
+                        .setTextColor(getResources().getColor(R.color.light_white))
+                        .setAction("DESHACER", v -> {
+                            localVolunteers.add(volunteer);
+                            VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+                            if ( volunteerFragment != null ) {
+                                volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                            }
+                            Toast.makeText(MainActivity.this, "Voluntario no eliminado", Toast.LENGTH_SHORT).show();
+                        })
+                        .setActionTextColor(getResources().getColor(R.color.white))
+                        .show();
+                messageDialog.dismiss();
+            }
+        });
+        messageDialog.setSecondaryButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                messageDialog.dismiss();
+            }
+        });
+        messageDialog.show();
     }
 
 }

@@ -88,6 +88,18 @@ public class VolunteerFragment extends Fragment {
         volunteersRecyclerview.setAdapter(adapter);
     }
 
+    public void notifyChangeOnRecyclerView() {
+        if ( adapter != null ) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void notifyChangeOnRecyclerView(int index) {
+        if ( adapter != null ) {
+            adapter.notifyItemChanged(index);
+        }
+    }
+
     public void showMenuVolunteer() {
         if ( btnMenuVolunteer != null ) {
             btnMenuVolunteer.setVisibility(View.VISIBLE);

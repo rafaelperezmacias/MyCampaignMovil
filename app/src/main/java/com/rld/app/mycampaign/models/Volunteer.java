@@ -32,6 +32,8 @@ public class Volunteer {
 
     private Volunteer.Error error;
 
+    private boolean load;
+
     public Volunteer()
     {
 
@@ -173,6 +175,14 @@ public class Volunteer {
         this.error = error;
     }
 
+    public boolean isLoad() {
+        return load;
+    }
+
+    public void setLoad(boolean load) {
+        this.load = load;
+    }
+
     @Override
     public String toString() {
         return "Volunteer{" +
@@ -198,10 +208,23 @@ public class Volunteer {
     public static class Error {
 
         private State state;
+        private Municipality municipality;
+        private LocalDistrict localDistrict;
+        private FederalDistrict federalDistrict;
+        private Section section;
 
         public Error()
         {
 
+        }
+
+        public Error(State state, Municipality municipality, LocalDistrict localDistrict, FederalDistrict federalDistrict, Section section)
+        {
+            this.state = state;
+            this.municipality = municipality;
+            this.localDistrict = localDistrict;
+            this.federalDistrict = federalDistrict;
+            this.section = section;
         }
 
         public State getState() {
@@ -210,6 +233,49 @@ public class Volunteer {
 
         public void setState(State state) {
             this.state = state;
+        }
+
+        public Municipality getMunicipality() {
+            return municipality;
+        }
+
+        public void setMunicipality(Municipality municipality) {
+            this.municipality = municipality;
+        }
+
+        public LocalDistrict getLocalDistrict() {
+            return localDistrict;
+        }
+
+        public void setLocalDistrict(LocalDistrict localDistrict) {
+            this.localDistrict = localDistrict;
+        }
+
+        public FederalDistrict getFederalDistrict() {
+            return federalDistrict;
+        }
+
+        public void setFederalDistrict(FederalDistrict federalDistrict) {
+            this.federalDistrict = federalDistrict;
+        }
+
+        public Section getSection() {
+            return section;
+        }
+
+        public void setSection(Section section) {
+            this.section = section;
+        }
+
+        @Override
+        public String toString() {
+            return "Error{" +
+                    "state=" + state +
+                    ", municipality=" + municipality +
+                    ", localDistrict=" + localDistrict +
+                    ", federalDistrict=" + federalDistrict +
+                    ", section=" + section +
+                    '}';
         }
 
     }

@@ -112,6 +112,78 @@ public class SectionFragment extends Fragment {
             TextInputLayoutUtils.disableEditText(lytStateNumber.getEditText());
         }
 
+        if ( (type == VolunteerBottomSheet.TYPE_SHOW || type == VolunteerBottomSheet.TYPE_UPDATE) && volunteer.getError() != null ) {
+            Volunteer.Error error = volunteer.getError();
+            // Estado
+            if ( error.getState() != null ) {
+                if ( error.getState().getId() == 0 ) {
+                    lytStateNumber.setError("El número no existe");
+                    lytStateName.setError("El nombre no existe");
+                } else {
+                    if ( error.getState().getId() != volunteer.getSection().getState().getId() ) {
+                        lytStateNumber.setError("El número no coincide con el nombre");
+                        lytStateName.setError(null);
+                    } else {
+                        lytStateNumber.setError(null);
+                        lytStateName.setError("El nombre no concide con el número");
+                    }
+                }
+            }
+            // Municipio
+            if ( error.getMunicipality() != null ) {
+                if ( error.getMunicipality().getId() == 0 ) {
+                    lytMunicipalityName.setError("El nombre no existe");
+                    lytMunicipalityNumber.setError("El número no existe");
+                } else {
+                    if ( error.getMunicipality().getNumber() != volunteer.getSection().getMunicipality().getNumber() ) {
+                        lytMunicipalityNumber.setError("El número no coincide con el nombre");
+                        lytMunicipalityName.setError(null);
+                    } else {
+                        lytMunicipalityNumber.setError(null);
+                        lytMunicipalityName.setError("El nombre no coincide con el número");
+                    }
+                }
+            }
+            // Distrito local
+            if ( error.getLocalDistrict() != null ) {
+                if ( error.getLocalDistrict().getId() == 0 ) {
+                    lytLocalDistrictName.setError("El nombre no existe");
+                    lytLocalDistrictNumber.setError("El número no existe");
+                } else {
+                    if ( error.getLocalDistrict().getNumber() != volunteer.getSection().getLocalDistrict().getNumber() ) {
+                        lytLocalDistrictNumber.setError("El número no coincide con el nombre");
+                        lytLocalDistrictName.setError(null);
+                    } else {
+                        lytLocalDistrictNumber.setError(null);
+                        lytLocalDistrictName.setError("El nombre no coincide con el número");
+                    }
+                }
+            }
+            // Distrito federal
+            if ( error.getFederalDistrict() != null ) {
+                if ( error.getFederalDistrict().getId() == 0 ) {
+                    lytFederalDistrictName.setError("El nombre no existe");
+                    lytFederalDistrictNumber.setError("El número no existe");
+                } else {
+                    if ( error.getFederalDistrict().getNumber() != volunteer.getSection().getFederalDistrict().getNumber() ) {
+                        lytFederalDistrictNumber.setError("El número no coincide con el nombre");
+                        lytFederalDistrictName.setError(null);
+                    } else {
+                        lytFederalDistrictNumber.setError(null);
+                        lytFederalDistrictName.setError("El nombre no coincide con el número");
+                    }
+                }
+            }
+            // Sección
+            if ( error.getSection() != null ) {
+                if ( error.getSection().getId() == 0 ) {
+                    lytSection.setError("El distrito local, fedaral y/o municipio son incompatibles");
+                } else {
+                    lytSection.setError("El distrito local, fedaral o municipio no pertenecen a la sección");
+                }
+            }
+        }
+
         TextInputLayoutUtils.initializeFilters(lytSection.getEditText(), false, SECTION_MAX_LIMIT);
         TextInputLayoutUtils.initializeFilters(lytMunicipalityName.getEditText(), true, MUNICIPALITY_NAME_MAX_LIMIT);
         TextInputLayoutUtils.initializeFilters(lytMunicipalityNumber.getEditText(), false, MUNICIPALITY_NUMBER_MAX_LIMIT);
@@ -234,9 +306,10 @@ public class SectionFragment extends Fragment {
         String numberSection = lytSection.getEditText().getText().toString().trim();
         for ( Section section : localDataFileManager.getSections() ) {
             if ( section.getSection().equals(numberSection) && section.getState().getId() == state.getId()
+                    && section.getState().getName().equals(state.getName())
                     && section.getMunicipality().getId() == municipality.getId()
                     && section.getLocalDistrict().getId() == localDistrict.getId()
-                    && section.getFederalDistrict().getId() == federalDistrict.getId()) {
+                    && section.getFederalDistrict().getId() == federalDistrict.getId() ) {
                 return section;
             }
         }
@@ -247,7 +320,8 @@ public class SectionFragment extends Fragment {
         String name = lytMunicipalityName.getEditText().getText().toString().trim();
         int number = Integer.parseInt(lytMunicipalityNumber.getEditText().getText().toString().trim());
         for ( Municipality municipality : localDataFileManager.getMunicipalities() ) {
-            if ( municipality.getName().equals(name) && municipality.getNumber() == number && municipality.getState().getId() == state.getId() ) {
+            if ( municipality.getName().equals(name) && municipality.getNumber() == number
+                    && municipality.getState().getId() == state.getId() && municipality.getState().getName().equals(state.getName()) ) {
                 return municipality;
             }
         }
@@ -258,7 +332,8 @@ public class SectionFragment extends Fragment {
         String name = lytLocalDistrictName.getEditText().getText().toString().trim();
         int number = Integer.parseInt(lytLocalDistrictNumber.getEditText().getText().toString().trim());
         for ( LocalDistrict localDistrict : localDataFileManager.getLocalDistricts() ) {
-            if ( localDistrict.getName().equals(name) && localDistrict.getNumber() == number && localDistrict.getState().getId() == state.getId() ) {
+            if ( localDistrict.getName().equals(name) && localDistrict.getNumber() == number
+                    && localDistrict.getState().getId() == state.getId() && localDistrict.getState().getName().equals(state.getName()) ) {
                 return localDistrict;
             }
         }
@@ -269,7 +344,8 @@ public class SectionFragment extends Fragment {
         String name = lytFederalDistrictName.getEditText().getText().toString().trim();
         int number = Integer.parseInt(lytFederalDistrictNumber.getEditText().getText().toString().trim());
         for ( FederalDistrict federalDistrict : localDataFileManager.getFederalDistricts() ) {
-            if ( federalDistrict.getName().equals(name) && federalDistrict.getNumber() == number && federalDistrict.getState().getId() == state.getId() ) {
+            if ( federalDistrict.getName().equals(name) && federalDistrict.getNumber() == number
+                    && federalDistrict.getState().getId() == state.getId() && federalDistrict.getState().getName().equals(state.getName()) ) {
                 return federalDistrict;
             }
         }
@@ -277,7 +353,7 @@ public class SectionFragment extends Fragment {
     }
 
     private State getState() {
-        String name = lytFederalDistrictName.getEditText().getText().toString().trim();
+        String name = lytStateName.getEditText().getText().toString().trim();
         int id = Integer.parseInt(lytStateNumber.getEditText().getText().toString().trim());
         for ( State state : localDataFileManager.getStates() ) {
             if ( state.getName().equals(name) && state.getId() == id ) {

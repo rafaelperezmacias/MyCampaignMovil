@@ -1,11 +1,13 @@
 package com.rld.app.mycampaign.adapters;
 
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.models.Address;
@@ -80,7 +83,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
                 mainActivity.showFormVolunteerWithLocalData(volunteer, VolunteerBottomSheet.TYPE_UPDATE);
                 return false;
             } else if ( menuItem.getItemId() ==  R.id.menu_volunteer_recyclerview_delete) {
-                Toast.makeText(mainActivity, "Eliminar", Toast.LENGTH_SHORT).show();
+                mainActivity.deleteVolunteer(volunteer);
                 return false;
             }
             return true;
@@ -107,6 +110,23 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             holder.txtName.setTextColor(mainActivity.getResources().getColor(R.color.black));
         }
 
+        if ( volunteer.isLoad() ) {
+            holder.progressLoad.setVisibility(View.VISIBLE);
+            int millis = (int) (Math.random() * 750);
+            new CountDownTimer(millis, millis) {
+                @Override
+                public void onTick(long l) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    holder.progressLoad.setIndeterminate(true);
+                }
+            }.start();
+        } else {
+            holder.progressLoad.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -134,6 +154,8 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         private MaterialCardView serverCard;
         private MaterialCardView errorCard;
 
+        private LinearProgressIndicator progressLoad;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txt_name);
@@ -151,6 +173,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             localCard = itemView.findViewById(R.id.card_local);
             serverCard = itemView.findViewById(R.id.card_server);
             errorCard = itemView.findViewById(R.id.card_error);
+            progressLoad = itemView.findViewById(R.id.progress_load);
         }
     }
 }
