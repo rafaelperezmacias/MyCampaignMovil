@@ -1,7 +1,9 @@
 package com.rld.app.mycampaign;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -93,6 +97,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     static {
         OpenCVLoader.initDebug();
     }
+
+    public static final int WRITE_STORAGE_PERMISSION_CODE = 100;
+    private boolean isWritrable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +187,26 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( !localDataSaved ) {
             downloadDataOfSections();
         }
+
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_STORAGE_PERMISSION_CODE);
+    }
+
+    public void checkPermission(String permission, int requestCode) {
+        if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{ permission }, requestCode);
+        } else {
+            isWritrable = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if ( requestCode == WRITE_STORAGE_PERMISSION_CODE ) {
+            if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                isWritrable = true;
+            }
+        }
     }
 
     @Override
@@ -216,7 +243,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             if ( volunteerFragment != null ) {
                 volunteerFragment.showMenuVolunteer();
             }
-            uploadVolunteersToServer();
+            if ( localVolunteers.size() > 0 ) {
+                uploadVolunteersToServer();
+            } else {
+                Toast.makeText(MainActivity.this, "Ningún voluntario disponible para la carga", Toast.LENGTH_SHORT).show();
+            }
         });
         menuVolunteerDialog.setOnDismissListener(dialogInterface -> {
             if ( volunteerFragment != null ) {
@@ -299,7 +330,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                initializeVolunteerWithOCRData(localDataFileManager, volunteer);
+                if ( isWritrable ) {
+                    initializeVolunteerWithOCRData(localDataFileManager, volunteer);
+                }
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }

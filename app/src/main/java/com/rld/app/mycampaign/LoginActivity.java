@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.databinding.ActivityLoginBinding;
 import com.rld.app.mycampaign.secrets.AppConfig;
+import com.rld.app.mycampaign.utils.Internet;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 import org.json.JSONArray;
@@ -87,6 +89,18 @@ public class LoginActivity extends AppCompatActivity {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
+
+                    if ( !Internet.isNetDisponible(LoginActivity.this) && !Internet.isOnlineNet() ) {
+                        LoginActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(LoginActivity.this, "Internet no disponible", Toast.LENGTH_SHORT).show();
+                                lytLoad.setVisibility(View.GONE);
+                            }
+                        });
+                        return;
+                    }
+
                     JSONObject bodyRequest = new JSONObject();
                     JSONObject userObject = new JSONObject();
                     try {

@@ -36,7 +36,7 @@ import java.util.List;
 public class ContactFragment extends Fragment {
 
     private static final int ELECTORAL_KEY_SIZE = 18;
-    private static final int EMAIL_MAX_LIMIT = 50;
+    private static final int EMAIL_MAX_LIMIT = 255;
     private static final int PHONE_MAX_LIMIT = 20;
 
     private FragmentContactVolunteerBsBinding binding;
