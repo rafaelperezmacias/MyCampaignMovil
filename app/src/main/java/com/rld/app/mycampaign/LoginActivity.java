@@ -1,14 +1,13 @@
 package com.rld.app.mycampaign;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -63,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
 
         lytEmail.getEditText().setOnFocusChangeListener((view, focus) -> {
-            if (focus) {
+            if ( focus ) {
                 lytEmail.setHint("");
             } else if (lytEmail.getEditText().getText().toString().trim().isEmpty()) {
                 lytEmail.setHint("Ingrese su correo electónico");
@@ -89,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-
                     if ( !Internet.isNetDisponible(LoginActivity.this) && !Internet.isOnlineNet() ) {
                         LoginActivity.this.runOnUiThread(new Runnable() {
                             @Override
@@ -100,7 +98,6 @@ public class LoginActivity extends AppCompatActivity {
                         });
                         return;
                     }
-
                     JSONObject bodyRequest = new JSONObject();
                     JSONObject userObject = new JSONObject();
                     try {
@@ -178,4 +175,5 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
     }
+
 }
