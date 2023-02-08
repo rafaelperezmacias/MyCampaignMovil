@@ -122,4 +122,5 @@ public class FirmActivity extends AppCompatActivity {
         setResult(RESULT_REJECT_FIRM);
         super.onBackPressed();
     }
+
 }

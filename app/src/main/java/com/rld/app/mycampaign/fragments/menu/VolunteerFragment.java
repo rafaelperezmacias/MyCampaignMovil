@@ -105,4 +105,5 @@ public class VolunteerFragment extends Fragment {
             btnMenuVolunteer.setVisibility(View.VISIBLE);
         }
     }
+
 }

@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_volunteer, R.id.nav_profile, R.id.nav_local_section)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 return false;
             }
         });
+        navigationView.setCheckedItem(R.id.nav_volunteer);
 
         requestQueue = Volley.newRequestQueue(MainActivity.this);
 
