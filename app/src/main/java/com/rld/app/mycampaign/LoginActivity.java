@@ -61,8 +61,9 @@ public class LoginActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
 
+        lytEmail.clearFocus();
         lytEmail.getEditText().setOnFocusChangeListener((view, focus) -> {
-            if ( focus ) {
+            if (focus) {
                 lytEmail.setHint("");
             } else if (lytEmail.getEditText().getText().toString().trim().isEmpty()) {
                 lytEmail.setHint("Ingrese su correo electónico");
@@ -70,18 +71,19 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         lytPassword.getEditText().setOnFocusChangeListener((view, focus) -> {
-            if ( focus ) {
+            if (focus) {
                 lytPassword.setHint("");
-            } else if ( lytPassword.getEditText().getText().toString().trim().isEmpty() ) {
+            } else if (lytPassword.getEditText().getText().toString().trim().isEmpty()) {
                 lytPassword.setHint("Ingrese su contraseña");
             }
         });
 
         btnLogin.setOnClickListener(view -> {
-            if ( !isEmailComplete() | !isPasswordComplete() ) {
+            if (!isEmailComplete() | !isPasswordComplete()) {
                 return;
             }
             lytLoad.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.GONE);
             cardError.setVisibility(View.GONE);
             lytEmail.getEditText().setEnabled(false);
             lytPassword.getEditText().setEnabled(false);
@@ -89,12 +91,10 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if ( !Internet.isNetDisponible(LoginActivity.this) && !Internet.isOnlineNet() ) {
-                        LoginActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(LoginActivity.this, "Internet no disponible", Toast.LENGTH_SHORT).show();
-                                lytLoad.setVisibility(View.GONE);
-                            }
+                        LoginActivity.this.runOnUiThread(() -> {
+                            Toast.makeText(LoginActivity.this, "Internet no disponible", Toast.LENGTH_SHORT).show();
+                            lytLoad.setVisibility(View.GONE);
+                            btnLogin.setVisibility(View.VISIBLE);
                         });
                         return;
                     }
@@ -104,16 +104,16 @@ public class LoginActivity extends AppCompatActivity {
                         userObject.put("email", lytEmail.getEditText().getText().toString().trim());
                         userObject.put("password", lytPassword.getEditText().getText().toString().trim());
                         bodyRequest.put("user", userObject);
-                    } catch ( JSONException ex) {
-
+                    } catch (JSONException ignored) {
                     }
                     String url = AppConfig.LOGIN;
                     JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bodyRequest, response -> {
                         lytLoad.setVisibility(View.GONE);
+                        btnLogin.setVisibility(View.VISIBLE);
                         lytEmail.getEditText().setEnabled(true);
                         lytPassword.getEditText().setEnabled(true);
                         try {
-                            if ( response.getBoolean("success") ) {
+                            if (response.getBoolean("success")) {
                                 cardError.setVisibility(View.GONE);
                                 saveSympathizerData(response.getJSONObject("user"));
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -122,13 +122,13 @@ public class LoginActivity extends AppCompatActivity {
                                 cardError.setVisibility(View.VISIBLE);
                                 Toast.makeText(LoginActivity.this, "" + response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
-                        } catch ( JSONException ex ) {
-
+                        } catch (JSONException ignored) {
                         }
                     }, error -> {
                         lytEmail.getEditText().setEnabled(true);
                         lytPassword.getEditText().setEnabled(true);
                         lytLoad.setVisibility(View.GONE);
+                        btnLogin.setVisibility(View.VISIBLE);
                         Toast.makeText(LoginActivity.this, "" + error.getMessage(), Toast.LENGTH_LONG).show();
                     });
                     request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -141,7 +141,9 @@ public class LoginActivity extends AppCompatActivity {
 
         TextInputLayoutUtils.initializeFilters(lytEmail.getEditText(), false, EMAIL_MAX_LIMIT);
         TextInputLayoutUtils.initializeFilters(lytPassword.getEditText(), false, PASSWORD_MAX_LIMIT);
+
     }
+
 
     private boolean isEmailComplete() {
         return TextInputLayoutUtils.isNotEmpty(lytEmail, "Ingrese su correo electronico", null, getApplicationContext())

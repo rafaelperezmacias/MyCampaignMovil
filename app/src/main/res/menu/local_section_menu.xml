@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_local_section_update"
+        android:title="Actualizar datos"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/menu_local_section_municipalities"
+        android:title="Por municipios"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/menu_local_section_local_districts"
+        android:title="Por distritos locales"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/menu_local_section_federal_districts"
+        android:title="Por distritos federales"
+        app:showAsAction="never"/>
+
+</menu>

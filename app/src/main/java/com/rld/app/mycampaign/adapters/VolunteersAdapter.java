@@ -27,8 +27,8 @@ import java.util.ArrayList;
 
 public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.ViewHolder> {
 
-    private ArrayList<Volunteer> volunteers;
-    private MainActivity mainActivity;
+    private final ArrayList<Volunteer> volunteers;
+    private final MainActivity mainActivity;
 
     public VolunteersAdapter(MainActivity mainActivity, ArrayList<Volunteer> volunteers)
     {
@@ -136,25 +136,25 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView txtName;
-        private TextView txtEmail;
-        private TextView txtPhone;
-        private ImageButton btnOptions;
-        private ImageButton btnDetails;
+        private final TextView txtName;
+        private final TextView txtEmail;
+        private final TextView txtPhone;
+        private final ImageButton btnOptions;
+        private final ImageButton btnDetails;
 
-        private RelativeLayout lytOtherData;
-        private TextView txtSection;
-        private TextView txtType;
-        private CheckBox btnDefense;
-        private TextView txtStreet;
-        private TextView txtSuburb;
-        private TextView txtOtherAddress;
+        private final RelativeLayout lytOtherData;
+        private final TextView txtSection;
+        private final TextView txtType;
+        private final CheckBox btnDefense;
+        private final TextView txtStreet;
+        private final TextView txtSuburb;
+        private final TextView txtOtherAddress;
 
-        private MaterialCardView localCard;
-        private MaterialCardView serverCard;
-        private MaterialCardView errorCard;
+        private final MaterialCardView localCard;
+        private final MaterialCardView serverCard;
+        private final MaterialCardView errorCard;
 
-        private LinearProgressIndicator progressLoad;
+        private final LinearProgressIndicator progressLoad;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -175,5 +175,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             errorCard = itemView.findViewById(R.id.card_error);
             progressLoad = itemView.findViewById(R.id.progress_load);
         }
+
     }
+
 }

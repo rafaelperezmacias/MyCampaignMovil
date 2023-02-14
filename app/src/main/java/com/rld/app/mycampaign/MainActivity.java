@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -94,12 +96,16 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private VolunteerFragment volunteerFragment;
 
+    private static final int REQUEST_PERMISSIONS_CODE = 100;
+
+    private static final String[] REQUEST_PERMISSIONS = new String[] {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+    };
+
     static {
         OpenCVLoader.initDebug();
     }
-
-    public static final int WRITE_STORAGE_PERMISSION_CODE = 100;
-    private boolean isWritrable = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,23 +195,58 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             downloadDataOfSections();
         }
 
-        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_STORAGE_PERMISSION_CODE);
     }
 
-    public void checkPermission(String permission, int requestCode) {
-        if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{ permission }, requestCode);
+    private void checkPermissions() {
+        ArrayList<String> requestPermissions = getListOfPermissionsNotAllowed();
+        if ( requestPermissions.isEmpty() ) {
+            startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
         } else {
-            isWritrable = true;
+            String[] permissions = new String[requestPermissions.size()];
+            for ( int i = 0; i < requestPermissions.size(); i++ ) {
+                permissions[i] = requestPermissions.get(i);
+            }
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_PERMISSIONS_CODE);
         }
+    }
+
+    private ArrayList<String> getListOfPermissionsNotAllowed() {
+        ArrayList<String> permissionsNotAllowed = new ArrayList<>();
+        for ( String permission : REQUEST_PERMISSIONS ) {
+            if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                permissionsNotAllowed.add(permission);
+            }
+        }
+        return permissionsNotAllowed;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if ( requestCode == WRITE_STORAGE_PERMISSION_CODE ) {
-            if ( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
-                isWritrable = true;
+        if ( requestCode == REQUEST_PERMISSIONS_CODE ) {
+            boolean isAllGranted = true;
+            for ( int permissionResult : grantResults ) {
+                if ( permissionResult != PackageManager.PERMISSION_GRANTED ) {
+                    isAllGranted = false;
+                    break;
+                }
+            }
+            if ( isAllGranted ) {
+                startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+            } else {
+                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
+                snackBarText.append("Por favor, acepte los permisos para poder realizar un registro.");
+                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getResources().getColor(R.color.blue))
+                        .setTextColor(getResources().getColor(R.color.light_white))
+                        .setAction("CONCEDER", view -> {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                            startActivity(intent);
+                        })
+                        .setActionTextColor(getResources().getColor(R.color.white))
+                        .show();
             }
         }
     }
@@ -233,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     if ( volunteerFragment != null ) {
                         volunteerFragment.showMenuVolunteer();
                     }
-                    startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+                    checkPermissions();
                 }
             };
             Timer timer = new Timer();
@@ -331,9 +372,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
-                if ( isWritrable ) {
-                    initializeVolunteerWithOCRData(localDataFileManager, volunteer);
-                }
+                initializeVolunteerWithOCRData(localDataFileManager, volunteer);
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
@@ -344,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private void initializeVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
         ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
-        if (!readINE.isFourSides()) {
+        if ( !readINE.isFourSides() ) {
             return;
         }
         Log.e("nacimiento", readINE.getString("nacimiento"));
