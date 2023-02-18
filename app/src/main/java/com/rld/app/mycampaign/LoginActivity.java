@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        String id = getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null);
+        String id = getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", "1");
         if ( id != null ) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();

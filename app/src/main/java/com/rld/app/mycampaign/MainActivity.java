@@ -352,7 +352,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
+                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected",14);
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
@@ -371,7 +372,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 // OCR
-                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this);
+                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected",14);
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
                 initializeVolunteerWithOCRData(localDataFileManager, volunteer);
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
@@ -642,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), state.getInt("id"), MainActivity.this);
                     LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
                     MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
-                    SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
+                    // SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
                     getSharedPreferences("localData", Context.MODE_PRIVATE).edit().putBoolean("saved", true).apply();
                 }
             } catch ( JSONException ex ) {

@@ -12,7 +12,8 @@ public class AppConfig {
     private static final String URL_SERVER = "http://" + HOST + ":" + PORT + "/";
 
     public static final String LOGIN = URL_SERVER + "api/login";
-    public static final String GET_SECTIONS = URL_SERVER + "api/sections";
+    public static final String GET_SECTIONS = URL_SERVER + "api/sections/?";
+    public static final String GET_STATES = URL_SERVER + "api/states";
     public static final String INSERT_VOLUNTEER = URL_SERVER + "api/volunteer";
 
 }

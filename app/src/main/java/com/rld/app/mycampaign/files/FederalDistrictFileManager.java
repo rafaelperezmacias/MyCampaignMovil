@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class FederalDistrictFileManager {
 
-    private static final String FILE_NAME = "data-federal_districts.json";
+    private static final String FILE_NAME = "data-federal_districts-?.json";
     private static final String JSON_ID = "federal_districts";
 
     private FederalDistrictFileManager()
@@ -22,8 +22,8 @@ public class FederalDistrictFileManager {
 
     }
 
-    protected static ArrayList<FederalDistrict> readJSON(Context context, ArrayList<State> states) {
-        String fileString = FileManager.readJSON(FILE_NAME, context);
+    protected static ArrayList<FederalDistrict> readJSON(Context context, ArrayList<State> states, int stateId) {
+        String fileString = FileManager.readJSON(FILE_NAME.replace("?","" + stateId), context);
         if ( fileString == null || fileString.length() == 0) {
             return new ArrayList<>();
         }
@@ -63,7 +63,21 @@ public class FederalDistrictFileManager {
                 Log.e("writeJSON()", "" + ex.getMessage());
             }
         }
-        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+        FileManager.writeJSON(jsonArray, FILE_NAME.replace("?","" + stateId), JSON_ID, context);
+    }
+
+    public static JSONArray arrayListToJsonArray(ArrayList<FederalDistrict> federalDistricts) {
+        JSONArray jsonArray = new JSONArray();
+        for ( FederalDistrict federalDistrict : federalDistricts ) {
+            try {
+                JSONObject federalDistrictObject = new JSONObject();
+                federalDistrictObject.put("id", federalDistrict.getId());
+                federalDistrictObject.put("name", federalDistrict.getName());
+                federalDistrictObject.put("number", federalDistrict.getNumber());
+                jsonArray.put(federalDistrictObject);
+            } catch (JSONException ignored) { }
+        }
+        return jsonArray;
     }
 
 }

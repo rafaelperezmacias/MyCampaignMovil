@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class LocalDistrictFileManager {
 
-    private static final String FILE_NAME = "data-local_districts.json";
+    private static final String FILE_NAME = "data-local_districts-?.json";
     private static final String JSON_ID = "local_districts";
 
     private LocalDistrictFileManager()
@@ -22,8 +22,8 @@ public class LocalDistrictFileManager {
 
     }
 
-    protected static ArrayList<LocalDistrict> readJSON(Context context, ArrayList<State> states) {
-        String fileString = FileManager.readJSON(FILE_NAME, context);
+    protected static ArrayList<LocalDistrict> readJSON(Context context, ArrayList<State> states, int stateId) {
+        String fileString = FileManager.readJSON(FILE_NAME.replace("?","" + stateId), context);
         if ( fileString == null || fileString.length() == 0 ) {
             return new ArrayList<>();
         }
@@ -63,7 +63,21 @@ public class LocalDistrictFileManager {
                 Log.e("writeJSON()", "" + ex.getMessage());
             }
         }
-        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+        FileManager.writeJSON(jsonArray, FILE_NAME.replace("?", "" + stateId), JSON_ID, context);
+    }
+
+    public static JSONArray arrayListToJsonArray(ArrayList<LocalDistrict> localDistricts) {
+        JSONArray jsonArray = new JSONArray();
+        for ( LocalDistrict localDistrict : localDistricts ) {
+            try {
+                JSONObject localDistrictObject = new JSONObject();
+                localDistrictObject.put("id", localDistrict.getId());
+                localDistrictObject.put("name", localDistrict.getName());
+                localDistrictObject.put("number", localDistrict.getNumber());
+                jsonArray.put(localDistrictObject);
+            } catch (JSONException ignored) { }
+        }
+        return jsonArray;
     }
 
 }

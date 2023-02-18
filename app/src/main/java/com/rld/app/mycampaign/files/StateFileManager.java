@@ -56,4 +56,17 @@ public class StateFileManager {
         FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
     }
 
+    public static JSONArray arrayListToJsonArray(ArrayList<State> states) {
+        JSONArray jsonArray = new JSONArray();
+        for ( State state : states ) {
+            try {
+                JSONObject stateObject = new JSONObject();
+                stateObject.put("id", state.getId());
+                stateObject.put("name", state.getName());
+                jsonArray.put(stateObject);
+            } catch (JSONException ignored) { }
+        }
+        return jsonArray;
+    }
+
 }

@@ -3,6 +3,7 @@ package com.rld.app.mycampaign.files;
 import android.content.Context;
 import android.util.Log;
 
+import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.State;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 public class MunicipalityFileManager {
 
-    private static final String FILE_NAME = "data-municipalities.json";
+    private static final String FILE_NAME = "data-municipalities-?.json";
     private static final String JSON_ID = "municipalities";
 
     private MunicipalityFileManager()
@@ -22,8 +23,8 @@ public class MunicipalityFileManager {
 
     }
 
-    protected static ArrayList<Municipality> readJSON(Context context, ArrayList<State> states) {
-        String fileString = FileManager.readJSON(FILE_NAME, context);
+    protected static ArrayList<Municipality> readJSON(Context context, ArrayList<State> states, int stateId) {
+        String fileString = FileManager.readJSON(FILE_NAME.replace("?","" + stateId), context);
         if ( fileString == null || fileString.length() == 0 ) {
             return new ArrayList<>();
         }
@@ -63,7 +64,21 @@ public class MunicipalityFileManager {
                 Log.e("writeJSON()", "" + ex.getMessage());
             }
         }
-        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+        FileManager.writeJSON(jsonArray, FILE_NAME.replace("?","" + stateId), JSON_ID, context);
+    }
+
+    public static JSONArray arrayListToJsonArray(ArrayList<Municipality> municipalities) {
+        JSONArray jsonArray = new JSONArray();
+        for ( Municipality municipality : municipalities ) {
+            try {
+                JSONObject municipalityObject = new JSONObject();
+                municipalityObject.put("id", municipality.getId());
+                municipalityObject.put("name", municipality.getName());
+                municipalityObject.put("number", municipality.getNumber());
+                jsonArray.put(municipalityObject);
+            } catch (JSONException ignored) { }
+        }
+        return jsonArray;
     }
 
 }

@@ -8,6 +8,7 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
+import com.rld.app.mycampaign.models.api.SectionAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 
 public class SectionFileManager {
 
-    private static final String FILE_NAME = "data-sections.json";
+    private static final String FILE_NAME = "data-sections-?.json";
     private static final String JSON_ID = "sections";
 
     private SectionFileManager()
@@ -25,8 +26,8 @@ public class SectionFileManager {
 
     }
 
-    protected static ArrayList<Section> readJSON(Context context, ArrayList<State> states, ArrayList<Municipality> municipalities, ArrayList<FederalDistrict> federalDistricts, ArrayList<LocalDistrict> localDistricts) {
-        String fileString = FileManager.readJSON(FILE_NAME, context);
+    protected static ArrayList<Section> readJSON(Context context, ArrayList<State> states, ArrayList<Municipality> municipalities, ArrayList<FederalDistrict> federalDistricts, ArrayList<LocalDistrict> localDistricts, int stateId) {
+        String fileString = FileManager.readJSON(FILE_NAME.replace("?","" + stateId), context);
         if ( fileString == null || fileString.length() == 0 ) {
             return new ArrayList<>();
         }
@@ -60,8 +61,25 @@ public class SectionFileManager {
         return sections;
     }
 
-    public static void writeJSON(JSONArray jsonArray, Context context) {
-        FileManager.writeJSON(jsonArray, FILE_NAME, JSON_ID, context);
+    public static void writeJSON(JSONArray jsonArray, int stateId, Context context) {
+        FileManager.writeJSON(jsonArray, FILE_NAME.replace("?", "" + stateId), JSON_ID, context);
+    }
+
+    public static JSONArray arrayListToJsonArray(ArrayList<SectionAPI> sections) {
+        JSONArray jsonArray = new JSONArray();
+        for ( SectionAPI section : sections ) {
+            try {
+                JSONObject sectionObject = new JSONObject();
+                sectionObject.put("id", section.getId());
+                sectionObject.put("section", section.getSection());
+                sectionObject.put("state_id", section.getState_id());
+                sectionObject.put("municipality_id", section.getMunicipality_id());
+                sectionObject.put("federal_district_id", section.getFederal_district_id());
+                sectionObject.put("local_district_id", section.getLocal_district_id());
+                jsonArray.put(sectionObject);
+            } catch (JSONException ignored) { }
+        }
+        return jsonArray;
     }
 
 }

@@ -27,18 +27,22 @@ public class LocalDataFileManager {
         sections = new ArrayList<>();
     }
 
-    public static LocalDataFileManager getInstance(Context context) {
+    public static LocalDataFileManager getInstance(Context context, int stateId) {
         LocalDataFileManager localDataFileManager = new LocalDataFileManager();
         // Estados
         localDataFileManager.states = StateFileManager.readJSON(context);
         // Distritos federales
-        localDataFileManager.federalDistricts = FederalDistrictFileManager.readJSON(context, localDataFileManager.states);
+        localDataFileManager.federalDistricts = FederalDistrictFileManager.readJSON(context, localDataFileManager.states, stateId);
         // Distritos locales
-        localDataFileManager.localDistricts = LocalDistrictFileManager.readJSON(context, localDataFileManager.states);
+        localDataFileManager.localDistricts = LocalDistrictFileManager.readJSON(context, localDataFileManager.states, stateId);
         // Municipios
-        localDataFileManager.municipalities = MunicipalityFileManager.readJSON(context, localDataFileManager.states);
+        localDataFileManager.municipalities = MunicipalityFileManager.readJSON(context, localDataFileManager.states, stateId);
         // Secciones
-        localDataFileManager.sections = SectionFileManager.readJSON(context, localDataFileManager.states, localDataFileManager.municipalities, localDataFileManager.federalDistricts, localDataFileManager.localDistricts);
+        localDataFileManager.sections = SectionFileManager.readJSON(
+                context, localDataFileManager.states, localDataFileManager.municipalities,
+                localDataFileManager.federalDistricts, localDataFileManager.localDistricts,
+                stateId
+        );
         return localDataFileManager;
     }
 
