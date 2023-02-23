@@ -8,7 +8,7 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
-import com.rld.app.mycampaign.models.api.SectionAPI;
+import com.rld.app.mycampaign.models.api.SectionResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,9 +65,9 @@ public class SectionFileManager {
         FileManager.writeJSON(jsonArray, FILE_NAME.replace("?", "" + stateId), JSON_ID, context);
     }
 
-    public static JSONArray arrayListToJsonArray(ArrayList<SectionAPI> sections) {
+    public static JSONArray arrayListToJsonArray(ArrayList<SectionResponse> sections) {
         JSONArray jsonArray = new JSONArray();
-        for ( SectionAPI section : sections ) {
+        for ( SectionResponse section : sections ) {
             try {
                 JSONObject sectionObject = new JSONObject();
                 sectionObject.put("id", section.getId());

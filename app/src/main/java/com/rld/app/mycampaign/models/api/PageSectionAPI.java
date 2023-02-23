@@ -1,13 +1,11 @@
 package com.rld.app.mycampaign.models.api;
 
-import com.rld.app.mycampaign.models.Section;
-
 import java.util.ArrayList;
 
 public class PageSectionAPI {
 
     private int current_page;
-    private ArrayList<SectionAPI> data;
+    private ArrayList<SectionResponse> data;
     private int last_page;
 
     public PageSectionAPI()
@@ -15,7 +13,7 @@ public class PageSectionAPI {
 
     }
 
-    public PageSectionAPI(int current_page, ArrayList<SectionAPI> data, int last_page)
+    public PageSectionAPI(int current_page, ArrayList<SectionResponse> data, int last_page)
     {
         this.current_page = current_page;
         this.data = data;
@@ -30,11 +28,11 @@ public class PageSectionAPI {
         this.current_page = current_page;
     }
 
-    public ArrayList<SectionAPI> getData() {
+    public ArrayList<SectionResponse> getData() {
         return data;
     }
 
-    public void setData(ArrayList<SectionAPI> data) {
+    public void setData(ArrayList<SectionResponse> data) {
         this.data = data;
     }
 

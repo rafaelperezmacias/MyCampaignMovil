@@ -39,6 +39,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.MenuVolunteerDialog;
@@ -62,8 +63,13 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
+import com.rld.app.mycampaign.models.Token;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.ocr.ReadINE;
+import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
+import com.rld.app.mycampaign.preferences.LocalDataPreferences;
+import com.rld.app.mycampaign.preferences.TokenPreferences;
+import com.rld.app.mycampaign.preferences.UserPreferences;
 import com.rld.app.mycampaign.secrets.AppConfig;
 
 import org.json.JSONArray;
@@ -85,11 +91,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ActivityResultLauncher<Intent> startFirmActivityIntent;
 
     private VolunteerBottomSheet volunteerBottomSheet;
-    private ProgressDialog progressDialog;
 
     private Volunteer currentVolunteer;
-
-    private RequestQueue requestQueue;
 
     private ArrayList<Volunteer> localVolunteers;
     private ArrayList<Volunteer> remoteVolunteers;
@@ -131,18 +134,12 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                getSharedPreferences("sessions", Context.MODE_PRIVATE).edit().putString("sympathizerId", null).apply();
-                getSharedPreferences("campaign", Context.MODE_PRIVATE).edit().putString("id", null).apply();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                return false;
-            }
+        navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(menuItem -> {
+            UserPreferences.deleteUser(getApplicationContext());
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            return false;
         });
         navigationView.setCheckedItem(R.id.nav_volunteer);
-
-        requestQueue = Volley.newRequestQueue(MainActivity.this);
 
         startCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -190,79 +187,45 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 }
         );
 
-        boolean localDataSaved = getSharedPreferences("localData", Context.MODE_PRIVATE).getBoolean("saved", false);
-        if ( !localDataSaved ) {
+        if ( !DownloadManagerPreferences.isLocalDataSaved(getApplicationContext()) ) {
             downloadDataOfSections();
         }
 
     }
 
-    private void checkPermissions() {
-        ArrayList<String> requestPermissions = getListOfPermissionsNotAllowed();
-        if ( requestPermissions.isEmpty() ) {
-            startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
-        } else {
-            String[] permissions = new String[requestPermissions.size()];
-            for ( int i = 0; i < requestPermissions.size(); i++ ) {
-                permissions[i] = requestPermissions.get(i);
-            }
-            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_PERMISSIONS_CODE);
-        }
-    }
-
-    private ArrayList<String> getListOfPermissionsNotAllowed() {
-        ArrayList<String> permissionsNotAllowed = new ArrayList<>();
-        for ( String permission : REQUEST_PERMISSIONS ) {
-            if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
-                permissionsNotAllowed.add(permission);
-            }
-        }
-        return permissionsNotAllowed;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if ( requestCode == REQUEST_PERMISSIONS_CODE ) {
-            boolean isAllGranted = true;
-            for ( int permissionResult : grantResults ) {
-                if ( permissionResult != PackageManager.PERMISSION_GRANTED ) {
-                    isAllGranted = false;
-                    break;
-                }
-            }
-            if ( isAllGranted ) {
-                startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
-            } else {
-                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
-                snackBarText.append("Por favor, acepte los permisos para poder realizar un registro.");
-                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
-                        .setBackgroundTint(getResources().getColor(R.color.blue))
-                        .setTextColor(getResources().getColor(R.color.light_white))
-                        .setAction("CONCEDER", view -> {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                            startActivity(intent);
-                        })
-                        .setActionTextColor(getResources().getColor(R.color.white))
-                        .show();
-            }
-        }
-    }
-
+    /**
+     * Diseño
+     */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
-    @Override
-    public void initializeVolunteersList(VolunteerFragment volunteerFragment) {
-        this.volunteerFragment = volunteerFragment;
-        volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+    /**
+     * Descarga de datos
+     */
+    private void downloadDataOfSections() {
+        Token token = TokenPreferences.getToken(getApplicationContext());
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Descargando datos del servidor...")
+                .setCancelable(false);
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
+        DownloadManager.downloadDataOfServer(getApplicationContext(), token, progressDialog, new DownloadManager.OnResolveRequestListener() {
+            @Override
+            public void onSuccessListener() {
+                DownloadManagerPreferences.setIsLocalDataSaved(getApplicationContext(), true);
+            }
+            @Override
+            public void onFailureListener() {
+
+            }
+        });
     }
 
+    /**
+     * Evento de menu lanzado desde VolunteerFragment
+     */
     @Override
     public void showMenuVolunteer() {
         MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this);
@@ -304,14 +267,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         menuVolunteerDialog.show();
     }
 
-    public void firmActivityForVolunteer() {
-        startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
-    }
-
-    public void hideProgressDialog() {
-        if ( progressDialog != null ) {
-            progressDialog.dismiss();
-        }
+    /**
+     * Carga de voluntarios en el listado de VolunteerFragment
+     */
+    @Override
+    public void initializeVolunteersList(VolunteerFragment volunteerFragment) {
+        this.volunteerFragment = volunteerFragment;
+        volunteerFragment.updateVolunteers(volunteersToRecyclerView());
     }
 
     public ArrayList<Volunteer> volunteersToRecyclerView() {
@@ -321,16 +283,72 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         return volunteers;
     }
 
-    private void addLocalVolunteer() {
-        localVolunteers.add(currentVolunteer);
-        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
-        volunteerBottomSheet.dismiss();
-        if ( volunteerFragment != null ) {
-            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+    /**
+     * Verificamos los permisos en antes de insertar un nuevo voluntario
+     */
+    private void checkPermissions() {
+        ArrayList<String> requestPermissions = getListOfPermissionsNotAllowed();
+        if ( requestPermissions.isEmpty() ) {
+            startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+        } else {
+            String[] permissions = new String[requestPermissions.size()];
+            for ( int i = 0; i < requestPermissions.size(); i++ ) {
+                permissions[i] = requestPermissions.get(i);
+            }
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_PERMISSIONS_CODE);
         }
-        showSnackBarWithVolunteer("Voluntario registrado con éxito", currentVolunteer);
     }
 
+    /**
+     * Obtenemos la lista de permisos faltantes
+     */
+    private ArrayList<String> getListOfPermissionsNotAllowed() {
+        ArrayList<String> permissionsNotAllowed = new ArrayList<>();
+        for ( String permission : REQUEST_PERMISSIONS ) {
+            if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
+                permissionsNotAllowed.add(permission);
+            }
+        }
+        return permissionsNotAllowed;
+    }
+
+    /**
+     * Resultado de pedir los permisos
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if ( requestCode == REQUEST_PERMISSIONS_CODE ) {
+            boolean isAllGranted = true;
+            for ( int permissionResult : grantResults ) {
+                if ( permissionResult != PackageManager.PERMISSION_GRANTED ) {
+                    isAllGranted = false;
+                    break;
+                }
+            }
+            if ( isAllGranted ) {
+                startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+            } else {
+                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
+                snackBarText.append("Por favor, acepte los permisos para poder realizar un registro.");
+                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(getResources().getColor(R.color.blue))
+                        .setTextColor(getResources().getColor(R.color.light_white))
+                        .setAction("CONCEDER", view -> {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                            startActivity(intent);
+                        })
+                        .setActionTextColor(getResources().getColor(R.color.white))
+                        .show();
+            }
+        }
+    }
+
+    /**
+     * 1° Iniciamos la imagen del voluntario
+     */
     private void initializeImageOfVolunteer(Volunteer volunteer, String path, boolean credential) {
         Image image = new Image();
         image.setPath(path);
@@ -343,38 +361,23 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
     }
 
-    public void showFormVolunteerWithLocalData(Volunteer volunteer, int type) {
-        ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                .setTitle("Cargando datos")
-                .setCancelable(false);
-        progressDialog = new ProgressDialog(MainActivity.this, builder);
-        progressDialog.show();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected",14);
-                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
-                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
-                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(task, 100);
-    }
-
+    /**
+     * 2° Carga de datos y OCR
+     */
     public void showFormVolunteerWithOCR(Volunteer volunteer) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Cargando datos")
                 .setCancelable(false);
-        progressDialog = new ProgressDialog(MainActivity.this, builder);
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
         progressDialog.show();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 // OCR
-                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected",14);
+                int idStateSelected = LocalDataPreferences.getIdStateSelected(getApplicationContext());
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
                 initializeVolunteerWithOCRData(localDataFileManager, volunteer);
+                progressDialog.dismiss();
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
             }
@@ -383,6 +386,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         timer.schedule(task, 100);
     }
 
+    /**
+     * 3° Cargar informacion del OCR al voluntario
+     */
     private void initializeVolunteerWithOCRData(LocalDataFileManager localDataFileManager, Volunteer volunteer) {
         ReadINE readINE = new ReadINE(MainActivity.this, volunteer.getImageCredential().getBlob());
         if ( !readINE.isFourSides() ) {
@@ -468,11 +474,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         String ocrSection = removeInvalidCharacters(readINE.getString("seccion").trim(), "[0-9]");
         String sectionNumber = findBiggestString(ocrSection, "[0-9]+");
 
-        State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId));
+        State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId.equals("") ? "0" : stateId));
         if ( state != null ) {
             Section section = null;
             String currentStateName = getSharedPreferences("localData", Context.MODE_PRIVATE).getString("state_name", null);
-            if ( currentStateName.equals(state.getName()) ) {
+            if ( currentStateName.equalsIgnoreCase(state.getName()) ) {
                 for ( int i = 0; i < localDataFileManager.getSections().size(); i++ ) {
                     if ( localDataFileManager.getSections().get(i).getSection().equals(String.valueOf(sectionNumber))
                             && localDataFileManager.getSections().get(i).getMunicipality().getNumber() == Integer.parseInt(municipalityNumber)) {
@@ -498,6 +504,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         readINE.kill();
     }
 
+    /**
+     * Limpieza de datos del OCR
+     */
     private String removeInvalidCharacters(String field, String expression) {
         StringBuilder result = new StringBuilder();
         String[] characters = field.split("");
@@ -522,12 +531,61 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 idxBiggest = i;
             }
         }
+        if ( idxBiggest == -1 ) {
+            return "";
+        }
         if ( fields[idxBiggest].matches(expression) ) {
             return fields[idxBiggest];
         }
-        return null;
+        return "";
     }
 
+    /**
+     * 4° Obtencion de la firma del voluntario
+     */
+    public void firmActivityForVolunteer() {
+        startFirmActivityIntent.launch(new Intent(MainActivity.this, FirmActivity.class));
+    }
+
+    /**
+     * 5° Almacenamos la informacion del voluntario localmente
+     */
+    private void addLocalVolunteer() {
+        localVolunteers.add(currentVolunteer);
+        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+        volunteerBottomSheet.dismiss();
+        if ( volunteerFragment != null ) {
+            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+        }
+        showSnackBarWithVolunteer("Voluntario registrado con éxito", currentVolunteer);
+    }
+
+    /**
+     * Edicion del voluntario
+     */
+    public void showFormVolunteerWithLocalData(Volunteer volunteer, int type) {
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Cargando datos")
+                .setCancelable(false);
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
+        progressDialog.show();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected", 14);
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
+                progressDialog.dismiss();
+                volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
+                volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 100);
+    }
+
+    /**
+     * Visualizacion del voluntario
+     */
     public void showFormVolunteerWithoutLocalData(Volunteer volunteer, int type) {
         VolunteerBottomSheet volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, null, type);
         volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
@@ -609,7 +667,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         });
         request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(request);
     }
 
     private void nextVolunteerRequest(JSONArray volunteeers, int index, ArrayList<Volunteer> volunteersToRemove) {
@@ -631,30 +688,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         };
         Timer timer = new Timer();
         timer.schedule(task, 2000);
-    }
-
-    private void downloadDataOfSections() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, AppConfig.GET_SECTIONS, null, response -> {
-            try {
-                if ( response.getInt("code") == 200 ) {
-                    StateFileManager.writeJSON(response.getJSONArray("states"), MainActivity.this);
-                    JSONObject state = response.getJSONObject("state");
-                    getSharedPreferences("localData", MODE_PRIVATE).edit().putInt("state_id", state.getInt("id")).apply();
-                    getSharedPreferences("localData", MODE_PRIVATE).edit().putString("state_name", state.getString("name")).apply();
-                    FederalDistrictFileManager.writeJSON(state.getJSONArray("federal_districts"), state.getInt("id"), MainActivity.this);
-                    LocalDistrictFileManager.writeJSON(state.getJSONArray("local_districts"), state.getInt("id"), MainActivity.this);
-                    MunicipalityFileManager.writeJSON(state.getJSONArray("municipalities"), state.getInt("id"), MainActivity.this);
-                    // SectionFileManager.writeJSON(state.getJSONArray("sections"), MainActivity.this);
-                    getSharedPreferences("localData", Context.MODE_PRIVATE).edit().putBoolean("saved", true).apply();
-                }
-            } catch ( JSONException ex ) {
-
-            }
-        }, error -> {
-            Log.e("Error", "" + error.getMessage());
-        });
-        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(request);
     }
 
     private void addErrorsFromRequest(Volunteer volunteer, JSONObject errors) {
@@ -761,10 +794,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 if ( volunteerFragment != null ) {
                     volunteerFragment.updateVolunteers(volunteersToRecyclerView());
                 }
-                SpannableStringBuilder snackbarText = new SpannableStringBuilder();
-                snackbarText.append("Voluntario eliminado con éxito!");
-                snackbarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackbarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Snackbar.make(binding.getRoot(), snackbarText, Snackbar.LENGTH_LONG)
+                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
+                snackBarText.append("Voluntario eliminado con éxito!");
+                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
                         .setBackgroundTint(getResources().getColor(R.color.blue))
                         .setTextColor(getResources().getColor(R.color.light_white))
                         .setAction("DESHACER", v -> {

@@ -1,6 +1,6 @@
 package com.rld.app.mycampaign.models.api;
 
-public class SectionAPI {
+public class SectionResponse {
 
     private int id;
     private String section;
@@ -9,12 +9,12 @@ public class SectionAPI {
     private int federal_district_id;
     private int local_district_id;
 
-    public SectionAPI()
+    public SectionResponse()
     {
 
     }
 
-    public SectionAPI(int id, String section, int state_id, int municipality_id, int federal_district_id, int local_district_id)
+    public SectionResponse(int id, String section, int state_id, int municipality_id, int federal_district_id, int local_district_id)
     {
         this.id = id;
         this.section = section;

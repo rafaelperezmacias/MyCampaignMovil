@@ -25,36 +25,19 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.adapters.LocalSectionAdapter;
-import com.rld.app.mycampaign.api.API;
-import com.rld.app.mycampaign.api.Client;
+import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.databinding.FragmentLocalSectionBinding;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
-import com.rld.app.mycampaign.files.FederalDistrictFileManager;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
-import com.rld.app.mycampaign.files.LocalDistrictFileManager;
-import com.rld.app.mycampaign.files.MunicipalityFileManager;
-import com.rld.app.mycampaign.files.SectionFileManager;
-import com.rld.app.mycampaign.files.StateFileManager;
 import com.rld.app.mycampaign.models.Entity;
-import com.rld.app.mycampaign.models.FederalDistrict;
-import com.rld.app.mycampaign.models.LocalDistrict;
-import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.State;
-import com.rld.app.mycampaign.models.api.EntityAPI;
-import com.rld.app.mycampaign.models.api.PageSectionAPI;
-import com.rld.app.mycampaign.models.api.SectionAPI;
-import com.rld.app.mycampaign.secrets.AppConfig;
-
-import org.json.JSONArray;
+import com.rld.app.mycampaign.models.Token;
+import com.rld.app.mycampaign.preferences.TokenPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LocalSectionFragment extends Fragment {
 
@@ -192,110 +175,8 @@ public class LocalSectionFragment extends Fragment {
                 .setCancelable(false);
         ProgressDialog progressDialog = new ProgressDialog(getActivity(), builder);
         progressDialog.show();
-        Call<ArrayList<State>> statesCall = Client.getClient(AppConfig.URL_SERVER).create(API.class).getStates();
-        statesCall.enqueue(new Callback<ArrayList<State>>() {
-            @Override
-            public void onResponse(Call<ArrayList<State>> call, Response<ArrayList<State>> response) {
-                if ( response.isSuccessful() ) {
-                    ArrayList<State> states = response.body();
-                    JSONArray jsonArrayStates = StateFileManager.arrayListToJsonArray(states);
-                    StateFileManager.writeJSON(jsonArrayStates, getContext());
-                    downloadDataOfEntityByState(states, 0, progressDialog);
-                }
-            }
-            @Override
-            public void onFailure(Call<ArrayList<State>> call, Throwable t) {
-                Log.e("a", "" + t.getMessage());
-            }
-        });
-    }
-
-    private void downloadDataOfEntityByState(ArrayList<State> states, int index, ProgressDialog progressDialog) {
-        if ( states.size() == index ) {
-            downloadDataOfSectionsByState(states, 0, progressDialog);
-            return;
-        }
-        Call<EntityAPI> federalDistrictsCall = Client.getClient(AppConfig.URL_SERVER).create(API.class)
-                .getEntities("" + states.get(index).getId());
-        federalDistrictsCall.enqueue(new Callback<EntityAPI>() {
-            @Override
-            public void onResponse(Call<EntityAPI> call, Response<EntityAPI> response) {
-                if ( response.isSuccessful() ) {
-                    EntityAPI entityAPI = response.body();
-                    // Federal Districts
-                    ArrayList<FederalDistrict> federalDistricts = entityAPI.getFederalDistricts();
-                    JSONArray jsonArrayFederalDistricts = FederalDistrictFileManager.arrayListToJsonArray(federalDistricts);
-                    FederalDistrictFileManager.writeJSON(jsonArrayFederalDistricts,  states.get(index).getId(), getContext());
-                    // Local Districts
-                    ArrayList<LocalDistrict> localDistricts = entityAPI.getLocalDistricts();
-                    JSONArray jsonArrayLocalDistricts = LocalDistrictFileManager.arrayListToJsonArray(localDistricts);
-                    LocalDistrictFileManager.writeJSON(jsonArrayLocalDistricts, states.get(index).getId(), getContext());
-                    // Municipalities
-                    ArrayList<Municipality> municipalities = entityAPI.getMunicipalities();
-                    JSONArray jsonArrayMunicipalities = MunicipalityFileManager.arrayListToJsonArray(municipalities);
-                    MunicipalityFileManager.writeJSON(jsonArrayMunicipalities, states.get(index).getId(), getContext());
-                    //
-                    downloadDataOfEntityByState(states, index + 1, progressDialog);
-                }
-            }
-            @Override
-            public void onFailure(Call<EntityAPI> call, Throwable t) {
-                Log.e("a", "" + t.getMessage());
-            }
-        });
-    }
-
-    private void downloadDataOfSectionsByState(ArrayList<State> states, int index, ProgressDialog progressDialog) {
-        if ( states.size() == index ) {
-            progressDialog.dismiss();
-            return;
-        }
-        Call<PageSectionAPI> pageSectionAPICall = Client.getClient(AppConfig.URL_SERVER).create(API.class)
-                .getSections("" + states.get(index).getId());
-        pageSectionAPICall.enqueue(new Callback<PageSectionAPI>() {
-            @Override
-            public void onResponse(Call<PageSectionAPI> call, Response<PageSectionAPI> response) {
-                if ( response.isSuccessful() ) {
-                    PageSectionAPI pageSectionAPI = response.body();
-                    ArrayList<SectionAPI> sections = new ArrayList<>();
-                    sections.addAll(pageSectionAPI.getData());
-                    downloadDataOfSectionsByStatePerPage(sections, pageSectionAPI.getCurrent_page(), pageSectionAPI.getLast_page(), states.get(index).getId(), states, index, progressDialog);
-                }
-            }
-            @Override
-            public void onFailure(Call<PageSectionAPI> call, Throwable t) {
-                Log.e("a", "" + t.getMessage());
-            }
-        });
-    }
-
-    private void downloadDataOfSectionsByStatePerPage(ArrayList<SectionAPI> sections, int currentPage, int lastPage, int stateId, ArrayList<State> states, int index, ProgressDialog progressDialog) {
-        if ( currentPage > lastPage ) {
-            JSONArray jsonArraySections = SectionFileManager.arrayListToJsonArray(sections);
-            SectionFileManager.writeJSON(jsonArraySections, stateId, getContext());
-            sections.clear();
-            downloadDataOfSectionsByState(states, index + 1, progressDialog);
-            return;
-        }
-        Call<PageSectionAPI> pageSectionAPICall = Client.getClient(AppConfig.URL_SERVER).create(API.class)
-                .getSectionsByPage("" + stateId, currentPage + 1);
-        pageSectionAPICall.enqueue(new Callback<PageSectionAPI>() {
-            @Override
-            public void onResponse(Call<PageSectionAPI> call, Response<PageSectionAPI> response) {
-                if ( response.isSuccessful() ) {
-                    PageSectionAPI pageSectionAPI = response.body();
-                    sections.addAll(pageSectionAPI.getData());
-                    downloadDataOfSectionsByStatePerPage(sections, currentPage + 1, lastPage, stateId, states, index, progressDialog);
-                    return;
-                }
-                Log.e("a", "fallo");
-            }
-
-            @Override
-            public void onFailure(Call<PageSectionAPI> call, Throwable t) {
-                Log.e("a", "" + t.getMessage());
-            }
-        });
+        Token token = TokenPreferences.getToken(getContext());
+        DownloadManager.downloadDataOfServer(getActivity().getApplicationContext(), token, progressDialog, null);
     }
 
 }

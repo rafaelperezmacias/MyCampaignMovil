@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.rld.app.mycampaign.databinding.FragmentProfileBinding;
+import com.rld.app.mycampaign.models.User;
+import com.rld.app.mycampaign.preferences.UserPreferences;
 
 public class ProfileFragment extends Fragment {
 
@@ -32,6 +34,10 @@ public class ProfileFragment extends Fragment {
         TextView txtTotalLocalVolunteers = binding.txtTotalLocalVolunteers;
         MaterialCardView cardAuthorized = binding.cardAuthorized;
         MaterialCardView cardNoAuthorized = binding.cardNoAuthorized;
+
+        User user = UserPreferences.getUser(getContext());
+        txtName.setText(user.getName());
+        txtEmail.setText(user.getEmail());
 
         return root;
     }
