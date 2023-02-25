@@ -9,6 +9,7 @@ import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.api.SectionResponse;
+import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +48,66 @@ public class SectionFileManager {
                     section.setFederalDistrict(LocalDataFileManager.findFederalDistrict(federalDistricts, object.getInt("federal_district_id")));
                     section.setLocalDistrict(LocalDataFileManager.findLocalDistrict(localDistricts, object.getInt("local_district_id")));
                     sections.add(section);
+                    cont++;
+                } catch ( JSONException ex ) {
+                    Log.e("readJSON()", "" + ex.getMessage());
+                    return new ArrayList<>();
+                }
+            }
+        }
+        catch( JSONException ex ){
+            Log.e("readJSON()", "" + ex.getMessage());
+            return new ArrayList<>();
+        }
+        return sections;
+    }
+
+    protected static ArrayList<Section> readJSON(Context context, ArrayList<State> states, ArrayList<Municipality> municipalities, ArrayList<FederalDistrict> federalDistricts, ArrayList<LocalDistrict> localDistricts, int stateId, int mode, String[] ids) {
+        String fileString = FileManager.readJSON(FILE_NAME.replace("?","" + stateId), context);
+        if ( fileString == null || fileString.length() == 0 ) {
+            return new ArrayList<>();
+        }
+        ArrayList<Section> sections = new ArrayList<>();
+        try {
+            JSONObject root = new JSONObject(fileString);
+            JSONArray statesJSONArray = root.getJSONArray(JSON_ID);
+            int cont = 0;
+            while ( cont < statesJSONArray.length() ) {
+                Section section = new Section();
+                try {
+                    JSONObject object = statesJSONArray.getJSONObject(cont);
+                    section.setId(object.getInt("id"));
+                    section.setSection(object.getString("section"));
+                    section.setState(LocalDataFileManager.findState(states, object.getInt("state_id")));
+                    section.setMunicipality(LocalDataFileManager.findMunicipality(municipalities, object.getInt("municipality_id")));
+                    section.setFederalDistrict(LocalDataFileManager.findFederalDistrict(federalDistricts, object.getInt("federal_district_id")));
+                    section.setLocalDistrict(LocalDataFileManager.findLocalDistrict(localDistricts, object.getInt("local_district_id")));
+                    switch (mode) {
+                        case LocalDataPreferences.MODE_MUNICIPALITIES : {
+                            for ( String id : ids ) {
+                                if ( Integer.parseInt(id) == section.getMunicipality().getId() ) {
+                                    sections.add(section);
+                                    break;
+                                }
+                            }
+                        } break;
+                        case LocalDataPreferences.MODE_LOCAL_DISTRICTS: {
+                            for ( String id : ids ) {
+                                if ( Integer.parseInt(id) == section.getLocalDistrict().getId() ) {
+                                    sections.add(section);
+                                    break;
+                                }
+                            }
+                        } break;
+                        case LocalDataPreferences.MODE_FEDERAL_DISTRICTS: {
+                            for ( String id : ids ) {
+                                if ( Integer.parseInt(id) == section.getFederalDistrict().getId() ) {
+                                    sections.add(section);
+                                    break;
+                                }
+                            }
+                        } break;
+                    }
                     cont++;
                 } catch ( JSONException ex ) {
                     Log.e("readJSON()", "" + ex.getMessage());

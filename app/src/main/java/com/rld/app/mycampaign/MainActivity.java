@@ -375,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             public void run() {
                 // OCR
                 int idStateSelected = LocalDataPreferences.getIdStateSelected(getApplicationContext());
-                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstanceWithPreferences(MainActivity.this);
                 initializeVolunteerWithOCRData(localDataFileManager, volunteer);
                 progressDialog.dismiss();
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, VolunteerBottomSheet.TYPE_INSERT);
@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected", 14);
-                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstance(MainActivity.this, idStateSelected);
+                LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstanceWithPreferences(MainActivity.this);
                 progressDialog.dismiss();
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
                 volunteerBottomSheet.show(getSupportFragmentManager(), volunteerBottomSheet.getTag());
@@ -641,6 +641,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
         }
         String url = AppConfig.INSERT_VOLUNTEER;
+        Log.e("", "" + bodyRequest.toString());
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bodyRequest, response -> {
             try {
                 if ( response.getBoolean("success") ) {

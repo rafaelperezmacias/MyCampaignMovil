@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.models.Entity;
+import com.rld.app.mycampaign.models.EntitySelect;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -19,14 +20,12 @@ import java.util.function.Function;
 public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapter.ViewHolder> {
 
     private final Context context;
-    private final ArrayList<Entity> entities;
-    private final OnLocalSectionAdapterListener onLocalSectionAdapterListener;
+    private final ArrayList<EntitySelect> entities;
 
-    public LocalSectionAdapter(Context context, ArrayList<Entity> entities, OnLocalSectionAdapterListener onLocalSectionAdapterListener)
+    public LocalSectionAdapter(Context context, ArrayList<EntitySelect> entities)
     {
         this.context = context;
         this.entities = entities;
-        this.onLocalSectionAdapterListener = onLocalSectionAdapterListener;
     }
 
     @NonNull
@@ -38,11 +37,13 @@ public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Entity entity = entities.get(position);
+        EntitySelect entity = entities.get(position);
         holder.txtName.setText(entity.getName());
-        holder.btnSelected.setOnClickListener(v -> {
-            // onLocalSectionAdapterListener.onSelectedListener(position, holder.btnSelected.isChecked());
-        });
+        StringBuilder builder = new StringBuilder();
+        builder.append("(").append(entity.getNumber()).append(")");
+        holder.txtNumber.setText(builder.toString());
+        holder.btnSelected.setChecked(entity.isSelected());
+        holder.btnSelected.setOnClickListener(v -> entity.setSelected(!entity.isSelected()));
     }
 
     @Override
@@ -52,19 +53,18 @@ public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapte
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final CheckBox btnSelected;
         private final TextView txtName;
+        private final TextView txtNumber;
+        private final CheckBox btnSelected;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txt_name);
+            txtNumber = itemView.findViewById(R.id.txt_number);
             btnSelected = itemView.findViewById(R.id.btn_selected);
         }
 
     }
 
-    public interface OnLocalSectionAdapterListener {
-        void onSelectedListener(int position, boolean selected);
-    }
 
 }

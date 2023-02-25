@@ -12,6 +12,10 @@ public class FederalDistrict extends Entity {
         super(id, name, number, state);
     }
 
+    public EntitySelect toEntitySelect() {
+        return new EntitySelect(getId(), getName(), getNumber(), getState(), false);
+    }
+
     @Override
     public String toString() {
         return "FederalDistrict{" +
