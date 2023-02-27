@@ -209,7 +209,7 @@ public class LocalSectionFragment extends Fragment {
                     LocalDataPreferences.setSelectedIds(requireContext(), idsToSave.toString());
                     LocalDataPreferences.setMode(requireContext(), currentTypeModeSelected);
                     LocalDataPreferences.setIdStateSelected(requireContext(),currentIdStateSelected);
-                    LocalDataPreferences.setNameStateSelected(requireContext(), states.get(currentIdStateSelected).getName());
+                    LocalDataPreferences.setNameStateSelected(requireContext(), states.get(currentIdStateSelected - 1).getName());
                     progressDialog.dismiss();
                 }
             };

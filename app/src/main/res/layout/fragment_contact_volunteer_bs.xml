@@ -175,10 +175,9 @@
             app:errorEnabled="true">
 
             <AutoCompleteTextView
-                android:inputType="textCapCharacters"
+                android:inputType="none"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </AutoCompleteTextView>
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -195,10 +194,9 @@
 
             <AutoCompleteTextView
                 android:dropDownAnchor="@id/lyt_sections"
-                android:inputType="number"
+                android:inputType="none"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </AutoCompleteTextView>
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

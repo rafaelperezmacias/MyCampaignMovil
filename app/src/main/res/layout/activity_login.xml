@@ -55,13 +55,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="@drawable/login_card_white"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/limit25H"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_gravity="center"

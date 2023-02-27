@@ -2,6 +2,7 @@ package com.rld.app.mycampaign;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -374,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             @Override
             public void run() {
                 // OCR
-                int idStateSelected = LocalDataPreferences.getIdStateSelected(getApplicationContext());
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstanceWithPreferences(MainActivity.this);
                 initializeVolunteerWithOCRData(localDataFileManager, volunteer);
                 progressDialog.dismiss();
@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId.equals("") ? "0" : stateId));
         if ( state != null ) {
             Section section = null;
-            String currentStateName = getSharedPreferences("localData", Context.MODE_PRIVATE).getString("state_name", null);
+            String currentStateName = LocalDataPreferences.getNameStateSelected(getApplicationContext());
             if ( currentStateName.equalsIgnoreCase(state.getName()) ) {
                 for ( int i = 0; i < localDataFileManager.getSections().size(); i++ ) {
                     if ( localDataFileManager.getSections().get(i).getSection().equals(String.valueOf(sectionNumber))
@@ -572,7 +572,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                int idStateSelected = getSharedPreferences("preferences", Context.MODE_PRIVATE).getInt("state_selected", 14);
                 LocalDataFileManager localDataFileManager = LocalDataFileManager.getInstanceWithPreferences(MainActivity.this);
                 progressDialog.dismiss();
                 volunteerBottomSheet = new VolunteerBottomSheet(volunteer, MainActivity.this, localDataFileManager, type);
@@ -821,6 +820,47 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             }
         });
         messageDialog.show();
+    }
+
+    /**
+     * Manejo manual de eventos para cerrar
+     */
+    @Override
+    public void onBackPressed() {
+        NavigationView navigationView = binding.navView;
+        if ( navigationView.getCheckedItem().getItemId() != R.id.nav_volunteer ) {
+            NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_volunteer);
+            navigationView.setCheckedItem(R.id.nav_volunteer);
+            return;
+        }
+        finish();
+    }
+
+    /**
+     * Verificamos si el token esta vigente todavia, sino lo mondamos al login
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Token token = TokenPreferences.getToken(getApplicationContext());
+        if ( !token.isValid() ) {
+            MessageDialogBuilder builder = new MessageDialogBuilder();
+            builder.setTitle("La sesión ha caducado")
+                    .setMessage("Para seguir utilizando la aplicación, por favor vuelve a iniciar sesión.")
+                    .setPrimaryButtonText("Aceptar")
+                    .setCancelable(true);
+            MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
+            messageDialog.setPrimaryButtonListener(v -> {
+                messageDialog.dismiss();
+            });
+            messageDialog.setOnDismissListener(dialog -> {
+                UserPreferences.deleteUser(getApplicationContext());
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            });
+            messageDialog.show();
+        }
     }
 
 }

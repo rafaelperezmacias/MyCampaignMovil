@@ -22,32 +22,27 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".firm.FirmActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.FuturoApp.NoActionBar">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity android:name=".CameraPreview" />
-
-        <activity android:name=".LoginActivity"
-            android:exported="true"
-            android:theme="@style/SplashScreenTheme"
-            android:windowSoftInputMode="stateHidden">
+            android:name=".SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LoginActivity"
+            android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".firm.FirmActivity" />
+
+        <activity
+            android:name=".CameraPreview" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

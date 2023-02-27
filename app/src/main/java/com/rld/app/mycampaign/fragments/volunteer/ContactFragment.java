@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
@@ -28,9 +29,13 @@ import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.R;
+import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContactFragment extends Fragment {
@@ -67,7 +72,7 @@ public class ContactFragment extends Fragment {
         this.volunteer = volunteer;
         this.localDataFileManager = localDataFileManager;
         this.type = type;
-        currentStateName = mainActivity.getSharedPreferences("localData", Context.MODE_PRIVATE).getString("state_name", null);
+        currentStateName = LocalDataPreferences.getNameStateSelected(mainActivity);
     }
 
     @Nullable
@@ -105,14 +110,14 @@ public class ContactFragment extends Fragment {
                 lytSections.setVisibility(View.GONE);
                 if ( volunteer.getSection() != null && volunteer.getSection().getState() != null ) {
                     if ( isValidState(volunteer.getSection().getState().getName()) ) {
-                        lytStates.getEditText().setText(volunteer.getSection().getState().getName());
+                        ((MaterialAutoCompleteTextView) lytStates.getEditText()).setText(volunteer.getSection().getState().getName(), false);
                         isValidState = true;
                         if ( isValidSection(volunteer.getSection().getSection()) ) {
                             lytSections.getEditText().setText(volunteer.getSection().getSection());
                             lytSections.setVisibility(View.VISIBLE);
                             isValidSection = true;
                         } else if ( currentStateName.equals(volunteer.getSection().getState().getName()) ) {
-                            lytSections.getEditText().setText(volunteer.getSection().getSection());
+                            ((MaterialAutoCompleteTextView) lytSections.getEditText()).setText(volunteer.getSection().getSection(), false);
                             lytSections.setVisibility(View.VISIBLE);
                         }
                     }
@@ -268,8 +273,10 @@ public class ContactFragment extends Fragment {
     }
 
     private void addSections() {
+        ArrayList<Section> sections = localDataFileManager.getSections();
+        Collections.sort(sections, (o1, o2) -> o1.getSection().compareTo(o2.getSection()));
         List<String> stringsSections = new ArrayList<>();
-        for ( Section section : localDataFileManager.getSections() ) {
+        for ( Section section : sections ) {
             stringsSections.add(section.getSection());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, stringsSections);

@@ -1,11 +1,18 @@
 package com.rld.app.mycampaign.models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class Token {
 
     public static final String TOKEN_PREFERENCES = "token-preferences";
     public static final String TOKEN = "token";
     public static final String TOKEN_TYPE = "token-type";
     public static final String EXPIRES_IN = "expires-in";
+    public static final String TOKEN_FORMAT_DATE = "yyyy-MM-dd HH:mm:ss";
 
     private String token;
     private String tokenType;
@@ -49,6 +56,18 @@ public class Token {
 
     public String toAPIRequest() {
         return tokenType + " " + token;
+    }
+
+    public boolean isValid() {
+        Calendar currentTime = Calendar.getInstance();
+        Calendar tokenTime = Calendar.getInstance();
+        try {
+            Date tokenDate = new SimpleDateFormat(TOKEN_FORMAT_DATE, Locale.getDefault()).parse(expiresIn);
+            tokenTime.setTime(tokenDate);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return ( currentTime.before(tokenTime) );
     }
 
     @Override

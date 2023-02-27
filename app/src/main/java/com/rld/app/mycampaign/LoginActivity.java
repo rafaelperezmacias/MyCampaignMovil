@@ -106,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                             if ( response.isSuccessful() ) {
+                                assert response.body() != null;
                                 saveUserInfo(response.body(), userRequest.getPassword());
                                 Toast.makeText(LoginActivity.this, "Bienvenido, " + response.body().getUser().getName() + "!", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(LoginActivity.this, MainActivity.class));

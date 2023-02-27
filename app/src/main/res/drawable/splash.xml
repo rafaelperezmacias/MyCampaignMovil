@@ -5,8 +5,11 @@
     <item
         android:drawable="@color/blue" />
 
-    <item
-        android:drawable="@drawable/ic_launcher_foreground"
-        android:gravity="center" />
+    <item>
+        <bitmap
+            android:mipMap="true"
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher" />
+    </item>
 
 </layer-list>
