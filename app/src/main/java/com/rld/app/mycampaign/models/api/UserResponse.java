@@ -53,8 +53,8 @@ public class UserResponse {
                 '}';
     }
 
-    public User toUser(String password) {
-        return new User(id, name, email, password);
+    public User toUser(String password, String profileImage, boolean isLogin) {
+        return new User(id, name, email, password, profileImage, isLogin);
     }
 
 }

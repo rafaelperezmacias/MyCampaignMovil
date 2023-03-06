@@ -7,6 +7,7 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
+import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
 import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ public class LocalDataFileManager {
 
     public static LocalDataFileManager getInstanceWithAllData(Context context, int stateId) {
         LocalDataFileManager localDataFileManager = new LocalDataFileManager();
+        if ( !DownloadManagerPreferences.isLocalDataSaved(context) ) {
+            return localDataFileManager;
+        }
         // Estados
         localDataFileManager.states = StateFileManager.readJSON(context);
         // Distritos federales
@@ -49,6 +53,9 @@ public class LocalDataFileManager {
 
     public static LocalDataFileManager getInstanceWithPreferences(Context context) {
         LocalDataFileManager localDataFileManager = new LocalDataFileManager();
+        if ( !DownloadManagerPreferences.isLocalDataSaved(context) ) {
+            return localDataFileManager;
+        }
         // Id estado
         int stateId = LocalDataPreferences.getIdStateSelected(context);
         // Estados

@@ -30,33 +30,34 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_title"
         android:textColor="@color/black"
-        android:paddingBottom="16dp"
+        android:paddingBottom="8dp"
         tools:text="¿Esta seguro que desea eliminar este registro?"/>
+
+    <TextView
+        android:id="@+id/txt_error"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_message"
+        android:paddingBottom="16dp"
+        tools:text="Este es un mensaje de error complementario"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_message"
+        android:layout_below="@+id/txt_error"
         android:orientation="vertical">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_dialog_primary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:text="AGREGAR" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_dialog_secondary"
+            android:id="@+id/btn_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="@color/blue"
-            android:text="CANCELAR"
+            tools:text="Aceptar"
             style="@style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush"/>
 
     </LinearLayout>
+
 
 </RelativeLayout>

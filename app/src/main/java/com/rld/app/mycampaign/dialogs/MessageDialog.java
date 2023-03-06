@@ -73,7 +73,7 @@ public class MessageDialog extends Dialog {
         txtTitle.setText(title);
         txtMessage.setText(message);
 
-        if ( primaryButtonText != null && !primaryButtonText.isEmpty() &&  secondaryButtonText != null && !secondaryButtonText.isEmpty() ) {
+        if ( primaryButtonText != null && !primaryButtonText.isEmpty() && secondaryButtonText != null && !secondaryButtonText.isEmpty() ) {
             btnPrimaryAction.setText(primaryButtonText);
             btnPrimaryAction.setOnClickListener(primaryButtonListener);
             btnSecondatyAction.setText(secondaryButtonText);

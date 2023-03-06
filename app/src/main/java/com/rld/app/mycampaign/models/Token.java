@@ -1,5 +1,7 @@
 package com.rld.app.mycampaign.models;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

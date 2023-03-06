@@ -1,11 +1,13 @@
 package com.rld.app.mycampaign.fragments.menu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -18,10 +20,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.LoginActivity;
+import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.adapters.LocalSectionAdapter;
 import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.databinding.FragmentLocalSectionBinding;
+import com.rld.app.mycampaign.dialogs.ErrorMessageDialog;
+import com.rld.app.mycampaign.dialogs.ErrorMessageDialogBuilder;
+import com.rld.app.mycampaign.dialogs.MessageDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
@@ -31,8 +39,11 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Token;
+import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
 import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
+import com.rld.app.mycampaign.preferences.UserPreferences;
+import com.rld.app.mycampaign.utils.Internet;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +54,8 @@ public class LocalSectionFragment extends Fragment {
 
     private FragmentLocalSectionBinding binding;
 
+    private LinearLayout lytData;
+    private LinearLayout lytErrorData;
     private TextInputLayout lytStates;
     private TextView txtMode;
 
@@ -77,9 +90,12 @@ public class LocalSectionFragment extends Fragment {
 
         RecyclerView recyclerView = binding.recyclerView;
         ImageButton btnOptions = binding.btnOptions;
-        txtMode = binding.txtMode;
         MaterialButton btnSave = binding.btnSave;
+        MaterialButton btnErrorDownload = binding.btnErrorDownload;
+        txtMode = binding.txtMode;
         lytStates = binding.lytStates;
+        lytData = binding.lytData;
+        lytErrorData = binding.lytErrorData;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setHasFixedSize(true);
@@ -93,13 +109,20 @@ public class LocalSectionFragment extends Fragment {
         }
         ((MaterialAutoCompleteTextView) lytStates.getEditText()).setSimpleItems(stringStates);
 
-        showPreferences();
+        if ( fileManager.isEmpty() ) {
+            lytData.setVisibility(View.GONE);
+            lytErrorData.setVisibility(View.VISIBLE);
+        } else {
+            showPreferences();
+            lytData.setVisibility(View.VISIBLE);
+            lytErrorData.setVisibility(View.GONE);
+        }
 
         PopupMenu popupMenu = new PopupMenu(getContext(), btnOptions);
         popupMenu.inflate(R.menu.local_section_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
             if ( item.getItemId() == R.id.menu_local_section_update ) {
-                downloadDataOfStates();
+                downloadData();
                 return false;
             }
             if ( item.getItemId() == R.id.menu_local_section_municipalities ) {
@@ -217,6 +240,10 @@ public class LocalSectionFragment extends Fragment {
             timer.schedule(task, 1000);
         });
 
+        btnErrorDownload.setOnClickListener(v -> {
+            downloadData();
+        });
+
         return root;
     }
 
@@ -286,14 +313,126 @@ public class LocalSectionFragment extends Fragment {
         }
     }
 
-    private void downloadDataOfStates() {
+    private void downloadData() {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
                 .setTitle("Actualizando datos...")
                 .setCancelable(false);
         ProgressDialog progressDialog = new ProgressDialog(requireContext(), builder);
         progressDialog.show();
         Token token = TokenPreferences.getToken(requireContext());
-        DownloadManager.downloadDataOfServer(requireContext(), token, progressDialog, null);
+        if ( !Internet.isNetworkAvailable(requireContext()) || !Internet.isOnlineNetwork() ) {
+            progressDialog.dismiss();
+            MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                    .setTitle("Sin conexión a internet")
+                    .setMessage("Para actualizar los datos locales necesita de una conexión a internet")
+                    .setPrimaryButtonText("Aceptar")
+                    .setCancelable(true);
+            MessageDialog messageDialog = new MessageDialog(requireContext(), messageDialogBuilder);
+            messageDialog.setPrimaryButtonListener(v -> {
+                messageDialog.dismiss();
+            });
+            messageDialog.show();
+            return;
+        }
+        DownloadManager.downloadDataOfServer(requireContext(), token, new DownloadManager.OnResolveRequestListener() {
+            @Override
+            public void onSuccessListener() {
+                DownloadManagerPreferences.setIsLocalDataSaved(requireContext(), true);
+                fileManager = LocalDataFileManager.getInstanceWithAllData(requireContext(), currentIdStateSelected);
+                states = fileManager.getStates();
+                String[] stringStates = new String[states.size()];
+                for ( int i = 0; i < states.size(); i++ ) {
+                    stringStates[i] = states.get(i).getName();
+                }
+                ((MaterialAutoCompleteTextView) lytStates.getEditText()).setSimpleItems(stringStates);
+                progressDialog.dismiss();
+                MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                        .setTitle("Actualización exitosa")
+                        .setMessage("Los datos se han actualizado con exito!")
+                        .setCancelable(false)
+                        .setPrimaryButtonText("Aceptar");
+                MessageDialog messageDialog = new MessageDialog(requireContext(), messageDialogBuilder);
+                messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                messageDialog.show();
+                messageDialog.setOnDismissListener(dialog -> {
+                    requireActivity().runOnUiThread(() -> {
+                        lytData.setVisibility(View.VISIBLE);
+                        lytErrorData.setVisibility(View.GONE);
+                        showPreferences();
+                    });
+                });
+            }
+            @Override
+            public void onFailureListener(int type, int code, String error)  {
+                DownloadManagerPreferences.setIsLocalDataSaved(requireContext(), false);
+                progressDialog.dismiss();
+                ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder();
+                builder.setTitle("Error descargando datos")
+                        .setButtonText("Aceptar")
+                        .setCancelable(false);
+                switch (type) {
+                    case DownloadManager.TYPE_STATE_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los estados");
+                    } break;
+                    case DownloadManager.TYPE_FEDERAL_DISTRICT_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los distritos federales");
+                    } break;
+                    case DownloadManager.TYPE_LOCAL_DISTRICT_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los distritos locales");
+                    } break;
+                    case DownloadManager.TYPE_MUNICIPALITY_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los municipios");
+                    } break;
+                    case DownloadManager.TYPE_SECTION_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de las secciones");
+                    } break;
+                }
+                switch (code) {
+                    case DownloadManager.BAD_REQUEST : {
+                         builder.setError("400 - " + error);
+                    } break;
+                    case DownloadManager.UNAUTHORIZED : {
+                        builder.setError("401 - " + error);
+                    } break;
+                    case DownloadManager.TOO_MANY_REQUEST : {
+                        builder.setError("429 - " + error);
+                    } break;
+                    case DownloadManager.INTERNAL_ERROR : {
+                        builder.setError("500 - " + error);
+                    } break;
+                    case DownloadManager.UNKNOWN_ERROR : {
+                        builder.setError("Error desconocido - " + error);
+                    } break;
+                    case DownloadManager.ERROR_REQUEST : {
+                        builder.setError("Error con la petición - " + error);
+                    } break;
+                }
+                ErrorMessageDialog messageDialog = new ErrorMessageDialog(requireContext(), builder);
+                messageDialog.setButtonClickListener(v -> messageDialog.dismiss());
+                messageDialog.show();
+                messageDialog.setOnDismissListener(dialog -> {
+                    lytData.setVisibility(View.GONE);
+                    lytErrorData.setVisibility(View.VISIBLE);
+                    if ( code == DownloadManager.UNAUTHORIZED ) {
+                        MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder();
+                        messageDialogBuilder.setTitle("La sesión ha caducado")
+                                .setMessage("Para seguir utilizando la aplicación, por favor vuelve a iniciar sesión.")
+                                .setPrimaryButtonText("Aceptar")
+                                .setCancelable(false);
+                        MessageDialog closeDialog = new MessageDialog(requireContext(), messageDialogBuilder);
+                        closeDialog.setPrimaryButtonListener(v -> {
+                            closeDialog.dismiss();
+                        });
+                        closeDialog.setOnDismissListener(dialog1 -> {
+                            UserPreferences.clearConnect(requireContext());
+                            startActivity(new Intent(requireActivity(), LoginActivity.class));
+                            requireActivity().finish();
+                        });
+                        closeDialog.show();
+                    }
+                });
+            }
+        });
     }
 
 }

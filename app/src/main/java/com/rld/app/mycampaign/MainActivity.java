@@ -13,12 +13,14 @@ import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -40,9 +42,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
+import com.rld.app.mycampaign.dialogs.ErrorMessageDialog;
+import com.rld.app.mycampaign.dialogs.ErrorMessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.MenuVolunteerDialog;
 import com.rld.app.mycampaign.dialogs.MessageDialog;
 import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
@@ -65,6 +70,7 @@ import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Token;
+import com.rld.app.mycampaign.models.User;
 import com.rld.app.mycampaign.models.Volunteer;
 import com.rld.app.mycampaign.ocr.ReadINE;
 import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
@@ -72,6 +78,7 @@ import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
 import com.rld.app.mycampaign.preferences.UserPreferences;
 import com.rld.app.mycampaign.secrets.AppConfig;
+import com.rld.app.mycampaign.utils.Internet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,6 +89,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickMenuVolunteerListener {
 
@@ -142,6 +151,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         });
         navigationView.setCheckedItem(R.id.nav_volunteer);
 
+        View headerLayout = navigationView.getHeaderView(0);
+        CircleImageView imageProfile = headerLayout.findViewById(R.id.image_profile);
+        TextView txtName = headerLayout.findViewById(R.id.txt_name);
+        TextView txtEmail = headerLayout.findViewById(R.id.txt_email);
+
         startCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -188,10 +202,16 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 }
         );
 
-        if ( !DownloadManagerPreferences.isLocalDataSaved(getApplicationContext()) ) {
+        User user = UserPreferences.getUser(MainActivity.this);
+        byte[] decodeImage = Base64.decode(user.getProfileImage(), Base64.DEFAULT);
+        Bitmap imageBitmap = BitmapFactory.decodeByteArray(decodeImage, 0, decodeImage.length);
+        imageProfile.setImageBitmap(imageBitmap);
+        txtName.setText(user.getName());
+        txtEmail.setText(user.getEmail());
+
+        if ( DownloadManagerPreferences.isFirstTimeDownloadData(getApplicationContext()) ) {
             downloadDataOfSections();
         }
-
     }
 
     /**
@@ -207,19 +227,108 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
      * Descarga de datos
      */
     private void downloadDataOfSections() {
-        Token token = TokenPreferences.getToken(getApplicationContext());
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                .setTitle("Descargando datos del servidor...")
+                .setTitle("Descargando datos...")
                 .setCancelable(false);
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
-        DownloadManager.downloadDataOfServer(getApplicationContext(), token, progressDialog, new DownloadManager.OnResolveRequestListener() {
+        progressDialog.show();
+        Token token = TokenPreferences.getToken(getApplicationContext());
+        if ( !Internet.isNetworkAvailable(getApplicationContext()) || !Internet.isOnlineNetwork() ) {
+            progressDialog.dismiss();
+            MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                    .setTitle("Sin conexión a internet")
+                    .setMessage("Para descargar los datos locales necesita de una conexión a internet")
+                    .setPrimaryButtonText("Aceptar")
+                    .setCancelable(true);
+            MessageDialog messageDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+            messageDialog.setPrimaryButtonListener(v -> {
+                messageDialog.dismiss();
+            });
+            messageDialog.show();
+            return;
+        }
+        DownloadManager.downloadDataOfServer(getApplicationContext(), token, new DownloadManager.OnResolveRequestListener() {
             @Override
             public void onSuccessListener() {
                 DownloadManagerPreferences.setIsLocalDataSaved(getApplicationContext(), true);
+                DownloadManagerPreferences.setFirstTimeDownloadData(getApplicationContext(), false);
+                progressDialog.dismiss();
+                MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                        .setTitle("Actualización exitosa")
+                        .setMessage("Los datos se han actualizado con exito!")
+                        .setCancelable(false)
+                        .setPrimaryButtonText("Aceptar");
+                MessageDialog messageDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+                messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                messageDialog.show();
             }
             @Override
-            public void onFailureListener() {
-
+            public void onFailureListener(int type, int code, String error)  {
+                DownloadManagerPreferences.setIsLocalDataSaved(getApplicationContext(), false);
+                progressDialog.dismiss();
+                ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder();
+                builder.setTitle("Error descargando datos")
+                        .setButtonText("Aceptar")
+                        .setCancelable(false);
+                switch (type) {
+                    case DownloadManager.TYPE_STATE_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los estados");
+                    } break;
+                    case DownloadManager.TYPE_FEDERAL_DISTRICT_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los distritos federales");
+                    } break;
+                    case DownloadManager.TYPE_LOCAL_DISTRICT_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los distritos locales");
+                    } break;
+                    case DownloadManager.TYPE_MUNICIPALITY_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de los municipios");
+                    } break;
+                    case DownloadManager.TYPE_SECTION_REQUEST : {
+                        builder.setMessage("Ha ocurrido un error descargando los datos de las secciones");
+                    } break;
+                }
+                switch (code) {
+                    case DownloadManager.BAD_REQUEST : {
+                        builder.setError("400 - " + error);
+                    } break;
+                    case DownloadManager.UNAUTHORIZED : {
+                        builder.setError("401 - " + error);
+                    } break;
+                    case DownloadManager.TOO_MANY_REQUEST : {
+                        builder.setError("429 - " + error);
+                    } break;
+                    case DownloadManager.INTERNAL_ERROR : {
+                        builder.setError("500 - " + error);
+                    } break;
+                    case DownloadManager.UNKNOWN_ERROR : {
+                        builder.setError("Error desconocido - " + error);
+                    } break;
+                    case DownloadManager.ERROR_REQUEST : {
+                        builder.setError("Error con la petición - " + error);
+                    } break;
+                }
+                ErrorMessageDialog messageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                messageDialog.setButtonClickListener(v -> messageDialog.dismiss());
+                messageDialog.show();
+                messageDialog.setOnDismissListener(dialog -> {
+                    if ( code == DownloadManager.UNAUTHORIZED ) {
+                        MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder();
+                        messageDialogBuilder.setTitle("La sesión ha caducado")
+                                .setMessage("Para seguir utilizando la aplicación, por favor vuelve a iniciar sesión.")
+                                .setPrimaryButtonText("Aceptar")
+                                .setCancelable(false);
+                        MessageDialog closeDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+                        closeDialog.setPrimaryButtonListener(v -> {
+                            closeDialog.dismiss();
+                        });
+                        closeDialog.setOnDismissListener(dialog1 -> {
+                            UserPreferences.clearConnect(getApplicationContext());
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            finish();
+                        });
+                        closeDialog.show();
+                    }
+                });
             }
         });
     }
@@ -849,13 +958,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             builder.setTitle("La sesión ha caducado")
                     .setMessage("Para seguir utilizando la aplicación, por favor vuelve a iniciar sesión.")
                     .setPrimaryButtonText("Aceptar")
-                    .setCancelable(true);
+                    .setCancelable(false);
             MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
             messageDialog.setPrimaryButtonListener(v -> {
                 messageDialog.dismiss();
             });
             messageDialog.setOnDismissListener(dialog -> {
-                UserPreferences.deleteUser(getApplicationContext());
+                UserPreferences.clearConnect(MainActivity.this);
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
             });

@@ -4,9 +4,9 @@ import java.util.Calendar;
 
 public class Volunteer {
 
-    public static final int TYPE_GENERAL_REPRESENTATIVE = 0;
-    public static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 1;
-    public static final int TYPE_OTHER = 2;
+    public static final int TYPE_GENERAL_REPRESENTATIVE = 1;
+    public static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 2;
+    public static final int TYPE_OTHER = 3;
 
     private int id;
     private String name;

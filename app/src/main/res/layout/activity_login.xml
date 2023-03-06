@@ -27,14 +27,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".35" />
+        app:layout_constraintGuide_percent=".40" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/limit25H"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".25" />
+        app:layout_constraintGuide_percent=".30" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/appCompatImageView"

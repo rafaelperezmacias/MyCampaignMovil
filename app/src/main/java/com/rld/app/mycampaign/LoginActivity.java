@@ -2,6 +2,8 @@ package com.rld.app.mycampaign;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -12,24 +14,35 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.api.AuthAPI;
+import com.rld.app.mycampaign.api.CampaignAPI;
 import com.rld.app.mycampaign.api.Client;
+import com.rld.app.mycampaign.api.ImageAPI;
 import com.rld.app.mycampaign.databinding.ActivityLoginBinding;
+import com.rld.app.mycampaign.dialogs.MessageDialog;
+import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.models.Token;
 import com.rld.app.mycampaign.models.User;
+import com.rld.app.mycampaign.models.Campaign;
 import com.rld.app.mycampaign.models.api.LoginResponse;
 import com.rld.app.mycampaign.models.api.UserRequest;
+import com.rld.app.mycampaign.preferences.CampaignPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
 import com.rld.app.mycampaign.preferences.UserPreferences;
 import com.rld.app.mycampaign.secrets.AppConfig;
 import com.rld.app.mycampaign.utils.Internet;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Url;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -60,6 +73,13 @@ public class LoginActivity extends AppCompatActivity {
 
         lytLoad = binding.lytLoad;
         cardError = binding.cardError;
+
+        if ( UserPreferences.isUserLogin(getApplicationContext()) ) {
+            User user = UserPreferences.getUser(getApplicationContext());
+            lytEmail.getEditText().setText(user.getEmail());
+            lytEmail.setHint("");
+            TextInputLayoutUtils.cursorToEnd(lytEmail.getEditText());
+        }
 
         lytEmail.getEditText().setOnFocusChangeListener((view, focus) -> {
             if ( focus ) {
@@ -107,10 +127,9 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                             if ( response.isSuccessful() ) {
                                 assert response.body() != null;
-                                saveUserInfo(response.body(), userRequest.getPassword());
-                                Toast.makeText(LoginActivity.this, "Bienvenido, " + response.body().getUser().getName() + "!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                                finish();
+                                User user = response.body().getUser().toUser(userRequest.getPassword(), null, true);
+                                Token token = response.body().getTokenObject();
+                                getCurrentCampaign(user, token);
                                 return;
                             }
                             lytLoad.setVisibility(View.GONE);
@@ -146,17 +165,90 @@ public class LoginActivity extends AppCompatActivity {
         return TextInputLayoutUtils.isNotEmpty(lytPassword, "Ingrese su contraseña", null, getApplicationContext());
     }
 
-    private void saveUserInfo(LoginResponse loginResponse, String password) {
-        User user = loginResponse.getUser().toUser(password);
-        UserPreferences.saveUser(getApplicationContext(), user);
-        Token token = loginResponse.getTokenObject();
-        TokenPreferences.saveToken(getApplicationContext(), token);
+    private void getCurrentCampaign(User user, Token token) {
+        Call<Campaign> campaignCall = Client.getClient(AppConfig.URL_SERVER).create(CampaignAPI.class)
+                .getCurrentCampaign(token.toAPIRequest());
+        campaignCall.enqueue(new Callback<Campaign>() {
+            @Override
+            public void onResponse(Call<Campaign> call, Response<Campaign> response) {
+                if ( response.code() == 204 ) {
+                    MessageDialogBuilder builder = new MessageDialogBuilder();
+                    builder.setTitle("Campaña invalida")
+                            .setMessage("Actualmente el sistema no cuenta con una campaña activa. ¿Es un error? Comentalo a los administradores para que te brinden ayuda")
+                            .setPrimaryButtonText("Ok")
+                            .setCancelable(false);
+                    MessageDialog messageDialog = new MessageDialog(LoginActivity.this, builder);
+                    messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                    messageDialog.setOnDismissListener(dialog -> {
+                        lytLoad.setVisibility(View.GONE);
+                        btnLogin.setVisibility(View.VISIBLE);
+                        lytEmail.getEditText().setEnabled(true);
+                        lytPassword.getEditText().setEnabled(true);
+                    });
+                    messageDialog.show();
+                    return;
+                }
+                if ( response.isSuccessful() ) {
+                    Campaign campaign = response.body();
+                    getImageProfile(user, token, campaign);
+                    /* CampaignPreferences.saveCampaign(LoginActivity.this, campaign);
+                    UserPreferences.saveUser(getApplicationContext(), user);
+                    TokenPreferences.saveToken(getApplicationContext(), token);
+                    Toast.makeText(LoginActivity.this, "Bienvenido, " + user.getName() + "!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class)); */
+                    return;
+                }
+            }
+            @Override
+            public void onFailure(Call<Campaign> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void getImageProfile(User user, Token token, Campaign campaign) {
+        try {
+            Call<ResponseBody> imageCall = Client.getClientForImage().create(ImageAPI.class)
+                    .getProfileImage(
+                            URLEncoder.encode(user.getName(), "UTF-8"),
+                            "7F9CF5",
+                            "EBF4FF",
+                            "512",
+                            "0.33"
+                    );
+            imageCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if ( response.isSuccessful() ) {
+                        try {
+                            byte[] imageByte = response.body().bytes();
+                            String base64 = Base64.encodeToString(imageByte, Base64.DEFAULT);
+                            user.setProfileImage(base64);
+                            CampaignPreferences.saveCampaign(LoginActivity.this, campaign);
+                            UserPreferences.saveUser(getApplicationContext(), user);
+                            TokenPreferences.saveToken(getApplicationContext(), token);
+                            Toast.makeText(LoginActivity.this, "Bienvenido, " + user.getName() + "!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        } catch (IOException ex) {
+                            Log.e("", "" + ex.getMessage());
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        } catch ( Exception ex ) {
+
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if ( UserPreferences.isUserLogin(getApplicationContext()) ) {
+        if ( UserPreferences.isUserLogin(getApplicationContext()) && UserPreferences.isUserConnect(getApplicationContext()) ) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
