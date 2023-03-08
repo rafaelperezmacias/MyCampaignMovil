@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -66,6 +67,8 @@ public class ErrorMessageDialog extends Dialog {
         txtTitle.setText(title);
         txtMessage.setText(message);
         txtError.setText(error);
+
+        txtError.setMovementMethod(new ScrollingMovementMethod());
 
         setCancelable(isCancelable);
     }

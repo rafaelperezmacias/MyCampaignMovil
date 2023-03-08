@@ -1,18 +1,16 @@
-package com.rld.app.mycampaign.models;
+package com.rld.app.mycampaign.models.api;
 
-import com.rld.app.mycampaign.models.api.StateRequest;
-
-public class State {
+public class StateRequest {
 
     private int id;
     private String name;
 
-    public State()
+    public StateRequest()
     {
 
     }
 
-    public State(int id, String name)
+    public StateRequest(int id, String name)
     {
         this.id = id;
         this.name = name;
@@ -34,13 +32,9 @@ public class State {
         this.name = name;
     }
 
-    public StateRequest toStateRequest() {
-        return new StateRequest(id, name);
-    }
-
     @Override
     public String toString() {
-        return "State{" +
+        return "StateRequest{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

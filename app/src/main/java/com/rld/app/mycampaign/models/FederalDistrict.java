@@ -1,5 +1,7 @@
 package com.rld.app.mycampaign.models;
 
+import com.rld.app.mycampaign.models.api.FederalDistrictRequest;
+
 public class FederalDistrict extends Entity {
 
     public FederalDistrict()
@@ -14,6 +16,10 @@ public class FederalDistrict extends Entity {
 
     public EntitySelect toEntitySelect() {
         return new EntitySelect(getId(), getName(), getNumber(), getState(), false);
+    }
+
+    public FederalDistrictRequest toFederalDistrictRequest() {
+        return new FederalDistrictRequest(getId(), getName(), getNumber(), getState().getId());
     }
 
     @Override

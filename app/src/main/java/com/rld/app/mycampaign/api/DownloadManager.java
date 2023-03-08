@@ -60,7 +60,7 @@ public class DownloadManager {
     }
 
     private void downloadDataOfStates() {
-        Call<ArrayList<State>> statesCall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<ArrayList<State>> statesCall = Client.getClient().create(SectionAPI.class)
                 .getStates(token.toAPIRequest());
         statesCall.enqueue(new Callback<ArrayList<State>>() {
             @Override
@@ -102,7 +102,7 @@ public class DownloadManager {
             downloadDataOfLocalDistrictsByState(states, 0);
             return;
         }
-        Call<ArrayList<FederalDistrict>> federalDistrictsCall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<ArrayList<FederalDistrict>> federalDistrictsCall = Client.getClient().create(SectionAPI.class)
                 .getFederalDistricts(
                         token.toAPIRequest(),
                         states.get(index).getId()
@@ -147,7 +147,7 @@ public class DownloadManager {
             downloadDataOfMunicipalitiesByState(states, 0);
             return;
         }
-        Call<ArrayList<LocalDistrict>> localDistrictsCall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<ArrayList<LocalDistrict>> localDistrictsCall = Client.getClient().create(SectionAPI.class)
                 .getLocalDistricts(
                         token.toAPIRequest(),
                         states.get(index).getId()
@@ -192,7 +192,7 @@ public class DownloadManager {
             downloadDataOfSectionsByState(states, 0);
             return;
         }
-        Call<ArrayList<Municipality>> municipalitiesCall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<ArrayList<Municipality>> municipalitiesCall = Client.getClient().create(SectionAPI.class)
                 .getMunicipalities(
                         token.toAPIRequest(),
                         states.get(index).getId()
@@ -237,7 +237,7 @@ public class DownloadManager {
             onResolveRequestListener.onSuccessListener();
             return;
         }
-        Call<PageSectionAPI> pageSectionAPICall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<PageSectionAPI> pageSectionAPICall = Client.getClient().create(SectionAPI.class)
                 .getSections(
                         token.toAPIRequest(),
                         states.get(index).getId()
@@ -249,7 +249,7 @@ public class DownloadManager {
                     PageSectionAPI pageSectionAPI = response.body();
                     ArrayList<SectionResponse> sections = new ArrayList<>();
                     sections.addAll(pageSectionAPI.getData());
-                    downloadDataOfSectionsByStatePerPage(sections, pageSectionAPI.getCurrent_page(), pageSectionAPI.getLast_page(), states.get(index).getId(), states, index);
+                    downloadDataOfSectionsByStatePerPage(sections, 2, pageSectionAPI.getTotalPages(), states.get(index).getId(), states, index);
                     return;
                 }
                 if ( response.code() == 400 ) {
@@ -285,7 +285,7 @@ public class DownloadManager {
             downloadDataOfSectionsByState(states, index + 1);
             return;
         }
-        Call<PageSectionAPI> pageSectionAPICall = Client.getClient(AppConfig.URL_SERVER).create(SectionAPI.class)
+        Call<PageSectionAPI> pageSectionAPICall = Client.getClient().create(SectionAPI.class)
                 .getSectionsByPage(
                         token.toAPIRequest(),
                         states.get(index).getId(),

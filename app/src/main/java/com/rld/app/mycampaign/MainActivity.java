@@ -1,8 +1,6 @@
 package com.rld.app.mycampaign;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,7 +14,6 @@ import android.text.style.StyleSpan;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,8 +39,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.gson.Gson;
+import com.rld.app.mycampaign.api.Client;
 import com.rld.app.mycampaign.api.DownloadManager;
+import com.rld.app.mycampaign.api.VolunteerAPI;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.ErrorMessageDialog;
@@ -53,12 +52,7 @@ import com.rld.app.mycampaign.dialogs.MessageDialog;
 import com.rld.app.mycampaign.dialogs.MessageDialogBuilder;
 import com.rld.app.mycampaign.dialogs.ProgressDialog;
 import com.rld.app.mycampaign.dialogs.ProgressDialogBuilder;
-import com.rld.app.mycampaign.files.FederalDistrictFileManager;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
-import com.rld.app.mycampaign.files.LocalDistrictFileManager;
-import com.rld.app.mycampaign.files.MunicipalityFileManager;
-import com.rld.app.mycampaign.files.SectionFileManager;
-import com.rld.app.mycampaign.files.StateFileManager;
 import com.rld.app.mycampaign.files.VolunteerFileManager;
 import com.rld.app.mycampaign.firm.FirmActivity;
 import com.rld.app.mycampaign.fragments.menu.VolunteerFragment;
@@ -72,7 +66,12 @@ import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Token;
 import com.rld.app.mycampaign.models.User;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.models.api.PageSectionAPI;
+import com.rld.app.mycampaign.models.api.SectionResponse;
+import com.rld.app.mycampaign.models.api.VolunteerRequest;
+import com.rld.app.mycampaign.models.api.VolunteerResponse;
 import com.rld.app.mycampaign.ocr.ReadINE;
+import com.rld.app.mycampaign.preferences.CampaignPreferences;
 import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
 import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
@@ -85,12 +84,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements VolunteerFragment.OnClickMenuVolunteerListener {
 
@@ -145,8 +148,25 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(menuItem -> {
-            UserPreferences.deleteUser(getApplicationContext());
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                    .setTitle("Cerrando sesión")
+                    .setCancelable(false);
+            ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
+            progressDialog.show();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    UserPreferences.deleteUser(getApplicationContext());
+                    CampaignPreferences.deleteCampaign(getApplicationContext());
+                    TokenPreferences.deleteToken(getApplicationContext());
+                    LocalDataPreferences.deleteLocalPreferences(getApplicationContext());
+                    progressDialog.dismiss();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 500);
             return false;
         });
         navigationView.setCheckedItem(R.id.nav_volunteer);
@@ -723,7 +743,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     private void uploadVolunteersToServer() {
-        JSONArray volunteersArray = VolunteerFileManager.arrayListToJsonArray(localVolunteers, true);
         ArrayList<Volunteer> volunteersToRemove = new ArrayList<>();
         for ( Volunteer volunteer : localVolunteers ) {
             volunteer.setLoad(true);
@@ -732,54 +751,68 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( volunteerFragment != null ) {
             volunteerFragment.notifyChangeOnRecyclerView();
         }
-        nextVolunteerRequest(volunteersArray, 0, volunteersToRemove);
+        nextVolunteerRequest(localVolunteers, 0, volunteersToRemove);
     }
 
-    private void requestInsertVolunteer(JSONArray volunteeers, int index, ArrayList<Volunteer> volunteersToRemove) {
-        JSONObject bodyRequest = new JSONObject();
-        JSONObject campaign = new JSONObject();
-        JSONObject sympathizer = new JSONObject();
-        try {
-            sympathizer.put("id", getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null));
-            campaign.put("id", getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null));
-            bodyRequest.put("volunteer", volunteeers.get(index));
-            bodyRequest.put("campaign", campaign);
-            bodyRequest.put("sympathizer", sympathizer);
-        } catch ( JSONException ex ) {
 
-        }
-        String url = AppConfig.INSERT_VOLUNTEER;
-        Log.e("", "" + bodyRequest.toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, bodyRequest, response -> {
-            try {
-                if ( response.getBoolean("success") ) {
-                    Volunteer volunteer = localVolunteers.get(index);
-                    volunteer.setId( response.getJSONObject("volunteer").getInt("id") );
+    private void requestInsertVolunteer(ArrayList<Volunteer> volunteers, int index, ArrayList<Volunteer> volunteersToRemove) {
+        Volunteer volunteer = volunteers.get(index);
+        VolunteerRequest volunteerRequest = volunteer.toVolunteerRequest();
+        Token token = TokenPreferences.getToken(getApplicationContext());
+        Call<VolunteerResponse> insertVolunteerCall = Client.getClient().create(VolunteerAPI.class)
+                .saveVolunteer(
+                        token.toAPIRequest(),
+                        volunteerRequest
+                );
+        insertVolunteerCall.enqueue(new Callback<VolunteerResponse>() {
+            @Override
+            public void onResponse(Call<VolunteerResponse> call, Response<VolunteerResponse> response) {
+                if ( response.isSuccessful() ) {
+                    volunteer.setLoad(false);
                     volunteer.setError(null);
+                    volunteer.setId(response.body().getMessage());
                     volunteersToRemove.add(volunteer);
-                } else {
-                    addErrorsFromRequest(localVolunteers.get(index), response.getJSONObject("errors"));
+                    nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
+                    return;
                 }
-            } catch ( JSONException ex ) {
-                ex.printStackTrace();
+                if ( response.code() == 400 ) {
+                    try {
+                        JSONObject errorResponse = new JSONObject(response.errorBody().string());
+                        JSONArray entities = errorResponse.getJSONArray("entities");
+                        volunteer.setError(null);
+                        for ( int i = 0; i < entities.length(); i++ ) {
+                            addErrorsFromRequest(volunteer, entities.getJSONObject(i));
+                        }
+                    } catch ( JSONException | IOException ex ) {
+                        Log.e("", "" + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                    volunteer.setLoad(false);
+                    nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
+                    return;
+                }
+                if ( response.code() == 401 ) {
+
+                    return;
+                }
+                if ( response.code() == 429 ) {
+
+                    return;
+                }
+                if ( response.code() == 500 ) {
+
+                    return;
+                }
             }
-            localVolunteers.get(index).setLoad(false);
-            if ( volunteerFragment != null ) {
-                volunteerFragment.notifyChangeOnRecyclerView(index + remoteVolunteers.size());
+            @Override
+            public void onFailure(Call<VolunteerResponse> call, Throwable t) {
+                Log.e("", "");
             }
-            nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
-        }, error -> {
-            localVolunteers.get(index).setLoad(false);
-            if ( volunteerFragment != null ) {
-                volunteerFragment.notifyChangeOnRecyclerView(index);
-            }
-            nextVolunteerRequest(volunteeers, index + 1, volunteersToRemove);
         });
-        request.setRetryPolicy(new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-    private void nextVolunteerRequest(JSONArray volunteeers, int index, ArrayList<Volunteer> volunteersToRemove) {
-        if ( index >= volunteeers.length() ) {
+    private void nextVolunteerRequest(ArrayList<Volunteer> volunteers, int index, ArrayList<Volunteer> volunteersToRemove) {
+        if ( index >= volunteers.size() ) {
             localVolunteers.removeAll(volunteersToRemove);
             remoteVolunteers.addAll(volunteersToRemove);
             VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
@@ -792,15 +825,16 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                requestInsertVolunteer(volunteeers, index, volunteersToRemove);
+                requestInsertVolunteer(volunteers, index, volunteersToRemove);
             }
         };
         Timer timer = new Timer();
         timer.schedule(task, 2000);
     }
 
-    private void addErrorsFromRequest(Volunteer volunteer, JSONObject errors) {
-        Log.e("a", errors.toString());
+
+    private void addErrorsFromRequest(Volunteer volunteer, JSONObject entityError) {
+        Log.e("", "" + entityError);
         Volunteer.Error error = volunteer.getError();
         if ( error == null ) {
             error = new Volunteer.Error();
@@ -808,8 +842,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
         try {
             // Estado
-            if ( !errors.isNull("state") ) {
-                JSONObject stateObject = errors.getJSONObject("state");
+            if ( entityError.getString("name").equals("state") ) {
+                JSONObject stateObject = entityError.getJSONObject("message");
                 int id = stateObject.getInt("id");
                 State state = new State();
                 state.setId(id);
@@ -819,12 +853,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     state.setName("");
                 }
                 error.setState(state);
-            } else {
-                error.setState(null);
             }
             // Municipio
-            if ( !errors.isNull("municipality") ) {
-                JSONObject municipalityObject = errors.getJSONObject("municipality");
+            if ( entityError.getString("name").equals("municipality") ) {
+                JSONObject municipalityObject = entityError.getJSONObject("message");
                 int id = municipalityObject.getInt("id");
                 Municipality municipality = new Municipality();
                 municipality.setId(id);
@@ -836,12 +868,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     municipality.setName("");
                 }
                 error.setMunicipality(municipality);
-            } else {
-                error.setMunicipality(null);
             }
             // Distrito local
-            if ( !errors.isNull("localDistrict") ) {
-                JSONObject localDistrictObject = errors.getJSONObject("localDistrict");
+            if ( entityError.getString("name").equals("localDistric") ) {
+                JSONObject localDistrictObject = entityError.getJSONObject("message");
                 int id = localDistrictObject.getInt("id");
                 LocalDistrict localDistrict = new LocalDistrict();
                 localDistrict.setId(id);
@@ -853,12 +883,10 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     localDistrict.setName("");
                 }
                 error.setLocalDistrict(localDistrict);
-            } else {
-                error.setLocalDistrict(null);
             }
             // Distrito federal
-            if ( !errors.isNull("federalDistrict") ) {
-                JSONObject federalDistrictObject = errors.getJSONObject("federalDistrict");
+            if ( entityError.getString("name").equals("federalDistric") ) {
+                JSONObject federalDistrictObject = entityError.getJSONObject("message");
                 int id = federalDistrictObject.getInt("id");
                 FederalDistrict federalDistrict = new FederalDistrict();
                 federalDistrict.setId(id);
@@ -870,20 +898,17 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     federalDistrict.setName("");
                 }
                 error.setFederalDistrict(federalDistrict);
-            } else {
-                error.setFederalDistrict(null);
             }
-            if ( !errors.isNull("section") ) {
-                JSONObject sectionObject = errors.getJSONObject("section");
+            if ( entityError.getString("name").equals("section") ) {
+                JSONObject sectionObject = entityError.getJSONObject("message");
                 int id = sectionObject.getInt("id");
                 Section section = new Section();
                 section.setId(id);
                 error.setSection(section);
-            } else {
-                error.setSection(null);
             }
         } catch ( JSONException ex ) {
             ex.printStackTrace();
+            Log.e("addErrorsFromRequest", "" + ex.toString());
         }
     }
 

@@ -4,28 +4,17 @@ import java.util.ArrayList;
 
 public class PageSectionAPI {
 
-    private int current_page;
     private ArrayList<SectionResponse> data;
-    private int last_page;
+    private int totalPages;
 
     public PageSectionAPI()
     {
 
     }
 
-    public PageSectionAPI(int current_page, ArrayList<SectionResponse> data, int last_page)
-    {
-        this.current_page = current_page;
+    public PageSectionAPI(ArrayList<SectionResponse> data, int totalPages) {
         this.data = data;
-        this.last_page = last_page;
-    }
-
-    public int getCurrent_page() {
-        return current_page;
-    }
-
-    public void setCurrent_page(int current_page) {
-        this.current_page = current_page;
+        this.totalPages = totalPages;
     }
 
     public ArrayList<SectionResponse> getData() {
@@ -36,20 +25,19 @@ public class PageSectionAPI {
         this.data = data;
     }
 
-    public int getLast_page() {
-        return last_page;
+    public int getTotalPages() {
+        return totalPages;
     }
 
-    public void setLast_page(int last_page) {
-        this.last_page = last_page;
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 
     @Override
     public String toString() {
         return "PageSectionAPI{" +
-                "current_page=" + current_page +
-                ", data=" + data +
-                ", last_page=" + last_page +
+                "data=" + data +
+                ", totalPages=" + totalPages +
                 '}';
     }
 

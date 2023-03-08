@@ -17,6 +17,12 @@ public class Image {
 
     }
 
+    public Image(String path, Bitmap blob, String imageBase64) {
+        this.path = path;
+        this.blob = blob;
+        this.imageBase64 = imageBase64;
+    }
+
     public String getPath() {
         return path;
     }

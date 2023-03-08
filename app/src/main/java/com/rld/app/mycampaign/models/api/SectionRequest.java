@@ -1,22 +1,20 @@
-package com.rld.app.mycampaign.models;
+package com.rld.app.mycampaign.models.api;
 
-import com.rld.app.mycampaign.models.api.SectionRequest;
-
-public class Section {
+public class SectionRequest {
 
     private int id;
     private String section;
-    private State state;
-    private Municipality municipality;
-    private LocalDistrict localDistrict;
-    private FederalDistrict federalDistrict;
+    private StateRequest state;
+    private MunicipalityRequest municipality;
+    private LocalDistrictRequest localDistrict;
+    private FederalDistrictRequest federalDistrict;
 
-    public Section()
+    public SectionRequest()
     {
 
     }
 
-    public Section(int id, String section, State state, Municipality municipality, LocalDistrict localDistrict, FederalDistrict federalDistrict)
+    public SectionRequest(int id, String section, StateRequest state, MunicipalityRequest municipality, LocalDistrictRequest localDistrict, FederalDistrictRequest federalDistrict)
     {
         this.id = id;
         this.section = section;
@@ -42,48 +40,41 @@ public class Section {
         this.section = section;
     }
 
-    public State getState() {
+    public StateRequest getState() {
         return state;
     }
 
-    public void setState(State state) {
+    public void setState(StateRequest state) {
         this.state = state;
     }
 
-    public Municipality getMunicipality() {
+    public MunicipalityRequest getMunicipality() {
         return municipality;
     }
 
-    public void setMunicipality(Municipality municipality) {
+    public void setMunicipality(MunicipalityRequest municipality) {
         this.municipality = municipality;
     }
 
-    public LocalDistrict getLocalDistrict() {
+    public LocalDistrictRequest getLocalDistrict() {
         return localDistrict;
     }
 
-    public void setLocalDistrict(LocalDistrict localDistrict) {
+    public void setLocalDistrict(LocalDistrictRequest localDistrict) {
         this.localDistrict = localDistrict;
     }
 
-    public FederalDistrict getFederalDistrict() {
+    public FederalDistrictRequest getFederalDistrict() {
         return federalDistrict;
     }
 
-    public void setFederalDistrict(FederalDistrict federalDistrict) {
+    public void setFederalDistrict(FederalDistrictRequest federalDistrict) {
         this.federalDistrict = federalDistrict;
-    }
-
-    public SectionRequest toSectionRequest() {
-        return new SectionRequest(
-                id, section, state.toStateRequest(), municipality.toMunicipalityRequest(),
-                localDistrict.toLocalDistrictRequest(), federalDistrict.toFederalDistrictRequest()
-        );
     }
 
     @Override
     public String toString() {
-        return "Section{" +
+        return "SectionRequest{" +
                 "id=" + id +
                 ", section='" + section + '\'' +
                 ", state=" + state +

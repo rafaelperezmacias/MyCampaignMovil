@@ -39,9 +39,7 @@ public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         EntitySelect entity = entities.get(position);
         holder.txtName.setText(entity.getName());
-        StringBuilder builder = new StringBuilder();
-        builder.append("(").append(entity.getNumber()).append(")");
-        holder.txtNumber.setText(builder.toString());
+        holder.txtNumber.setText("(" + entity.getNumber() + ")");
         holder.btnSelected.setChecked(entity.isSelected());
         holder.btnSelected.setOnClickListener(v -> entity.setSelected(!entity.isSelected()));
     }

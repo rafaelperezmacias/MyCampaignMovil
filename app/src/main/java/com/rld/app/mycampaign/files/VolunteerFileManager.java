@@ -12,7 +12,9 @@ import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
+import com.rld.app.mycampaign.models.User;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.preferences.UserPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +25,10 @@ import java.util.Calendar;
 
 public class VolunteerFileManager {
 
-    private static final String LOCAL_FILE_NAME = "data-local-volunteers.json";
+    public static final String LOCAL_FILE_NAME = "?-data-local-volunteers.json";
     private static final String LOCAL_JSON_ID = "local-volunteers";
 
-    private static final String REMOTE_FILE_NAME = "data-remote-volunteers.json";
+    public static final String REMOTE_FILE_NAME = "?-data-remote-volunteers.json";
     private static final String REMOTE_JSON_ID = "remote-volunteers";
 
     public static JSONArray arrayListToJsonArray(ArrayList<Volunteer> volunteers, boolean server) {
@@ -173,26 +175,24 @@ public class VolunteerFileManager {
 
     public static void writeJSON(ArrayList<Volunteer> volunteers, boolean local, Context context) {
         JSONArray volunteersArray = arrayListToJsonArray(volunteers, false);
-        String sympathizerId = context.getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null);
-        String campaignId = context.getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null);
+        User user = UserPreferences.getUser(context);
         if ( local ) {
-            String file = sympathizerId + "-" + campaignId + "-" + LOCAL_FILE_NAME;
+            String file = LOCAL_FILE_NAME.replace("?", "" + user.getId());
             FileManager.writeJSON(volunteersArray, file, LOCAL_JSON_ID, context);
         } else {
-            String file = sympathizerId + "-" + campaignId + "-" + REMOTE_FILE_NAME;
+            String file = REMOTE_FILE_NAME.replace("?", "" + user.getId());
             FileManager.writeJSON(volunteersArray, file, REMOTE_JSON_ID, context);
         }
     }
 
     public static ArrayList<Volunteer> readJSON(boolean isLocal, Context context){
         String fileString;
-        String sympathizerId = context.getSharedPreferences("sessions", Context.MODE_PRIVATE).getString("sympathizerId", null);
-        String campaignId = context.getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("id", null);
+        User user = UserPreferences.getUser(context);
         if ( isLocal ) {
-            String file = sympathizerId + "-" + campaignId + "-" + LOCAL_FILE_NAME;
+            String file = LOCAL_FILE_NAME.replace("?", "" + user.getId());
             fileString = FileManager.readJSON(file, context);
         } else {
-            String file = sympathizerId + "-" + campaignId + "-" + REMOTE_FILE_NAME;
+            String file = REMOTE_FILE_NAME.replace("?", "" + user.getId());
             fileString = FileManager.readJSON(file, context);
         }
         if ( fileString == null || fileString.isEmpty() ) {
@@ -271,12 +271,16 @@ public class VolunteerFileManager {
                     volunteer.setLocalVotingBooth(volunteerObject.getBoolean("localVotingBooth"));
 
                     Image imageFirm = new Image();
-                    imageFirm.setPath(volunteerObject.getString("imageFirm"));
-                    imageFirm.setBlob(BitmapFactory.decodeFile(imageFirm.getPath()));
+                    if ( !volunteerObject.getString("imageFirm").trim().isEmpty() ) {
+                        imageFirm.setPath(volunteerObject.getString("imageFirm"));
+                        imageFirm.setBlob(BitmapFactory.decodeFile(imageFirm.getPath()));
+                    }
                     volunteer.setImageFirm(imageFirm);
                     Image imageCredential = new Image();
-                    imageCredential.setPath(volunteerObject.getString("imageCredential"));
-                    imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
+                    if ( !volunteerObject.getString("imageCredential").trim().isEmpty() ) {
+                        imageCredential.setPath(volunteerObject.getString("imageCredential"));
+                        imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
+                    }
                     volunteer.setImageCredential(imageCredential);
 
                     if ( !volunteerObject.isNull("errors") ) {

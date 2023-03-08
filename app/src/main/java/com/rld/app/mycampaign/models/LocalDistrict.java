@@ -1,5 +1,7 @@
 package com.rld.app.mycampaign.models;
 
+import com.rld.app.mycampaign.models.api.LocalDistrictRequest;
+
 public class LocalDistrict extends Entity {
 
     public LocalDistrict()
@@ -14,6 +16,10 @@ public class LocalDistrict extends Entity {
 
     public EntitySelect toEntitySelect() {
         return new EntitySelect(getId(), getName(), getNumber(), getState(), false);
+    }
+
+    public LocalDistrictRequest toLocalDistrictRequest() {
+        return new LocalDistrictRequest(getId(), getName(), getNumber(), getState().getId());
     }
 
     @Override

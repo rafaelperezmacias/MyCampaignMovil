@@ -1,5 +1,7 @@
 package com.rld.app.mycampaign.models;
 
+import com.rld.app.mycampaign.models.api.MunicipalityRequest;
+
 public class Municipality extends Entity {
 
     public Municipality()
@@ -14,6 +16,10 @@ public class Municipality extends Entity {
 
     public EntitySelect toEntitySelect() {
         return new EntitySelect(getId(), getName(), getNumber(), getState(), false);
+    }
+
+    public MunicipalityRequest toMunicipalityRequest() {
+        return new MunicipalityRequest(getId(), getName(), getNumber(), getState().getId());
     }
 
     @Override

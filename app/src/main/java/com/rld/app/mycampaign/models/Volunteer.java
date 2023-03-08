@@ -1,5 +1,7 @@
 package com.rld.app.mycampaign.models;
 
+import com.rld.app.mycampaign.models.api.VolunteerRequest;
+
 import java.util.Calendar;
 
 public class Volunteer {
@@ -37,6 +39,28 @@ public class Volunteer {
     public Volunteer()
     {
 
+    }
+
+    public Volunteer(int id, String name, String fathersLastname, String mothersLastname, Calendar birthdate, Address address, String electorKey, String email, String phone, Section section, String sector, String notes, int type, boolean localVotingBooth, Image imageFirm, Image imageCredential, Error error, boolean load)
+    {
+        this.id = id;
+        this.name = name;
+        this.fathersLastname = fathersLastname;
+        this.mothersLastname = mothersLastname;
+        this.birthdate = birthdate;
+        this.address = address;
+        this.electorKey = electorKey;
+        this.email = email;
+        this.phone = phone;
+        this.section = section;
+        this.sector = sector;
+        this.notes = notes;
+        this.type = type;
+        this.localVotingBooth = localVotingBooth;
+        this.imageFirm = imageFirm;
+        this.imageCredential = imageCredential;
+        this.error = error;
+        this.load = load;
     }
 
     public int getId() {
@@ -203,6 +227,18 @@ public class Volunteer {
                 ", imageFirm=" + imageFirm +
                 ", imageCredential=" + imageCredential +
                 '}';
+    }
+
+    public VolunteerRequest toVolunteerRequest() {
+        Birthdate newBirthDate = new Birthdate();
+        newBirthDate.setDay(birthdate.get(Calendar.DAY_OF_MONTH));
+        newBirthDate.setMonth(birthdate.get(Calendar.MONTH) + 1);
+        newBirthDate.setYear(birthdate.get(Calendar.YEAR));
+        return new VolunteerRequest(
+                id, name, fathersLastname, mothersLastname, newBirthDate, address, electorKey,
+                email, phone, section.toSectionRequest(), sector, notes, type, localVotingBooth,
+                imageFirm.getImageBase64(), imageCredential.getImageBase64()
+        );
     }
 
     public static class Error {

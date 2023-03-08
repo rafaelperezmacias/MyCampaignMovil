@@ -1,6 +1,7 @@
 package com.rld.app.mycampaign.preferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 public class LocalDataPreferences {
 
@@ -52,4 +53,14 @@ public class LocalDataPreferences {
         }
         return ids.split(",");
     }
+
+    public static void deleteLocalPreferences(Context context) {
+        SharedPreferences.Editor localPreferences = context.getSharedPreferences(LOCAL_DATA_PREFERENCES, Context.MODE_PRIVATE).edit();
+        localPreferences.putInt(ID_STATE_SELECTED, DEFAULT_ID_STATE_SELECTED);
+        localPreferences.putString(NAME_STATE_SELECTED, DEFAULT_NAME_STATE_SELECTED);
+        localPreferences.putInt(MODE, DEFAULT_MODE);
+        localPreferences.putString(IDS_SELECTED, null);
+        localPreferences.apply();
+    }
+
 }

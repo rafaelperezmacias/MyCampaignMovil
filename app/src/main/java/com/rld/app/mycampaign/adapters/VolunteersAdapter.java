@@ -118,7 +118,6 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
                 public void onTick(long l) {
 
                 }
-
                 @Override
                 public void onFinish() {
                     holder.progressLoad.setIndeterminate(true);

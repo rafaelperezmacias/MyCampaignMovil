@@ -27,4 +27,15 @@ public class CampaignPreferences {
         campaign.setStart_date(campaignPreferences.getString(Campaign.START_DATE, ""));
         return campaign;
     }
+
+    public static void deleteCampaign(Context context) {
+        SharedPreferences.Editor campaignPreferences = context.getSharedPreferences(Campaign.CAMPAIGN_PREFERENCES, Context.MODE_PRIVATE).edit();
+        campaignPreferences.putInt(Campaign.ID, 0);
+        campaignPreferences.putString(Campaign.NAME, null);
+        campaignPreferences.putString(Campaign.PARTY, null);
+        campaignPreferences.putString(Campaign.DESCRIPTION, null);
+        campaignPreferences.putString(Campaign.START_DATE, null);
+        campaignPreferences.apply();
+    }
+
 }

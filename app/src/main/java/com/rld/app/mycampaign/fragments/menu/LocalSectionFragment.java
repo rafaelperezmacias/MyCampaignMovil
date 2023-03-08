@@ -370,7 +370,7 @@ public class LocalSectionFragment extends Fragment {
                 builder.setTitle("Error descargando datos")
                         .setButtonText("Aceptar")
                         .setCancelable(false);
-                switch (type) {
+                switch ( type ) {
                     case DownloadManager.TYPE_STATE_REQUEST : {
                         builder.setMessage("Ha ocurrido un error descargando los datos de los estados");
                     } break;
@@ -387,7 +387,7 @@ public class LocalSectionFragment extends Fragment {
                         builder.setMessage("Ha ocurrido un error descargando los datos de las secciones");
                     } break;
                 }
-                switch (code) {
+                switch ( code ) {
                     case DownloadManager.BAD_REQUEST : {
                          builder.setError("400 - " + error);
                     } break;
