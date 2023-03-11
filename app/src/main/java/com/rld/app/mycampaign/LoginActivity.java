@@ -41,6 +41,7 @@ import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -161,11 +162,15 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
-                            showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición del login", t.getMessage());
                             lytLoad.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
                             lytEmail.getEditText().setEnabled(true);
                             lytPassword.getEditText().setEnabled(true);
+                            if ( t instanceof SocketTimeoutException ) {
+                                showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición del login", "SocketTimeoutException");
+                            } else {
+                                showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición del login", t.getMessage());
+                            }
                         }
                     });
                 }

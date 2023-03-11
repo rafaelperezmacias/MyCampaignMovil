@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_message"
-        android:maxLines="7"
+        android:maxLines="10"
         android:scrollbars="vertical"
         android:paddingBottom="16dp"
         tools:text="Este es un mensaje de error complementario"/>

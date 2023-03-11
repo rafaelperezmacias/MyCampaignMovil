@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -274,12 +275,16 @@ public class VolunteerFileManager {
                     if ( !volunteerObject.getString("imageFirm").trim().isEmpty() ) {
                         imageFirm.setPath(volunteerObject.getString("imageFirm"));
                         imageFirm.setBlob(BitmapFactory.decodeFile(imageFirm.getPath()));
+                    } else {
+                        imageFirm.setPath("");
                     }
                     volunteer.setImageFirm(imageFirm);
                     Image imageCredential = new Image();
                     if ( !volunteerObject.getString("imageCredential").trim().isEmpty() ) {
                         imageCredential.setPath(volunteerObject.getString("imageCredential"));
                         imageCredential.setBlob(BitmapFactory.decodeFile(imageCredential.getPath()));
+                    } else {
+                        imageCredential.setPath("");
                     }
                     volunteer.setImageCredential(imageCredential);
 
@@ -343,6 +348,18 @@ public class VolunteerFileManager {
             return new ArrayList<>();
         }
         return volunteers;
+    }
+
+    public static void deleteLocalVolunteerFile(Context context) {
+        User user = UserPreferences.getUser(context);
+        String file = LOCAL_FILE_NAME.replace("?", "" + user.getId());
+        context.deleteFile(file);
+    }
+
+    public static void deleteRemoteVolunteerFile(Context context) {
+        User user = UserPreferences.getUser(context);
+        String file = REMOTE_FILE_NAME.replace("?", "" + user.getId());
+        context.deleteFile(file);
     }
 
 }

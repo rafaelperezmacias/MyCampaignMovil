@@ -234,11 +234,18 @@ public class Volunteer {
         newBirthDate.setDay(birthdate.get(Calendar.DAY_OF_MONTH));
         newBirthDate.setMonth(birthdate.get(Calendar.MONTH) + 1);
         newBirthDate.setYear(birthdate.get(Calendar.YEAR));
-        return new VolunteerRequest(
+        VolunteerRequest volunteerRequest = new VolunteerRequest(
                 id, name, fathersLastname, mothersLastname, newBirthDate, address, electorKey,
                 email, phone, section.toSectionRequest(), sector, notes, type, localVotingBooth,
                 imageFirm.getImageBase64(), imageCredential.getImageBase64()
         );
+        if ( volunteerRequest.getNotes() == null ) {
+            volunteerRequest.setNotes("");
+        }
+        if ( volunteerRequest.getAddress().getInternalNumber() == null ) {
+            volunteerRequest.getAddress().setInternalNumber("");
+        }
+        return volunteerRequest;
     }
 
     public static class Error {

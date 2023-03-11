@@ -18,9 +18,15 @@ import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentPersonalVolunteerBsBinding;
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
+import com.rld.app.mycampaign.utils.DateFormats;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class PersonalFragment extends Fragment {
 
@@ -88,18 +94,25 @@ public class PersonalFragment extends Fragment {
         lytBirthdate.getEditText().setClickable(true);
         lytBirthdate.getEditText().setFocusable(false);
         lytBirthdate.getEditText().setOnClickListener(view -> {
+            boolean isCalendarActive = false;
+            Calendar calendar = Calendar.getInstance();
+            if ( !lytBirthdate.getEditText().getText().toString().isEmpty() ) {
+                calendar = DateFormats.getDateInFormat(lytBirthdate.getEditText().getText().toString(), "dd/MM/yyyy");
+                isCalendarActive = true;
+            }
             CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
                     .setValidator(DateValidatorPointBackward.now());
             MaterialDatePicker<Long> dialog = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Seleccione la fecha")
-                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .setSelection(isCalendarActive ? calendar.getTimeInMillis() : MaterialDatePicker.todayInUtcMilliseconds())
                     .setCalendarConstraints(calendarConstraints.build())
                     .build();
             dialog.show(getChildFragmentManager(), dialog.getTag());
             dialog.addOnPositiveButtonClickListener(selection -> {
-                birthDate.setTimeInMillis(selection);
-                String date = birthDate.get(Calendar.DAY_OF_MONTH) + "/" + (birthDate.get(Calendar.MONTH) + 1) + "/" + birthDate.get(Calendar.YEAR);
-                lytBirthdate.getEditText().setText(date);
+                TimeZone timeZoneUTC = TimeZone.getDefault();
+                int offSetFromUTC = timeZoneUTC.getOffset(new Date().getTime()) * - 1;
+                birthDate.setTimeInMillis(selection + offSetFromUTC);
+                lytBirthdate.getEditText().setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(birthDate.getTime()) );
             });
         });
 

@@ -173,14 +173,14 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                         .setTitle("Alerta")
                         .setMessage("¿Esta seguro de querer cancelar el proceso de registro del voluntario?")
                         .setCancelable(false)
-                        .setPrimaryButtonText("Cancelar")
-                        .setSecondaryButtonText("Quedarme");
+                        .setSecondaryButtonText("Cancelar")
+                        .setPrimaryButtonText("Quedarme");
                 MessageDialog messageDialog = new MessageDialog(mainActivity, builder);
-                messageDialog.setPrimaryButtonListener(view1 -> {
+                messageDialog.setSecondaryButtonListener(view1 -> {
                     messageDialog.dismiss();
                     dismiss();
                 });
-                messageDialog.setSecondaryButtonListener(view1 -> {
+                messageDialog.setPrimaryButtonListener(view1 -> {
                     messageDialog.dismiss();
                 });
                 messageDialog.show();
@@ -258,14 +258,14 @@ public class VolunteerBottomSheet extends BottomSheetDialogFragment {
                         .setTitle("Alerta")
                         .setMessage("¿Esta seguro de querer cancelar el proceso de actualización del voluntario?")
                         .setCancelable(false)
-                        .setPrimaryButtonText("Cancelar")
-                        .setSecondaryButtonText("Quedarme");
+                        .setSecondaryButtonText("Cancelar")
+                        .setPrimaryButtonText("Quedarme");
                 MessageDialog messageDialog = new MessageDialog(mainActivity, builder);
-                messageDialog.setPrimaryButtonListener(view1 -> {
+                messageDialog.setSecondaryButtonListener(view1 -> {
                     messageDialog.dismiss();
                     dismiss();
                 });
-                messageDialog.setSecondaryButtonListener(view1 -> {
+                messageDialog.setPrimaryButtonListener(view1 -> {
                     messageDialog.dismiss();
                 });
                 messageDialog.show();

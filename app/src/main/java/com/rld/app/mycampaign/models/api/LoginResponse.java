@@ -2,20 +2,23 @@ package com.rld.app.mycampaign.models.api;
 
 import com.rld.app.mycampaign.models.Token;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class LoginResponse {
 
     private UserResponse user;
     private String token;
     private String tokenType;
-    private String expiresIn;
+    private int expiresIn;
 
     public LoginResponse()
     {
 
     }
 
-    public LoginResponse(UserResponse user, String token, String tokenType, String expiresIn)
-    {
+    public LoginResponse(UserResponse user, String token, String tokenType, int expiresIn) {
         this.user = user;
         this.token = token;
         this.tokenType = tokenType;
@@ -46,11 +49,11 @@ public class LoginResponse {
         this.tokenType = tokenType;
     }
 
-    public String getExpiresIn() {
+    public int getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(String expiresIn) {
+    public void setExpiresIn(int expiresIn) {
         this.expiresIn = expiresIn;
     }
 
@@ -60,12 +63,14 @@ public class LoginResponse {
                 "user=" + user +
                 ", token='" + token + '\'' +
                 ", tokenType='" + tokenType + '\'' +
-                ", expiresIn='" + expiresIn + '\'' +
+                ", expiresIn=" + expiresIn +
                 '}';
     }
 
     public Token getTokenObject() {
-        return new Token(token, tokenType, expiresIn);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, expiresIn);
+        return new Token(token, tokenType, new SimpleDateFormat(Token.TOKEN_FORMAT_DATE, Locale.getDefault()).format(calendar.getTime()));
     }
 
 }

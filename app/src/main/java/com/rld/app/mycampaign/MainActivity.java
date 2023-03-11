@@ -85,6 +85,7 @@ import org.json.JSONObject;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
@@ -119,6 +120,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             Manifest.permission.CAMERA,
     };
 
+    private static final int UNKNOWN_ERROR = -1;
+
     static {
         OpenCVLoader.initDebug();
     }
@@ -148,25 +151,23 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.getMenu().findItem(R.id.nav_logout).setOnMenuItemClickListener(menuItem -> {
-            ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                    .setTitle("Cerrando sesión")
-                    .setCancelable(false);
-            ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
-            progressDialog.show();
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    UserPreferences.deleteUser(getApplicationContext());
-                    CampaignPreferences.deleteCampaign(getApplicationContext());
-                    TokenPreferences.deleteToken(getApplicationContext());
-                    LocalDataPreferences.deleteLocalPreferences(getApplicationContext());
-                    progressDialog.dismiss();
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
-            };
-            Timer timer = new Timer();
-            timer.schedule(task, 500);
+            if ( localVolunteers.size() > 0 ) {
+                MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                        .setTitle("Voluntarios sin cargar")
+                        .setMessage("Quedan aun voluntarios almacenados localmente, al cerrar sesión esta información se perdera. ¿Esta seguro de querer cerrar sesión?")
+                        .setPrimaryButtonText("Cancelar")
+                        .setSecondaryButtonText("Cerrar sesión")
+                        .setCancelable(false);
+                MessageDialog messageDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+                messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                messageDialog.setSecondaryButtonListener(v -> {
+                    messageDialog.dismiss();
+                    logout();
+                });
+                messageDialog.show();
+                return false;
+            }
+            logout();
             return false;
         });
         navigationView.setCheckedItem(R.id.nav_volunteer);
@@ -235,6 +236,33 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     /**
+     * Funcion para cerrar sesion
+     */
+    private void logout() {
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Cerrando sesión")
+                .setCancelable(false);
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
+        progressDialog.show();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                VolunteerFileManager.deleteLocalVolunteerFile(getApplicationContext());
+                VolunteerFileManager.deleteRemoteVolunteerFile(getApplicationContext());
+                UserPreferences.deleteUser(getApplicationContext());
+                CampaignPreferences.deleteCampaign(getApplicationContext());
+                TokenPreferences.deleteToken(getApplicationContext());
+                LocalDataPreferences.deleteLocalPreferences(getApplicationContext());
+                progressDialog.dismiss();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
+        };
+        Timer timer = new Timer();
+        timer.schedule(task, 500);
+    }
+
+    /**
      * Diseño
      */
     @Override
@@ -261,9 +289,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     .setPrimaryButtonText("Aceptar")
                     .setCancelable(true);
             MessageDialog messageDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
-            messageDialog.setPrimaryButtonListener(v -> {
-                messageDialog.dismiss();
-            });
+            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
             messageDialog.show();
             return;
         }
@@ -290,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 builder.setTitle("Error descargando datos")
                         .setButtonText("Aceptar")
                         .setCancelable(false);
-                switch (type) {
+                switch ( type ) {
                     case DownloadManager.TYPE_STATE_REQUEST : {
                         builder.setMessage("Ha ocurrido un error descargando los datos de los estados");
                     } break;
@@ -307,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                         builder.setMessage("Ha ocurrido un error descargando los datos de las secciones");
                     } break;
                 }
-                switch (code) {
+                switch ( code ) {
                     case DownloadManager.BAD_REQUEST : {
                         builder.setError("400 - " + error);
                     } break;
@@ -619,9 +645,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             if ( section == null ) {
                 section = new Section();
                 section.setState(state);
-                Municipality municipality = new Municipality();
-                municipality.setNumber(Integer.parseInt(municipalityNumber));
-                section.setMunicipality(municipality);
+                if ( !municipalityNumber.isEmpty() ) {
+                    Municipality municipality = new Municipality();
+                    municipality.setNumber(Integer.parseInt(municipalityNumber));
+                    section.setMunicipality(municipality);
+                }
                 section.setSection(sectionNumber);
             }
             volunteer.setSection(section);
@@ -743,6 +771,29 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     }
 
     private void uploadVolunteersToServer() {
+        ProgressDialogBuilder builder = new ProgressDialogBuilder()
+                .setTitle("Verificando conexión a internet...")
+                .setCancelable(false);
+        ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
+        progressDialog.show();
+        if ( !Internet.isNetworkAvailable(getApplicationContext()) || !Internet.isOnlineNetwork() ) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            progressDialog.dismiss();
+            MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                    .setTitle("Sin conexión a internet")
+                    .setMessage("Para almacenar los voluntarios locales se necesita de una conexión a internet")
+                    .setPrimaryButtonText("Aceptar")
+                    .setCancelable(true);
+            MessageDialog messageDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+            messageDialog.show();
+            return;
+        }
+        progressDialog.dismiss();
         ArrayList<Volunteer> volunteersToRemove = new ArrayList<>();
         for ( Volunteer volunteer : localVolunteers ) {
             volunteer.setLoad(true);
@@ -771,6 +822,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     volunteer.setLoad(false);
                     volunteer.setError(null);
                     volunteer.setId(response.body().getMessage());
+                    volunteer.getImageFirm().setPath("");
+                    volunteer.getImageCredential().setPath("");
                     volunteersToRemove.add(volunteer);
                     nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
                     return;
@@ -791,22 +844,63 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
                     return;
                 }
+                for ( Volunteer volunteer : localVolunteers ) {
+                    volunteer.setLoad(false);
+                }
+                if ( volunteerFragment != null ) {
+                    volunteerFragment.notifyChangeOnRecyclerView();
+                }
+                localVolunteers.removeAll(volunteersToRemove);
+                remoteVolunteers.addAll(volunteersToRemove);
+                VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+                VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
+                if ( volunteerFragment != null ) {
+                    volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                }
                 if ( response.code() == 401 ) {
-
+                    MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder();
+                    messageDialogBuilder.setTitle("La sesión ha caducado")
+                            .setMessage("Para seguir utilizando la aplicación, por favor vuelve a iniciar sesión.")
+                            .setPrimaryButtonText("Aceptar")
+                            .setCancelable(false);
+                    MessageDialog closeDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
+                    closeDialog.setPrimaryButtonListener(v -> {
+                        closeDialog.dismiss();
+                    });
+                    closeDialog.setOnDismissListener(dialog1 -> {
+                        UserPreferences.clearConnect(getApplicationContext());
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    });
+                    closeDialog.show();
                     return;
                 }
-                if ( response.code() == 429 ) {
-
-                    return;
-                }
-                if ( response.code() == 500 ) {
-
-                    return;
+                try {
+                    showErrorRequest(response.code(), response.message(),  "Error con la carga de voluntarios", response.errorBody().string());
+                } catch ( IOException ex ) {
+                    showErrorRequest(UNKNOWN_ERROR, "IOException", "Error con la carga de voluntarios", ex.getMessage());
                 }
             }
             @Override
             public void onFailure(Call<VolunteerResponse> call, Throwable t) {
-                Log.e("", "");
+                for ( Volunteer volunteer : localVolunteers ) {
+                    volunteer.setLoad(false);
+                }
+                if ( volunteerFragment != null ) {
+                    volunteerFragment.notifyChangeOnRecyclerView();
+                }
+                localVolunteers.removeAll(volunteersToRemove);
+                remoteVolunteers.addAll(volunteersToRemove);
+                VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+                VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
+                if ( volunteerFragment != null ) {
+                    volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                }
+                if ( t instanceof SocketTimeoutException) {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la carga de voluntarios", "SocketTimeoutException");
+                } else {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la carga de voluntarios", t.getMessage());
+                }
             }
         });
     }
@@ -908,8 +1002,25 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             }
         } catch ( JSONException ex ) {
             ex.printStackTrace();
-            Log.e("addErrorsFromRequest", "" + ex.toString());
+            Log.e("addErrorsFromRequest", "" + ex);
         }
+    }
+
+    private void showErrorRequest(int code, String error, String message, String errorMessage) {
+        StringBuilder titleBuilder = new StringBuilder();
+        if ( code != UNKNOWN_ERROR ) {
+            titleBuilder.append(code).append(" - ");
+        }
+        titleBuilder.append(error);
+        ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                .setTitle(titleBuilder.toString())
+                .setMessage(message)
+                .setError(errorMessage)
+                .setButtonText("Aceptar")
+                .setCancelable(true);
+        ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+        errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
+        errorMessageDialog.show();
     }
 
     public void deleteVolunteer(Volunteer volunteer) {
@@ -920,39 +1031,31 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 .setSecondaryButtonText("Cancelar")
                 .setCancelable(false);
         MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
-        messageDialog.setPrimaryButtonListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                localVolunteers.remove(volunteer);
-                VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
-                if ( volunteerFragment != null ) {
-                    volunteerFragment.updateVolunteers(volunteersToRecyclerView());
-                }
-                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
-                snackBarText.append("Voluntario eliminado con éxito!");
-                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
-                        .setBackgroundTint(getResources().getColor(R.color.blue))
-                        .setTextColor(getResources().getColor(R.color.light_white))
-                        .setAction("DESHACER", v -> {
-                            localVolunteers.add(volunteer);
-                            VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
-                            if ( volunteerFragment != null ) {
-                                volunteerFragment.updateVolunteers(volunteersToRecyclerView());
-                            }
-                            Toast.makeText(MainActivity.this, "Voluntario no eliminado", Toast.LENGTH_SHORT).show();
-                        })
-                        .setActionTextColor(getResources().getColor(R.color.white))
-                        .show();
-                messageDialog.dismiss();
+        messageDialog.setPrimaryButtonListener(view -> {
+            localVolunteers.remove(volunteer);
+            VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+            if ( volunteerFragment != null ) {
+                volunteerFragment.updateVolunteers(volunteersToRecyclerView());
             }
+            SpannableStringBuilder snackBarText = new SpannableStringBuilder();
+            snackBarText.append("Voluntario eliminado con éxito!");
+            snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
+                    .setBackgroundTint(getResources().getColor(R.color.blue))
+                    .setTextColor(getResources().getColor(R.color.light_white))
+                    .setAction("DESHACER", v -> {
+                        localVolunteers.add(volunteer);
+                        VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
+                        if ( volunteerFragment != null ) {
+                            volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                        }
+                        Toast.makeText(MainActivity.this, "Voluntario no eliminado", Toast.LENGTH_SHORT).show();
+                    })
+                    .setActionTextColor(getResources().getColor(R.color.white))
+                    .show();
+            messageDialog.dismiss();
         });
-        messageDialog.setSecondaryButtonListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                messageDialog.dismiss();
-            }
-        });
+        messageDialog.setSecondaryButtonListener(view -> messageDialog.dismiss());
         messageDialog.show();
     }
 
@@ -995,6 +1098,14 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             });
             messageDialog.show();
         }
+    }
+
+    public ArrayList<Volunteer> getLocalVolunteers() {
+        return localVolunteers;
+    }
+
+    public ArrayList<Volunteer> getRemoteVolunteers() {
+        return remoteVolunteers;
     }
 
 }
