@@ -126,6 +126,13 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         } else {
             holder.progressLoad.setVisibility(View.GONE);
         }
+
+        if ( position == 0 ) {
+            holder.divider.setVisibility(View.GONE);
+        } else {
+            holder.divider.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -155,6 +162,8 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
 
         private final LinearProgressIndicator progressLoad;
 
+        private final View divider;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txt_name);
@@ -173,6 +182,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             serverCard = itemView.findViewById(R.id.card_server);
             errorCard = itemView.findViewById(R.id.card_error);
             progressLoad = itemView.findViewById(R.id.progress_load);
+            divider = itemView.findViewById(R.id.divider);
         }
 
     }

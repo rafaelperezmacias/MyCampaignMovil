@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ReadImageText {
-
     private String tessDataFolderName = "tessdata";
 
     // variable to hold context
@@ -85,5 +84,4 @@ public class ReadImageText {
     public void recycle (){
         tess.recycle();
     }
-
 }

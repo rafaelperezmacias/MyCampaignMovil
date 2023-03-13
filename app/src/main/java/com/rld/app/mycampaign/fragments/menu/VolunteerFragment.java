@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.adapters.VolunteersAdapter;
@@ -33,6 +36,7 @@ public class VolunteerFragment extends Fragment {
     private MainActivity mainActivity;
 
     private FloatingActionButton btnMenuVolunteer;
+    private MaterialCardView cardNoData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,8 +53,11 @@ public class VolunteerFragment extends Fragment {
             mainActivity = (MainActivity) parentActivity;
         }
 
+        MaterialButton btnErrorAdd = binding.btnErrorAdd;
         btnMenuVolunteer = binding.btnMenuVolunteer;
         volunteersRecyclerview = binding.volunteersRecyclerview;
+        cardNoData = binding.cardNoData;
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
@@ -71,12 +78,19 @@ public class VolunteerFragment extends Fragment {
             onClickMenuVolunteerListener.initializeVolunteersList(VolunteerFragment.this);
         }
 
+        btnErrorAdd.setOnClickListener(v -> {
+            if ( onClickMenuVolunteerListener != null ) {
+                onClickMenuVolunteerListener.showRegisterForm();
+            }
+        });
+
         return root;
     }
 
     public interface OnClickMenuVolunteerListener {
         void initializeVolunteersList(VolunteerFragment volunteerFragment);
         void showMenuVolunteer();
+        void showRegisterForm();
     }
 
     public static void setOnClickAddVolunteer(OnClickMenuVolunteerListener onClickMenuVolunteerListener) {
@@ -86,6 +100,15 @@ public class VolunteerFragment extends Fragment {
     public void updateVolunteers(ArrayList<Volunteer> volunteers) {
         adapter = new VolunteersAdapter(mainActivity, volunteers);
         volunteersRecyclerview.setAdapter(adapter);
+        if ( adapter.getItemCount() == 0 ) {
+            cardNoData.setVisibility(View.VISIBLE);
+            volunteersRecyclerview.setVisibility(View.GONE);
+            btnMenuVolunteer.setVisibility(View.GONE);
+        } else {
+            volunteersRecyclerview.setVisibility(View.VISIBLE);
+            btnMenuVolunteer.setVisibility(View.VISIBLE);
+            cardNoData.setVisibility(View.GONE);
+        }
     }
 
     public void notifyChangeOnRecyclerView() {

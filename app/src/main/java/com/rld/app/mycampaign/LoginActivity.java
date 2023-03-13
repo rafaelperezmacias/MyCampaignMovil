@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         lytEmail.getEditText().setOnFocusChangeListener((view, focus) -> {
             if ( focus ) {
                 lytEmail.setHint("");
-            } else if (lytEmail.getEditText().getText().toString().trim().isEmpty()) {
+            } else if ( lytEmail.getEditText().getText().toString().trim().isEmpty() ) {
                 lytEmail.setHint("Ingrese su correo electónico");
             }
         });
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         lytPassword.getEditText().setOnFocusChangeListener((view, focus) -> {
             if ( focus ) {
                 lytPassword.setHint("");
-            } else if (lytPassword.getEditText().getText().toString().trim().isEmpty()) {
+            } else if ( lytPassword.getEditText().getText().toString().trim().isEmpty() ) {
                 lytPassword.setHint("Ingrese su contraseña");
             }
         });
@@ -119,7 +119,14 @@ public class LoginActivity extends AppCompatActivity {
                 public void run() {
                     if ( !Internet.isNetworkAvailable(LoginActivity.this) || !Internet.isOnlineNetwork() ) {
                         LoginActivity.this.runOnUiThread(() -> {
-                            Toast.makeText(LoginActivity.this, "Internet no disponible", Toast.LENGTH_SHORT).show();
+                            MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
+                                    .setTitle("Sin conexión a internet")
+                                    .setMessage("Para descargar los datos locales necesita de una conexión a internet")
+                                    .setPrimaryButtonText("Aceptar")
+                                    .setCancelable(true);
+                            MessageDialog messageDialog = new MessageDialog(LoginActivity.this, messageDialogBuilder);
+                            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                            messageDialog.show();
                             lytLoad.setVisibility(View.GONE);
                             btnLogin.setVisibility(View.VISIBLE);
                             lytEmail.getEditText().setEnabled(true);
@@ -135,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                     loginCall.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            if ( response.isSuccessful() ) {
+                            if ( response.code() == 200 ) {
                                 assert response.body() != null;
                                 User user = response.body().getUser().toUser(userRequest.getPassword(), null, true);
                                 Token token = response.body().getTokenObject();
@@ -216,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
         campaignCall.enqueue(new Callback<Campaign>() {
             @Override
             public void onResponse(Call<Campaign> call, Response<Campaign> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     Campaign campaign = response.body();
                     getImageProfile(user, token, campaign);
                     return;
@@ -225,7 +232,7 @@ public class LoginActivity extends AppCompatActivity {
                     MessageDialogBuilder builder = new MessageDialogBuilder();
                     builder.setTitle("Campaña invalida")
                             .setMessage("Actualmente el sistema no cuenta con una campaña activa. ¿Es un error? Comentalo a los administradores para que te brinden ayuda")
-                            .setPrimaryButtonText("Ok")
+                            .setPrimaryButtonText("Aceptar")
                             .setCancelable(true);
                     MessageDialog messageDialog = new MessageDialog(LoginActivity.this, builder);
                     messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
@@ -250,7 +257,11 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<Campaign> call, Throwable t) {
-                showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la campaña", t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la campaña", "SocketTimeoutException");
+                } else {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la campaña", t.getMessage());
+                }
                 lytLoad.setVisibility(View.GONE);
                 btnLogin.setVisibility(View.VISIBLE);
                 lytEmail.getEditText().setEnabled(true);
@@ -271,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
         imageCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     try {
                         byte[] imageByte = response.body().bytes();
                         String base64 = Base64.encodeToString(imageByte, Base64.DEFAULT);
@@ -302,7 +313,11 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la campaña", t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la imagen", "SocketTimeoutException");
+                } else {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de la imagen", t.getMessage());
+                }
                 lytLoad.setVisibility(View.GONE);
                 btnLogin.setVisibility(View.VISIBLE);
                 lytEmail.getEditText().setEnabled(true);
@@ -319,7 +334,7 @@ public class LoginActivity extends AppCompatActivity {
         getVolunteersCall.enqueue(new Callback<ArrayList<ServerVolunteer>>() {
             @Override
             public void onResponse(Call<ArrayList<ServerVolunteer>> call, Response<ArrayList<ServerVolunteer>> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     UserPreferences.saveUser(getApplicationContext(), user);
                     CampaignPreferences.saveCampaign(LoginActivity.this, campaign);
                     TokenPreferences.saveToken(getApplicationContext(), token);
@@ -334,13 +349,13 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 try {
-                    showErrorRequest(response.code(), response.message(),  "Error con la petición de volutnarios", response.errorBody().string());
+                    showErrorRequest(response.code(), response.message(),  "Error con la petición de voluntarios", response.errorBody().string());
                     lytLoad.setVisibility(View.GONE);
                     btnLogin.setVisibility(View.VISIBLE);
                     lytEmail.getEditText().setEnabled(true);
                     lytPassword.getEditText().setEnabled(true);
                 } catch ( IOException ex ) {
-                    showErrorRequest(UNKNOWN_ERROR, "IOException", "Error con la petición de volutnarios", ex.getMessage());
+                    showErrorRequest(UNKNOWN_ERROR, "IOException", "Error con la petición de voluntarios", ex.getMessage());
                     lytLoad.setVisibility(View.GONE);
                     btnLogin.setVisibility(View.VISIBLE);
                     lytEmail.getEditText().setEnabled(true);
@@ -349,7 +364,11 @@ public class LoginActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<ArrayList<ServerVolunteer>> call, Throwable t) {
-                showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de volutnarios", t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de voluntarios", "SocketTimeoutException");
+                } else {
+                    showErrorRequest(UNKNOWN_ERROR, "Exception", "Error con la petición de voluntarios", t.getMessage());
+                }
                 lytLoad.setVisibility(View.GONE);
                 btnLogin.setVisibility(View.VISIBLE);
                 lytEmail.getEditText().setEnabled(true);

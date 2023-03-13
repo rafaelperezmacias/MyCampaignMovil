@@ -365,6 +365,7 @@ public class LocalSectionFragment extends Fragment {
             @Override
             public void onFailureListener(int type, int code, String error)  {
                 DownloadManagerPreferences.setIsLocalDataSaved(requireContext(), false);
+                LocalDataPreferences.deleteLocalPreferences(requireContext());
                 progressDialog.dismiss();
                 ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder();
                 builder.setTitle("Error descargando datos")

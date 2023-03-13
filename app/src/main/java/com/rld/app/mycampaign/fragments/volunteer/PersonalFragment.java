@@ -120,8 +120,7 @@ public class PersonalFragment extends Fragment {
         lytMothersLastname.getEditText().setText(volunteer.getMothersLastname());
         lytName.getEditText().setText(volunteer.getName());
         if ( volunteer.getBirthdate() != null ) {
-            String date = volunteer.getBirthdate().get(Calendar.DAY_OF_MONTH) + "/" + (volunteer.getBirthdate().get(Calendar.MONTH) + 1) + "/" + volunteer.getBirthdate().get(Calendar.YEAR);
-            lytBirthdate.getEditText().setText(date);
+            lytBirthdate.getEditText().setText(new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(volunteer.getBirthdate().getTime()));
         }
         if ( volunteer.getAddress() != null ) {
             lytStreet.getEditText().setText(volunteer.getAddress().getStreet());

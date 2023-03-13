@@ -32,14 +32,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 import com.rld.app.mycampaign.api.Client;
 import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.api.VolunteerAPI;
@@ -66,8 +60,6 @@ import com.rld.app.mycampaign.models.State;
 import com.rld.app.mycampaign.models.Token;
 import com.rld.app.mycampaign.models.User;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.models.api.PageSectionAPI;
-import com.rld.app.mycampaign.models.api.SectionResponse;
 import com.rld.app.mycampaign.models.api.VolunteerRequest;
 import com.rld.app.mycampaign.models.api.VolunteerResponse;
 import com.rld.app.mycampaign.ocr.ReadINE;
@@ -76,7 +68,6 @@ import com.rld.app.mycampaign.preferences.DownloadManagerPreferences;
 import com.rld.app.mycampaign.preferences.LocalDataPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
 import com.rld.app.mycampaign.preferences.UserPreferences;
-import com.rld.app.mycampaign.secrets.AppConfig;
 import com.rld.app.mycampaign.utils.Internet;
 
 import org.json.JSONArray;
@@ -193,10 +184,25 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
                         } break;
                         case CameraPreview.RESULT_IMAGE_NOT_TAKEN: {
-                            Toast.makeText(this, "Fotografia no tomada", Toast.LENGTH_SHORT).show();
+                            MessageDialogBuilder builder = new MessageDialogBuilder()
+                                    .setTitle("Imagen no tómada")
+                                    .setMessage("Para registrar a un voluntario es necesario tomar una fotografía a su identificación oficial")
+                                    .setPrimaryButtonText("Aceptar")
+                                    .setCancelable(true);
+                            MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
+                            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                            messageDialog.show();
                         } break;
                         case CameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
-                            Toast.makeText(this, "La fotografia no se pudo crear", Toast.LENGTH_SHORT).show();
+                            ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                                    .setTitle("Imagen no tómada")
+                                    .setMessage("La fotografía no se pudo crear de manera satisfactoria")
+                                    .setError("IOException")
+                                    .setButtonText("Aceptar")
+                                    .setCancelable(true);
+                            ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                            errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
+                            errorMessageDialog.show();
                         } break;
                     }
                 }
@@ -214,10 +220,25 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             }
                         } break;
                         case FirmActivity.RESULT_REJECT_FIRM: {
-                            Toast.makeText(this, "No se firmo", Toast.LENGTH_SHORT).show();
+                            MessageDialogBuilder builder = new MessageDialogBuilder()
+                                    .setTitle("Firma no registrada")
+                                    .setMessage("Para terminar el registro es necesario que el voluntario ingrese su firma")
+                                    .setPrimaryButtonText("Aceptar")
+                                    .setCancelable(true);
+                            MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
+                            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                            messageDialog.show();
                         } break;
                         case FirmActivity.RESULT_IMAGE_FILE_NOT_CREATE: {
-                            Toast.makeText(this, "Ocurrion un error, intentlo de nuevo", Toast.LENGTH_SHORT).show();
+                            ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                                    .setTitle("Firma no registrada")
+                                    .setMessage("La firma no se pudo crear de manera satisfactoria")
+                                    .setError("IOException")
+                                    .setButtonText("Aceptar")
+                                    .setCancelable(true);
+                            ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                            errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
+                            errorMessageDialog.show();
                         } break;
                     }
                 }
@@ -384,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
      */
     @Override
     public void showMenuVolunteer() {
-        MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this);
+        MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this, localVolunteers.size());
         menuVolunteerDialog.setBtnAddVolunteerListener(view -> {
             menuVolunteerDialog.dismiss();
             TimerTask task = new TimerTask() {
@@ -421,6 +442,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         layoutParams.flags &= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(layoutParams);
         menuVolunteerDialog.show();
+    }
+
+    @Override
+    public void showRegisterForm() {
+        checkPermissions();
     }
 
     /**
@@ -485,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             if ( isAllGranted ) {
                 startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
             } else {
+                // TODO
                 SpannableStringBuilder snackBarText = new SpannableStringBuilder();
                 snackBarText.append("Por favor, acepte los permisos para poder realizar un registro.");
                 snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -522,7 +549,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
      */
     public void showFormVolunteerWithOCR(Volunteer volunteer) {
         ProgressDialogBuilder builder = new ProgressDialogBuilder()
-                .setTitle("Cargando datos")
+                .setTitle("Cargando datos...")
                 .setCancelable(false);
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
         progressDialog.show();
@@ -579,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         }
         // Domicilio
         String[] ocrAddress = readINE.getString("domicilio").split("\n");
-        if ( ocrAddress.length == 2 ) {
+        if ( ocrAddress.length == 2 || ocrAddress.length == 3) {
             Address address = new Address();
             // Calle
             String ocrStreet = removeInvalidCharacters(ocrAddress[0].trim(), "[A-ZÑ0-9 ]");
@@ -777,11 +804,6 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         ProgressDialog progressDialog = new ProgressDialog(MainActivity.this, builder);
         progressDialog.show();
         if ( !Internet.isNetworkAvailable(getApplicationContext()) || !Internet.isOnlineNetwork() ) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             progressDialog.dismiss();
             MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
                     .setTitle("Sin conexión a internet")
@@ -825,6 +847,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     volunteer.getImageFirm().setPath("");
                     volunteer.getImageCredential().setPath("");
                     volunteersToRemove.add(volunteer);
+                    if ( volunteerFragment != null ) {
+                        volunteerFragment.notifyChangeOnRecyclerView(index + remoteVolunteers.size());
+                    }
                     nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
                     return;
                 }

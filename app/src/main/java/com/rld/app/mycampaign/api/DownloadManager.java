@@ -21,6 +21,7 @@ import com.rld.app.mycampaign.secrets.AppConfig;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -65,7 +66,7 @@ public class DownloadManager {
         statesCall.enqueue(new Callback<ArrayList<State>>() {
             @Override
             public void onResponse(Call<ArrayList<State>> call, Response<ArrayList<State>> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     ArrayList<State> states = response.body();
                     JSONArray jsonArrayStates = StateFileManager.arrayListToJsonArray(states);
                     StateFileManager.writeJSON(jsonArrayStates, context);
@@ -92,7 +93,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<ArrayList<State>> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_STATE_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_STATE_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_STATE_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }
@@ -110,7 +115,7 @@ public class DownloadManager {
         federalDistrictsCall.enqueue(new Callback<ArrayList<FederalDistrict>>() {
             @Override
             public void onResponse(Call<ArrayList<FederalDistrict>> call, Response<ArrayList<FederalDistrict>> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     ArrayList<FederalDistrict> federalDistricts = response.body();
                     JSONArray jsonArrayFederalDistricts = FederalDistrictFileManager.arrayListToJsonArray(federalDistricts);
                     FederalDistrictFileManager.writeJSON(jsonArrayFederalDistricts,  states.get(index).getId(), context);
@@ -137,7 +142,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<ArrayList<FederalDistrict>> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_FEDERAL_DISTRICT_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_FEDERAL_DISTRICT_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_FEDERAL_DISTRICT_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }
@@ -155,7 +164,7 @@ public class DownloadManager {
         localDistrictsCall.enqueue(new Callback<ArrayList<LocalDistrict>>() {
             @Override
             public void onResponse(Call<ArrayList<LocalDistrict>> call, Response<ArrayList<LocalDistrict>> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     ArrayList<LocalDistrict> localDistricts = response.body();
                     JSONArray jsonArrayLocalDistricts = LocalDistrictFileManager.arrayListToJsonArray(localDistricts);
                     LocalDistrictFileManager.writeJSON(jsonArrayLocalDistricts, states.get(index).getId(), context);
@@ -182,7 +191,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<ArrayList<LocalDistrict>> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_LOCAL_DISTRICT_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_LOCAL_DISTRICT_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_LOCAL_DISTRICT_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }
@@ -200,7 +213,7 @@ public class DownloadManager {
         municipalitiesCall.enqueue(new Callback<ArrayList<Municipality>>() {
             @Override
             public void onResponse(Call<ArrayList<Municipality>> call, Response<ArrayList<Municipality>> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     ArrayList<Municipality> municipalities = response.body();
                     JSONArray jsonArrayMunicipalities = MunicipalityFileManager.arrayListToJsonArray(municipalities);
                     MunicipalityFileManager.writeJSON(jsonArrayMunicipalities, states.get(index).getId(), context);
@@ -227,7 +240,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<ArrayList<Municipality>> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_MUNICIPALITY_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_MUNICIPALITY_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_MUNICIPALITY_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }
@@ -245,7 +262,7 @@ public class DownloadManager {
         pageSectionAPICall.enqueue(new Callback<PageSectionAPI>() {
             @Override
             public void onResponse(Call<PageSectionAPI> call, Response<PageSectionAPI> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     PageSectionAPI pageSectionAPI = response.body();
                     ArrayList<SectionResponse> sections = new ArrayList<>();
                     sections.addAll(pageSectionAPI.getData());
@@ -272,7 +289,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<PageSectionAPI> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }
@@ -294,7 +315,7 @@ public class DownloadManager {
         pageSectionAPICall.enqueue(new Callback<PageSectionAPI>() {
             @Override
             public void onResponse(Call<PageSectionAPI> call, Response<PageSectionAPI> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     PageSectionAPI pageSectionAPI = response.body();
                     sections.addAll(pageSectionAPI.getData());
                     downloadDataOfSectionsByStatePerPage(sections, currentPage + 1, lastPage, stateId, states, index);
@@ -320,7 +341,11 @@ public class DownloadManager {
             }
             @Override
             public void onFailure(Call<PageSectionAPI> call, Throwable t) {
-                onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, t.getMessage());
+                if ( t instanceof SocketTimeoutException ) {
+                    onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, "SocketTimeoutException");
+                } else {
+                    onResolveRequestListener.onFailureListener(TYPE_SECTION_REQUEST, ERROR_REQUEST, t.getMessage());
+                }
             }
         });
     }

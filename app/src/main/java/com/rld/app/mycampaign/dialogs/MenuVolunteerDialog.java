@@ -16,17 +16,21 @@ public class MenuVolunteerDialog extends Dialog {
 
     private FragmentMenuVolunteerDialogBinding binding;
 
+    private int volunteers;
+
     private View.OnClickListener btnAddVolunteerListener;
     private View.OnClickListener btnUploadListener;
 
-    public MenuVolunteerDialog(@NonNull Activity activity)
+    public MenuVolunteerDialog(@NonNull Activity activity, int volunteers)
     {
         super(activity);
+        this.volunteers = volunteers;
     }
 
-    public MenuVolunteerDialog(@NonNull Context context)
+    public MenuVolunteerDialog(@NonNull Context context, int volunteers)
     {
         super(context);
+        this.volunteers = volunteers;
     }
 
     @Override
@@ -36,6 +40,13 @@ public class MenuVolunteerDialog extends Dialog {
 
         MaterialButton btnAddVolunteer = binding.btnAddVolunteer;
         MaterialButton btnUpload = binding.btnUpload;
+
+        if ( volunteers == 0 ) {
+            btnUpload.setEnabled(false);
+        } else {
+            btnUpload.setEnabled(true);
+            btnUpload.setText("Cargar al servidor (" + volunteers + ")");
+        }
 
         btnAddVolunteer.setOnClickListener(btnAddVolunteerListener);
         btnUpload.setOnClickListener(btnUploadListener);
