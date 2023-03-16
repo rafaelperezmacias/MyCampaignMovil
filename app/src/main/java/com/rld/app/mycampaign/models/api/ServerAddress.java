@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models.api;
 
 import com.rld.app.mycampaign.models.Address;
 
-public class ServerAddress {
+import java.io.Serializable;
+
+public class ServerAddress implements Serializable {
 
     private int id;
     private String street;

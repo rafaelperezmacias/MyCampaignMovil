@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class AuxVolunteer {
+import java.io.Serializable;
+
+public class AuxVolunteer implements Serializable {
 
     private int id;
     private String birthdate;

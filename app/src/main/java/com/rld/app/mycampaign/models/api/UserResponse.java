@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models.api;
 
 import com.rld.app.mycampaign.models.User;
 
-public class UserResponse {
+import java.io.Serializable;
+
+public class UserResponse implements Serializable {
 
     private int id;
     private String name;

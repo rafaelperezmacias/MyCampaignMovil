@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models;
 
-public class EntitySelect extends Entity {
+import java.io.Serializable;
+
+public class EntitySelect extends Entity implements Serializable {
 
     private boolean isSelected;
 

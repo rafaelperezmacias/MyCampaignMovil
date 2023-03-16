@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
@@ -171,18 +172,20 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         startCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    switch ( result.getResultCode() ) {
+                    switch (result.getResultCode()) {
                         case CameraPreview.RESULT_OK: {
-                            if ( result.getData() != null ) {
+                            if (result.getData() != null) {
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
                                 showFormVolunteerWithOCR(currentVolunteer);
                             }
-                        } break;
+                        }
+                        break;
                         case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
                             Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
-                        } break;
+                        }
+                        break;
                         case CameraPreview.RESULT_IMAGE_NOT_TAKEN: {
                             MessageDialogBuilder builder = new MessageDialogBuilder()
                                     .setTitle("Imagen no tómada")
@@ -192,7 +195,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
                             messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
                             messageDialog.show();
-                        } break;
+                        }
+                        break;
                         case CameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
                             ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
                                     .setTitle("Imagen no tómada")
@@ -203,7 +207,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
                             errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
                             errorMessageDialog.show();
-                        } break;
+                        }
+                        break;
                     }
                 }
         );
@@ -211,14 +216,15 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         startFirmActivityIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    switch ( result.getResultCode() ) {
+                    switch (result.getResultCode()) {
                         case FirmActivity.RESULT_ACCEPTED_FIRM: {
-                            if ( result.getData() != null ) {
+                            if (result.getData() != null) {
                                 String path = result.getData().getStringExtra("imageFirmPath");
                                 initializeImageOfVolunteer(currentVolunteer, path, false);
                                 addLocalVolunteer();
                             }
-                        } break;
+                        }
+                        break;
                         case FirmActivity.RESULT_REJECT_FIRM: {
                             MessageDialogBuilder builder = new MessageDialogBuilder()
                                     .setTitle("Firma no registrada")
@@ -228,7 +234,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
                             messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
                             messageDialog.show();
-                        } break;
+                        }
+                        break;
                         case FirmActivity.RESULT_IMAGE_FILE_NOT_CREATE: {
                             ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
                                     .setTitle("Firma no registrada")
@@ -239,7 +246,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
                             errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
                             errorMessageDialog.show();
-                        } break;
+                        }
+                        break;
                     }
                 }
         );
@@ -511,20 +519,33 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             if ( isAllGranted ) {
                 startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
             } else {
-                // TODO
-                SpannableStringBuilder snackBarText = new SpannableStringBuilder();
-                snackBarText.append("Por favor, acepte los permisos para poder realizar un registro.");
-                snackBarText.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, snackBarText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                Snackbar.make(binding.getRoot(), snackBarText, Snackbar.LENGTH_LONG)
-                        .setBackgroundTint(getResources().getColor(R.color.blue))
-                        .setTextColor(getResources().getColor(R.color.light_white))
-                        .setAction("CONCEDER", view -> {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                            startActivity(intent);
-                        })
-                        .setActionTextColor(getResources().getColor(R.color.white))
-                        .show();
+                ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                        .setTitle("Permisos insuficientes")
+                        .setMessage("La aplicación no cuenta con los permisos suficientes para poder registrar un voluntario")
+                        .setButtonText("Conceder")
+                        .setCancelable(true);
+                ArrayList<String> permissionsNotAllowed = getListOfPermissionsNotAllowed();
+                StringBuilder errorMessage = new StringBuilder();
+                errorMessage.append("Por favor acepte los siguientes permisos: <br>");
+                for ( String permission : permissionsNotAllowed ) {
+                    if ( permission.contains("WRITE_EXTERNAL_STORAGE") ) {
+                        errorMessage.append("<b>Almacenamiento</b>").append("<br>");
+                        continue;
+                    }
+                    if ( permission.contains("CAMERA") ) {
+                        errorMessage.append("<b>Cámara</b>").append("<br>");
+                    }
+                }
+                errorMessage.replace(errorMessage.lastIndexOf("<br>"), errorMessage.lastIndexOf("<br>") + "<br>".length(), "");
+                builder.setSpannedError(Html.fromHtml(errorMessage.toString()));
+                ErrorMessageDialog messageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                messageDialog.setButtonClickListener(v -> {
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                    startActivity(intent);
+                    messageDialog.dismiss();
+                });
+                messageDialog.show();
             }
         }
     }
@@ -840,7 +861,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         insertVolunteerCall.enqueue(new Callback<VolunteerResponse>() {
             @Override
             public void onResponse(Call<VolunteerResponse> call, Response<VolunteerResponse> response) {
-                if ( response.isSuccessful() ) {
+                if ( response.code() == 200 ) {
                     volunteer.setLoad(false);
                     volunteer.setError(null);
                     volunteer.setId(response.body().getMessage());
@@ -889,11 +910,31 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             .setPrimaryButtonText("Aceptar")
                             .setCancelable(false);
                     MessageDialog closeDialog = new MessageDialog(MainActivity.this, messageDialogBuilder);
-                    closeDialog.setPrimaryButtonListener(v -> {
-                        closeDialog.dismiss();
-                    });
+                    closeDialog.setPrimaryButtonListener(v -> closeDialog.dismiss());
                     closeDialog.setOnDismissListener(dialog1 -> {
                         UserPreferences.clearConnect(getApplicationContext());
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    });
+                    closeDialog.show();
+                    return;
+                }
+                if ( response.code() == 409 ) {
+                    ErrorMessageDialogBuilder messageDialogBuilder = new ErrorMessageDialogBuilder();
+                    messageDialogBuilder.setTitle("Ninguna campaña activa")
+                            .setMessage("El perido de la campaña acaba de terminar, por lo que ya no se permitira el registro de mas voluntarios")
+                            .setError("Nota: La información que no se subio al servidor se perdera")
+                            .setButtonText("Aceptar")
+                            .setCancelable(false);
+                    ErrorMessageDialog closeDialog = new ErrorMessageDialog(MainActivity.this, messageDialogBuilder);
+                    closeDialog.setButtonClickListener(v -> closeDialog.dismiss());
+                    closeDialog.setOnDismissListener(dialog1 -> {
+                        VolunteerFileManager.deleteLocalVolunteerFile(getApplicationContext());
+                        VolunteerFileManager.deleteRemoteVolunteerFile(getApplicationContext());
+                        UserPreferences.deleteUser(getApplicationContext());
+                        CampaignPreferences.deleteCampaign(getApplicationContext());
+                        TokenPreferences.deleteToken(getApplicationContext());
+                        LocalDataPreferences.deleteLocalPreferences(getApplicationContext());
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         finish();
                     });

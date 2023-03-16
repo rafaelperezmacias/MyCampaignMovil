@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models;
 
 import com.rld.app.mycampaign.models.api.FederalDistrictRequest;
 
-public class FederalDistrict extends Entity {
+import java.io.Serializable;
+
+public class FederalDistrict extends Entity implements Serializable {
 
     public FederalDistrict()
     {

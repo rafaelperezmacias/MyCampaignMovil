@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models;
 
-public class Campaign {
+import java.io.Serializable;
+
+public class Campaign implements Serializable {
 
     public static final String CAMPAIGN_PREFERENCES = "campaign-preferences";
     public static final String ID = "id";

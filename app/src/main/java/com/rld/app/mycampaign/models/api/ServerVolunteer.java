@@ -6,6 +6,7 @@ import com.rld.app.mycampaign.models.Image;
 import com.rld.app.mycampaign.models.LocalDistrict;
 import com.rld.app.mycampaign.models.Volunteer;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class ServerVolunteer {
+public class ServerVolunteer implements Serializable {
 
     private int id;
     private String name;

@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models;
 
-public class Birthdate {
+import java.io.Serializable;
+
+public class Birthdate implements Serializable {
 
     private int year;
     private int month;

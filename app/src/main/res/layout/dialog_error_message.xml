@@ -41,7 +41,7 @@
         android:layout_below="@id/txt_message"
         android:maxLines="10"
         android:scrollbars="vertical"
-        android:paddingBottom="16dp"
+        android:paddingBottom="8dp"
         tools:text="Este es un mensaje de error complementario"/>
 
     <LinearLayout

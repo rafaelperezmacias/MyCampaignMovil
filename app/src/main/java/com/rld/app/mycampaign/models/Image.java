@@ -5,8 +5,9 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.Serializable;
 
-public class Image {
+public class Image implements Serializable {
 
     private String path;
     private Bitmap blob;

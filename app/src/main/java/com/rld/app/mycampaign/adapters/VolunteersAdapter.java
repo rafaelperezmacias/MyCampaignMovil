@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -160,7 +162,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         private final MaterialCardView serverCard;
         private final MaterialCardView errorCard;
 
-        private final LinearProgressIndicator progressLoad;
+        private final ProgressBar progressLoad;
 
         private final View divider;
 

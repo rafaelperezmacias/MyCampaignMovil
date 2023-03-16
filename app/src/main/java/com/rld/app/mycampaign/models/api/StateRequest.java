@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class StateRequest {
+import java.io.Serializable;
+
+public class StateRequest implements Serializable {
 
     private int id;
     private String name;

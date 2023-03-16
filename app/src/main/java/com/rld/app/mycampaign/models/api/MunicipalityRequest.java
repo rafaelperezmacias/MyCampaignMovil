@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class MunicipalityRequest {
+import java.io.Serializable;
+
+public class MunicipalityRequest implements Serializable {
 
     private int id;
     private String name;

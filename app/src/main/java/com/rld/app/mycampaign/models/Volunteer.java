@@ -2,9 +2,10 @@ package com.rld.app.mycampaign.models;
 
 import com.rld.app.mycampaign.models.api.VolunteerRequest;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class Volunteer {
+public class Volunteer implements Serializable {
 
     public static final int TYPE_GENERAL_REPRESENTATIVE = 1;
     public static final int TYPE_VOTING_BOOTH_REPRESENTATIVE = 2;
@@ -248,7 +249,7 @@ public class Volunteer {
         return volunteerRequest;
     }
 
-    public static class Error {
+    public static class Error implements Serializable {
 
         private State state;
         private Municipality municipality;

@@ -6,7 +6,9 @@ import com.rld.app.mycampaign.models.Municipality;
 import com.rld.app.mycampaign.models.Section;
 import com.rld.app.mycampaign.models.State;
 
-public class ServerSection {
+import java.io.Serializable;
+
+public class ServerSection implements Serializable {
 
     private int id;
     private String section;

@@ -4,7 +4,9 @@ import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Birthdate;
 import com.rld.app.mycampaign.models.Section;
 
-public class VolunteerRequest {
+import java.io.Serializable;
+
+public class VolunteerRequest implements Serializable {
 
     private int id;
     private String name;

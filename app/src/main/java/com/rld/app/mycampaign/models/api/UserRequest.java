@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class UserRequest {
+import java.io.Serializable;
+
+public class UserRequest implements Serializable {
 
     private String email;
     private String password;

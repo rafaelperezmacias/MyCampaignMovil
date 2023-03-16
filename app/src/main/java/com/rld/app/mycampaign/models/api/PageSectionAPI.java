@@ -1,8 +1,9 @@
 package com.rld.app.mycampaign.models.api;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PageSectionAPI {
+public class PageSectionAPI implements Serializable {
 
     private ArrayList<SectionResponse> data;
     private int totalPages;

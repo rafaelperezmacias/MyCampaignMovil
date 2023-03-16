@@ -2,6 +2,7 @@ package com.rld.app.mycampaign.fragments.menu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,6 @@ public class LocalSectionFragment extends Fragment {
         lytErrorData = binding.lytErrorData;
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setHasFixedSize(true);
 
         adapter = new LocalSectionAdapter(requireContext(), entities);
         recyclerView.setAdapter(adapter);

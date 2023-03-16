@@ -2,13 +2,14 @@ package com.rld.app.mycampaign.models;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class Token {
+public class Token implements Serializable {
 
     public static final String TOKEN_PREFERENCES = "token-preferences";
     public static final String TOKEN = "token";

@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class FederalDistrictRequest {
+import java.io.Serializable;
+
+public class FederalDistrictRequest implements Serializable {
 
     private int id;
     private String name;

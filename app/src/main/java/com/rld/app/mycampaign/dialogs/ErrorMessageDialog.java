@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +24,7 @@ public class ErrorMessageDialog extends Dialog {
     private String title;
     private String message;
     private String error;
+    private Spanned spannedError;
     private String buttonText;
     private boolean isCancelable;
 
@@ -33,8 +35,9 @@ public class ErrorMessageDialog extends Dialog {
         title = builder.getTitle();
         message = builder.getMessage();
         error = builder.getError();
-        buttonText = builder.getButtonText();
+        spannedError = builder.getSpannedError();
         isCancelable = builder.isCancelable();
+        buttonText = builder.getButtonText();
     }
 
     public ErrorMessageDialog(@NonNull Context context, ErrorMessageDialogBuilder builder) {
@@ -42,6 +45,7 @@ public class ErrorMessageDialog extends Dialog {
         title = builder.getTitle();
         message = builder.getMessage();
         error = builder.getError();
+        spannedError = builder.getSpannedError();
         buttonText = builder.getButtonText();
         isCancelable = builder.isCancelable();
     }
@@ -59,6 +63,12 @@ public class ErrorMessageDialog extends Dialog {
         TextView txtError = binding.txtError;
         MaterialButton btnAction = binding.btnAction;
 
+        if ( spannedError != null ) {
+            txtError.setText(spannedError);
+        } else {
+            txtError.setText(error);
+        }
+
         if ( buttonText != null && !buttonText.isEmpty() ) {
             btnAction.setText(buttonText);
             btnAction.setOnClickListener(buttonClickListener);
@@ -66,7 +76,6 @@ public class ErrorMessageDialog extends Dialog {
 
         txtTitle.setText(title);
         txtMessage.setText(message);
-        txtError.setText(error);
 
         txtError.setMovementMethod(new ScrollingMovementMethod());
 

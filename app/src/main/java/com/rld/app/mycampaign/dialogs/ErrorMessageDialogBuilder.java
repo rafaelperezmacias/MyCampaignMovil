@@ -1,10 +1,13 @@
 package com.rld.app.mycampaign.dialogs;
 
+import android.text.Spanned;
+
 public class ErrorMessageDialogBuilder {
 
     private String title;
     private String message;
     private String error;
+    private Spanned spannedError;
     private String buttonText;
     private boolean isCancelable;
 
@@ -20,6 +23,11 @@ public class ErrorMessageDialogBuilder {
 
     public ErrorMessageDialogBuilder setError(String error) {
         this.error = error;
+        return this;
+    }
+
+    public ErrorMessageDialogBuilder setSpannedError(Spanned spannedError) {
+        this.spannedError = spannedError;
         return this;
     }
 
@@ -43,6 +51,10 @@ public class ErrorMessageDialogBuilder {
 
     public String getError() {
         return error;
+    }
+
+    public Spanned getSpannedError() {
+        return spannedError;
     }
 
     public String getButtonText() {

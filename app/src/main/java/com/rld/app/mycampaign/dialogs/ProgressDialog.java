@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.databinding.FragmentProgressDialogBinding;
 
 public class ProgressDialog extends Dialog {
@@ -49,6 +52,10 @@ public class ProgressDialog extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         TextView txtTitle = binding.txtTitle;
+
+        DrawableCompat.setTint(
+                binding.progressbar.getIndeterminateDrawable(), ContextCompat.getColor(getContext(), R.color.blue)
+        );
 
         txtTitle.setText(title);
 

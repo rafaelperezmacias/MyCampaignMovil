@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class VolunteerResponse {
+import java.io.Serializable;
+
+public class VolunteerResponse implements Serializable {
 
     private String status;
     private int message;

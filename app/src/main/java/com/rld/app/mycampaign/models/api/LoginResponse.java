@@ -2,11 +2,12 @@ package com.rld.app.mycampaign.models.api;
 
 import com.rld.app.mycampaign.models.Token;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class LoginResponse {
+public class LoginResponse implements Serializable {
 
     private UserResponse user;
     private String token;

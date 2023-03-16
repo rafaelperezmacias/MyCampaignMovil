@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models;
 
 import com.rld.app.mycampaign.models.api.LocalDistrictRequest;
 
-public class LocalDistrict extends Entity {
+import java.io.Serializable;
+
+public class LocalDistrict extends Entity implements Serializable {
 
     public LocalDistrict()
     {

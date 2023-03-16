@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models;
 
 import com.rld.app.mycampaign.models.api.MunicipalityRequest;
 
-public class Municipality extends Entity {
+import java.io.Serializable;
+
+public class Municipality extends Entity implements Serializable {
 
     public Municipality()
     {

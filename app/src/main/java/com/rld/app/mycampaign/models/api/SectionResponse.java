@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models.api;
 
-public class SectionResponse {
+import java.io.Serializable;
+
+public class SectionResponse implements Serializable {
 
     private int id;
     private String section;

@@ -1,6 +1,7 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,17 +95,17 @@ public class PersonalFragment extends Fragment {
         lytBirthdate.getEditText().setClickable(true);
         lytBirthdate.getEditText().setFocusable(false);
         lytBirthdate.getEditText().setOnClickListener(view -> {
-            boolean isCalendarActive = false;
             Calendar calendar = Calendar.getInstance();
             if ( !lytBirthdate.getEditText().getText().toString().isEmpty() ) {
                 calendar = DateFormats.getDateInFormat(lytBirthdate.getEditText().getText().toString(), "dd/MM/yyyy");
-                isCalendarActive = true;
             }
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
             CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
                     .setValidator(DateValidatorPointBackward.now());
             MaterialDatePicker<Long> dialog = MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Seleccione la fecha")
-                    .setSelection(isCalendarActive ? calendar.getTimeInMillis() : MaterialDatePicker.todayInUtcMilliseconds())
+                    .setSelection(calendar.getTimeInMillis())
                     .setCalendarConstraints(calendarConstraints.build())
                     .build();
             dialog.show(getChildFragmentManager(), dialog.getTag());

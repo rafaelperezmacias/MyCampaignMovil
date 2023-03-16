@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.rld.app.mycampaign.models.Token;
-import com.rld.app.mycampaign.models.User;
 
 public class TokenPreferences {
 

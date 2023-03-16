@@ -1,6 +1,8 @@
 package com.rld.app.mycampaign.models;
 
-public class Entity {
+import java.io.Serializable;
+
+public class Entity implements Serializable {
 
     private int id;
     private String name;

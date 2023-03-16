@@ -2,7 +2,9 @@ package com.rld.app.mycampaign.models;
 
 import com.rld.app.mycampaign.models.api.SectionRequest;
 
-public class Section {
+import java.io.Serializable;
+
+public class Section implements Serializable {
 
     private int id;
     private String section;
