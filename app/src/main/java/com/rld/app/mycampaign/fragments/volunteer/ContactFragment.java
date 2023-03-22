@@ -274,7 +274,7 @@ public class ContactFragment extends Fragment {
 
     private void addSections() {
         ArrayList<Section> sections = localDataFileManager.getSections();
-        Collections.sort(sections, (o1, o2) -> o1.getSection().compareTo(o2.getSection()));
+        Collections.sort(sections, (o1, o2) -> Integer.parseInt(o1.getSection()) - Integer.parseInt(o2.getSection()) );
         List<String> stringsSections = new ArrayList<>();
         for ( Section section : sections ) {
             stringsSections.add(section.getSection());

@@ -1,16 +1,21 @@
 package com.rld.app.mycampaign.fragments.volunteer;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
+import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.databinding.FragmentSectionVolunteerBsBinding;
 import com.rld.app.mycampaign.files.LocalDataFileManager;
@@ -54,6 +59,17 @@ public class SectionFragment extends Fragment {
     private AppCompatImageView iconFederalDistrict;
     private AppCompatImageView iconState;
 
+    private MaterialCardView cardErrorState;
+    private TextView txtErrorState;
+    private MaterialCardView cardErrorFederalDistrict;
+    private TextView txtErrorFederalDistrict;
+    private MaterialCardView cardErrorLocalDistrict;
+    private TextView txtErrorLocalDistrict;
+    private MaterialCardView cardErrorMunicipality;
+    private TextView txtErrorMunicipality;
+    private MaterialCardView cardErrorSection;
+    private TextView txtErrorSection;
+
     private Volunteer volunteer;
     private LocalDataFileManager localDataFileManager;
     private int type;
@@ -89,6 +105,17 @@ public class SectionFragment extends Fragment {
         iconFederalDistrict = binding.iconFederalDistrict;
         iconState = binding.iconState;
 
+        cardErrorState = binding.cardErrorState;
+        txtErrorState = binding.txtErrorState;
+        cardErrorFederalDistrict = binding.cardErrorFederalDistrict;
+        txtErrorFederalDistrict = binding.txtErrorFederalDistrict;
+        cardErrorLocalDistrict = binding.cardErrorLocalDistrict;
+        txtErrorLocalDistrict = binding.txtErrorLocalDistrict;
+        cardErrorMunicipality = binding.cardErrorMunicipality;
+        txtErrorMunicipality = binding.txtErrorMunicipality;
+        cardErrorSection = binding.cardErrorSection;
+        txtErrorSection = binding.txtErrorSection;
+
         if ( type == VolunteerBottomSheet.TYPE_UPDATE ) {
             loadData();
             lytSector.getEditText().setText(volunteer.getSector());
@@ -119,6 +146,8 @@ public class SectionFragment extends Fragment {
                 if ( error.getState().getId() == 0 ) {
                     lytStateNumber.setError("El número no existe");
                     lytStateName.setError("El nombre no existe");
+                    iconState.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorState.setVisibility(View.GONE);
                 } else {
                     if ( error.getState().getId() != volunteer.getSection().getState().getId() ) {
                         lytStateNumber.setError("El número no coincide con el nombre");
@@ -127,7 +156,16 @@ public class SectionFragment extends Fragment {
                         lytStateNumber.setError(null);
                         lytStateName.setError("El nombre no concide con el número");
                     }
+                    iconState.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorState.setVisibility(View.VISIBLE);
+                    StringBuilder errorBuilder = new StringBuilder();
+                    errorBuilder.append("<b>SUGERENCIA: </b>");
+                    errorBuilder.append("Nombre: ").append(error.getState().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getState().getId());
+                    txtErrorState.setText(Html.fromHtml(errorBuilder.toString()));
                 }
+            } else {
+                cardErrorState.setVisibility(View.GONE);
             }
             // Municipio
             if ( error.getMunicipality() != null ) {
@@ -142,11 +180,20 @@ public class SectionFragment extends Fragment {
                         lytMunicipalityNumber.setError(null);
                         lytMunicipalityName.setError("El nombre no coincide con el número");
                     }
+                    cardErrorMunicipality.setVisibility(View.VISIBLE);
+                    StringBuilder errorBuilder = new StringBuilder();
+                    errorBuilder.append("<b>SUGERENCIA: </b>");
+                    errorBuilder.append("Nombre: ").append(error.getMunicipality().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getMunicipality().getNumber());
+                    txtErrorMunicipality.setText(Html.fromHtml(errorBuilder.toString()));
                 }
+            } else {
+                cardErrorMunicipality.setVisibility(View.GONE);
             }
             // Distrito local
             if ( error.getLocalDistrict() != null ) {
                 if ( error.getLocalDistrict().getId() == 0 ) {
+                    iconLocalDistrict.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
                     lytLocalDistrictName.setError("El nombre no existe");
                     lytLocalDistrictNumber.setError("El número no existe");
                 } else {
@@ -157,13 +204,23 @@ public class SectionFragment extends Fragment {
                         lytLocalDistrictNumber.setError(null);
                         lytLocalDistrictName.setError("El nombre no coincide con el número");
                     }
+                    iconLocalDistrict.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorLocalDistrict.setVisibility(View.VISIBLE);
+                    StringBuilder errorBuilder = new StringBuilder();
+                    errorBuilder.append("<b>SUGERENCIA: </b>");
+                    errorBuilder.append("Nombre: ").append(error.getLocalDistrict().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getLocalDistrict().getNumber());
+                    txtErrorLocalDistrict.setText(Html.fromHtml(errorBuilder.toString()));
                 }
+            } else {
+                cardErrorLocalDistrict.setVisibility(View.GONE);
             }
             // Distrito federal
             if ( error.getFederalDistrict() != null ) {
                 if ( error.getFederalDistrict().getId() == 0 ) {
                     lytFederalDistrictName.setError("El nombre no existe");
                     lytFederalDistrictNumber.setError("El número no existe");
+                    iconFederalDistrict.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
                 } else {
                     if ( error.getFederalDistrict().getNumber() != volunteer.getSection().getFederalDistrict().getNumber() ) {
                         lytFederalDistrictNumber.setError("El número no coincide con el nombre");
@@ -172,15 +229,43 @@ public class SectionFragment extends Fragment {
                         lytFederalDistrictNumber.setError(null);
                         lytFederalDistrictName.setError("El nombre no coincide con el número");
                     }
+                    iconFederalDistrict.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorFederalDistrict.setVisibility(View.VISIBLE);
+                    StringBuilder errorBuilder = new StringBuilder();
+                    errorBuilder.append("<b>SUGERENCIA: </b>");
+                    errorBuilder.append("Nombre: ").append(error.getFederalDistrict().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getFederalDistrict().getNumber());
+                    txtErrorFederalDistrict.setText(Html.fromHtml(errorBuilder.toString()));
                 }
+            } else {
+                cardErrorFederalDistrict.setVisibility(View.GONE);
             }
             // Sección
             if ( error.getSection() != null ) {
                 if ( error.getSection().getId() == 0 ) {
                     lytSection.setError("El distrito local, fedaral y/o municipio son incompatibles");
+                    iconSection.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorSection.setVisibility(View.GONE);
                 } else {
                     lytSection.setError("El distrito local, fedaral o municipio no pertenecen a la sección");
+                    iconSection.setColorFilter(ContextCompat.getColor(getContext(), R.color.error));
+                    cardErrorSection.setVisibility(View.VISIBLE);
+                    StringBuilder errorBuilder = new StringBuilder();
+                    errorBuilder.append("<b>SUGERENCIA</b><br>");
+                    errorBuilder.append("<br>Sección: ").append(error.getSection().getSection());
+                    errorBuilder.append("<br><br>Municipio<br>");
+                    errorBuilder.append("Nombre: ").append(error.getSection().getMunicipality().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getSection().getMunicipality().getNumber());
+                    errorBuilder.append("<br><br>Distrito local<br>");
+                    errorBuilder.append("Nombre: ").append(error.getSection().getLocalDistrict().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getSection().getLocalDistrict().getNumber());
+                    errorBuilder.append("<br><br>Distrito federal<br>");
+                    errorBuilder.append("Nombre: ").append(error.getSection().getFederalDistrict().getName()).append(", ");
+                    errorBuilder.append("número: ").append(error.getSection().getFederalDistrict().getNumber());
+                    txtErrorSection.setText(Html.fromHtml(errorBuilder.toString()));
                 }
+            } else {
+                cardErrorSection.setVisibility(View.GONE);
             }
         }
 

@@ -159,6 +159,32 @@ public class VolunteerFileManager {
                     if ( error.getSection() != null ) {
                         JSONObject sectionError = new JSONObject();
                         sectionError.put("id", error.getSection().getId());
+                        if ( error.getSection().getId() != 0 ) {
+                            sectionError.put("section", error.getSection().getSection());
+                            // Estado
+                            JSONObject stateObjectError = new JSONObject();
+                            stateObjectError.put("id", error.getSection().getState().getId());
+                            stateObjectError.put("name", error.getSection().getState().getName());
+                            sectionError.put("state", stateObjectError);
+                            // Municipio
+                            JSONObject municipalityError = new JSONObject();
+                            municipalityError.put("id", error.getSection().getMunicipality().getId());
+                            municipalityError.put("name", error.getSection().getMunicipality().getName());
+                            municipalityError.put("number", error.getSection().getMunicipality().getNumber());
+                            sectionError.put("municipality", municipalityError);
+                            //
+                            JSONObject localDistrictError = new JSONObject();
+                            localDistrictError.put("id", error.getSection().getLocalDistrict().getId());
+                            localDistrictError.put("name", error.getSection().getLocalDistrict().getName());
+                            localDistrictError.put("number", error.getSection().getLocalDistrict().getNumber());
+                            sectionError.put("localDistrict", localDistrictError);
+                            //
+                            JSONObject federalDistrictError = new JSONObject();
+                            federalDistrictError.put("id", error.getSection().getFederalDistrict().getId());
+                            federalDistrictError.put("name", error.getSection().getFederalDistrict().getName());
+                            federalDistrictError.put("number", error.getSection().getFederalDistrict().getNumber());
+                            sectionError.put("federalDistrict", federalDistrictError);
+                        }
                         errorObject.put("section", sectionError);
                     }
                     volunteerObject.put("errors", errorObject);
@@ -330,6 +356,36 @@ public class VolunteerFileManager {
                             JSONObject sectionObjectError = errorObject.getJSONObject("section");
                             Section sectionError = new Section();
                             sectionError.setId(sectionObjectError.getInt("id"));
+                            if ( sectionError.getId() != 0 ) {
+                                sectionError.setSection(sectionObject.getString("section"));
+                                //
+                                JSONObject stateErrorObject = sectionObjectError.getJSONObject("state");
+                                State stateError = new State();
+                                stateError.setId(stateErrorObject.getInt("id"));
+                                stateError.setName(stateErrorObject.getString("name"));
+                                sectionError.setState(stateError);
+                                //
+                                JSONObject municipalityErrorObject = sectionObjectError.getJSONObject("municipality");
+                                Municipality municipalityError = new Municipality();
+                                municipalityError.setId(municipalityErrorObject.getInt("id"));
+                                municipalityError.setNumber(municipalityErrorObject.getInt("number"));
+                                municipalityError.setName(municipalityErrorObject.getString("name"));
+                                sectionError.setMunicipality(municipalityError);
+                                //
+                                JSONObject localDistrictObjectError = sectionObjectError.getJSONObject("localDistrict");
+                                LocalDistrict localDistrictError = new LocalDistrict();
+                                localDistrictError.setId(localDistrictObjectError.getInt("id"));
+                                localDistrictError.setName(localDistrictObjectError.getString("name"));
+                                localDistrictError.setNumber(localDistrictObjectError.getInt("number"));
+                                sectionError.setLocalDistrict(localDistrictError);
+                                //
+                                JSONObject federalDistrictObjectError = sectionObjectError.getJSONObject("federalDistrict");
+                                FederalDistrict federalDistrictError = new FederalDistrict();
+                                federalDistrictError.setId(federalDistrictObjectError.getInt("id"));
+                                federalDistrictError.setName(federalDistrictObjectError.getString("name"));
+                                federalDistrictError.setNumber(federalDistrictObjectError.getInt("number"));
+                                sectionError.setFederalDistrict(federalDistrictError);
+                            }
                             error.setSection(sectionError);
                         }
                         volunteer.setError(error);

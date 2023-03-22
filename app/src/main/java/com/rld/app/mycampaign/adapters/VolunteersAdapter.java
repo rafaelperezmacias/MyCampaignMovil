@@ -113,6 +113,7 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
         }
 
         if ( volunteer.isLoad() ) {
+            holder.divider.setVisibility(View.GONE);
             holder.progressLoad.setVisibility(View.VISIBLE);
             int millis = (int) (Math.random() * 750);
             new CountDownTimer(millis, millis) {
@@ -127,12 +128,11 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             }.start();
         } else {
             holder.progressLoad.setVisibility(View.GONE);
-        }
-
-        if ( position == 0 ) {
-            holder.divider.setVisibility(View.GONE);
-        } else {
-            holder.divider.setVisibility(View.VISIBLE);
+            if ( position == volunteers.size() - 1 ) {
+                holder.divider.setVisibility(View.GONE);
+            } else {
+                holder.divider.setVisibility(View.VISIBLE);
+            }
         }
 
     }

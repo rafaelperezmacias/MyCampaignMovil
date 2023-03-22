@@ -2,7 +2,6 @@ package com.rld.app.mycampaign.fragments.menu;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rld.app.mycampaign.LoginActivity;
-import com.rld.app.mycampaign.MainActivity;
 import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.adapters.LocalSectionAdapter;
 import com.rld.app.mycampaign.api.DownloadManager;
@@ -338,6 +336,7 @@ public class LocalSectionFragment extends Fragment {
             @Override
             public void onSuccessListener() {
                 DownloadManagerPreferences.setIsLocalDataSaved(requireContext(), true);
+                LocalDataPreferences.deleteLocalPreferences(requireContext());
                 fileManager = LocalDataFileManager.getInstanceWithAllData(requireContext(), currentIdStateSelected);
                 states = fileManager.getStates();
                 String[] stringStates = new String[states.size()];

@@ -6,7 +6,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.Html;
 import android.text.Spannable;
@@ -82,6 +84,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
 
     private ActivityResultLauncher<Intent> startCameraPreviewIntent;
     private ActivityResultLauncher<Intent> startFirmActivityIntent;
+    private ActivityResultLauncher<Intent> startExternalStorageIntent;
 
     private VolunteerBottomSheet volunteerBottomSheet;
 
@@ -248,6 +252,31 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             errorMessageDialog.show();
                         }
                         break;
+                    }
+                }
+        );
+
+        startExternalStorageIntent = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.R ) {
+                        if ( !Environment.isExternalStorageManager() ) {
+                            ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                                    .setTitle("Permisos insuficientes")
+                                    .setMessage("La aplicación no cuenta con los permisos suficientes para poder registrar un voluntario")
+                                    .setButtonText("Aceptar")
+                                    .setCancelable(true);
+                            StringBuilder errorMessage = new StringBuilder();
+                            errorMessage.append("Por favor acepte los siguientes permisos: <br>");
+                            errorMessage.append("<b>Almacenamiento</b>").append("<br>");
+                            errorMessage.replace(errorMessage.lastIndexOf("<br>"), errorMessage.lastIndexOf("<br>") + "<br>".length(), "");
+                            builder.setSpannedError(Html.fromHtml(errorMessage.toString()));
+                            ErrorMessageDialog messageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                            messageDialog.setButtonClickListener(v -> {
+                                messageDialog.dismiss();
+                            });
+                            messageDialog.show();
+                        }
                     }
                 }
         );
@@ -413,16 +442,19 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
      */
     @Override
     public void showMenuVolunteer() {
+        AtomicBoolean isUpload = new AtomicBoolean(false);
         MenuVolunteerDialog menuVolunteerDialog = new MenuVolunteerDialog(MainActivity.this, localVolunteers.size());
         menuVolunteerDialog.setBtnAddVolunteerListener(view -> {
             menuVolunteerDialog.dismiss();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    if ( volunteerFragment != null ) {
-                        volunteerFragment.showMenuVolunteer();
-                    }
-                    checkPermissions();
+                    runOnUiThread(() -> {
+                        if ( volunteerFragment != null ) {
+                            volunteerFragment.showMenuVolunteer();
+                        }
+                        checkPermissions();
+                    });
                 }
             };
             Timer timer = new Timer();
@@ -430,17 +462,13 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         });
         menuVolunteerDialog.setBtnUploadListener(view -> {
             menuVolunteerDialog.dismiss();
-            if ( volunteerFragment != null ) {
-                volunteerFragment.showMenuVolunteer();
-            }
+            isUpload.set(true);
             if ( localVolunteers.size() > 0 ) {
                 uploadVolunteersToServer();
-            } else {
-                Toast.makeText(MainActivity.this, "Ningún voluntario disponible para la carga", Toast.LENGTH_SHORT).show();
             }
         });
         menuVolunteerDialog.setOnDismissListener(dialogInterface -> {
-            if ( volunteerFragment != null ) {
+            if ( volunteerFragment != null && !isUpload.get() ) {
                 volunteerFragment.showMenuVolunteer();
             }
         });
@@ -479,6 +507,30 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private void checkPermissions() {
         ArrayList<String> requestPermissions = getListOfPermissionsNotAllowed();
         if ( requestPermissions.isEmpty() ) {
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+                ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                        .setTitle("Permiso de almacenamiento")
+                        .setMessage("Acepte el siguiente permiso para poder registrar a un voluntario")
+                        .setError("Esto es necesario para poder gestionar procesos de control interno")
+                        .setButtonText("Conceder")
+                        .setCancelable(true);
+                ErrorMessageDialog dialog = new ErrorMessageDialog(MainActivity.this, builder);
+                dialog.setButtonClickListener(v -> {
+                    try {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                        intent.addCategory("android.intent.category.DEFAULT");
+                        intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+                        startExternalStorageIntent.launch(intent);
+                    } catch ( Exception ex ) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startExternalStorageIntent.launch(intent);
+                    }
+                    dialog.dismiss();
+                });
+                dialog.show();
+                return;
+            }
             startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
         } else {
             String[] permissions = new String[requestPermissions.size()];
@@ -495,6 +547,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private ArrayList<String> getListOfPermissionsNotAllowed() {
         ArrayList<String> permissionsNotAllowed = new ArrayList<>();
         for ( String permission : REQUEST_PERMISSIONS ) {
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE) ) {
+                continue;
+            }
             if ( ContextCompat.checkSelfPermission(MainActivity.this, permission) != PackageManager.PERMISSION_GRANTED ) {
                 permissionsNotAllowed.add(permission);
             }
@@ -826,6 +881,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         progressDialog.show();
         if ( !Internet.isNetworkAvailable(getApplicationContext()) || !Internet.isOnlineNetwork() ) {
             progressDialog.dismiss();
+            if ( volunteerFragment != null ) {
+                volunteerFragment.showMenuVolunteer();
+            }
             MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
                     .setTitle("Sin conexión a internet")
                     .setMessage("Para almacenar los voluntarios locales se necesita de una conexión a internet")
@@ -887,6 +945,9 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                         ex.printStackTrace();
                     }
                     volunteer.setLoad(false);
+                    if ( volunteerFragment != null ) {
+                        volunteerFragment.notifyChangeOnRecyclerView(index + remoteVolunteers.size());
+                    }
                     nextVolunteerRequest(volunteers, index + 1, volunteersToRemove);
                     return;
                 }
@@ -902,6 +963,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
                 if ( volunteerFragment != null ) {
                     volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                    volunteerFragment.showMenuVolunteer();
                 }
                 if ( response.code() == 401 ) {
                     MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder();
@@ -960,6 +1022,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
                 VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
                 if ( volunteerFragment != null ) {
+                    volunteerFragment.showMenuVolunteer();
                     volunteerFragment.updateVolunteers(volunteersToRecyclerView());
                 }
                 if ( t instanceof SocketTimeoutException) {
@@ -979,6 +1042,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
             VolunteerFileManager.writeJSON(remoteVolunteers, false, MainActivity.this);
             if ( volunteerFragment != null ) {
                 volunteerFragment.updateVolunteers(volunteersToRecyclerView());
+                volunteerFragment.showMenuVolunteer();
             }
             return;
         }
@@ -1064,6 +1128,36 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 int id = sectionObject.getInt("id");
                 Section section = new Section();
                 section.setId(id);
+                if ( id != 0 ) {
+                    section.setSection(sectionObject.getString("section"));
+                    // Estado
+                    JSONObject stateObject = sectionObject.getJSONObject("state");
+                    State state = new State();
+                    state.setId(stateObject.getInt("id"));
+                    state.setName(stateObject.getString("name"));
+                    section.setState(state);
+                    // Municipio
+                    JSONObject municipalityObject = sectionObject.getJSONObject("municipality");
+                    Municipality municipality = new Municipality();
+                    municipality.setId(municipalityObject.getInt("id"));
+                    municipality.setNumber(municipalityObject.getInt("number"));
+                    municipality.setName(municipalityObject.getString("name"));
+                    section.setMunicipality(municipality);
+                    //
+                    JSONObject federalDistrictObject = sectionObject.getJSONObject("federal_district");
+                    FederalDistrict federalDistrict = new FederalDistrict();
+                    federalDistrict.setId(federalDistrictObject.getInt("id"));
+                    federalDistrict.setNumber(federalDistrictObject.getInt("number"));
+                    federalDistrict.setName(federalDistrictObject.getString("name"));
+                    section.setFederalDistrict(federalDistrict);
+                    //
+                    JSONObject localDistrictObject = sectionObject.getJSONObject("local_district");
+                    LocalDistrict localDistrict = new LocalDistrict();
+                    localDistrict.setId(localDistrictObject.getInt("id"));
+                    localDistrict.setNumber(localDistrictObject.getInt("number"));
+                    localDistrict.setName(localDistrictObject.getString("name"));
+                    section.setLocalDistrict(localDistrict);
+                }
                 error.setSection(section);
             }
         } catch ( JSONException ex ) {
@@ -1093,11 +1187,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         MessageDialogBuilder builder = new MessageDialogBuilder()
                 .setTitle("Alerta")
                 .setMessage("¿Esta seguro de querer eliminar el registro del voluntario?")
-                .setPrimaryButtonText("Eliminar")
-                .setSecondaryButtonText("Cancelar")
+                .setSecondaryButtonText("Eliminar")
+                .setPrimaryButtonText("Cancelar")
                 .setCancelable(false);
         MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
-        messageDialog.setPrimaryButtonListener(view -> {
+        messageDialog.setSecondaryButtonListener(view -> {
             localVolunteers.remove(volunteer);
             VolunteerFileManager.writeJSON(localVolunteers, true, MainActivity.this);
             if ( volunteerFragment != null ) {
@@ -1121,7 +1215,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                     .show();
             messageDialog.dismiss();
         });
-        messageDialog.setSecondaryButtonListener(view -> messageDialog.dismiss());
+        messageDialog.setPrimaryButtonListener(view -> messageDialog.dismiss());
         messageDialog.show();
     }
 
