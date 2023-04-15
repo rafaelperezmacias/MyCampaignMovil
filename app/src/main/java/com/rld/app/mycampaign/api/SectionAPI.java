@@ -15,36 +15,36 @@ import retrofit2.http.Query;
 
 public interface SectionAPI {
 
-    @GET("MyCampaignWeb/public/api/states")
+    @GET("api/states")
     Call<ArrayList<State>> getStates(
             @Header("Authorization") String authorization
     );
 
-    @GET("MyCampaignWeb/public/api/federal-districts")
+    @GET("api/federal-districts")
     Call<ArrayList<FederalDistrict>> getFederalDistricts(
             @Header("Authorization") String authorization,
             @Query("stateId") int stateId
     );
 
-    @GET("MyCampaignWeb/public/api/local-districts")
+    @GET("api/local-districts")
     Call<ArrayList<LocalDistrict>> getLocalDistricts(
             @Header("Authorization") String authorization,
             @Query("stateId") int stateId
     );
 
-    @GET("MyCampaignWeb/public/api/municipalities")
+    @GET("api/municipalities")
     Call<ArrayList<Municipality>> getMunicipalities(
             @Header("Authorization") String authorization,
             @Query("stateId") int stateId
     );
 
-    @GET("MyCampaignWeb/public/api/sections")
+    @GET("api/sections")
     Call<PageSectionAPI> getSections(
             @Header("Authorization") String authorization,
             @Query("stateId") int stateId
     );
 
-    @GET("MyCampaignWeb/public/api/sections")
+    @GET("api/sections")
     Call<PageSectionAPI> getSectionsByPage(
             @Header("Authorization") String authorization,
             @Query("stateId") int stateId,

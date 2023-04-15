@@ -10,20 +10,16 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.rld.app.mycampaign.MainActivity;
+import com.rld.app.mycampaign.R;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
 import com.rld.app.mycampaign.models.Address;
 import com.rld.app.mycampaign.models.Volunteer;
-import com.rld.app.mycampaign.R;
 
 import java.util.ArrayList;
 
@@ -119,7 +115,6 @@ public class VolunteersAdapter extends RecyclerView.Adapter<VolunteersAdapter.Vi
             new CountDownTimer(millis, millis) {
                 @Override
                 public void onTick(long l) {
-
                 }
                 @Override
                 public void onFinish() {

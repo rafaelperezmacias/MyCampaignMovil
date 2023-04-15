@@ -8,7 +8,7 @@ import retrofit2.http.Header;
 
 public interface CampaignAPI {
 
-    @GET("MyCampaignWeb/public/api/campaigns")
+    @GET("api/campaigns")
     Call<Campaign> getCurrentCampaign(
             @Header("Authorization") String authorization
     );

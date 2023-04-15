@@ -113,7 +113,7 @@ public class ContactFragment extends Fragment {
                         ((MaterialAutoCompleteTextView) lytStates.getEditText()).setText(volunteer.getSection().getState().getName(), false);
                         isValidState = true;
                         if ( isValidSection(volunteer.getSection().getSection()) ) {
-                            lytSections.getEditText().setText(volunteer.getSection().getSection());
+                            ((MaterialAutoCompleteTextView) lytSections.getEditText()).setText(volunteer.getSection().getSection(), false);
                             lytSections.setVisibility(View.VISIBLE);
                             isValidSection = true;
                         } else if ( currentStateName.equals(volunteer.getSection().getState().getName()) ) {

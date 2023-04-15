@@ -78,4 +78,5 @@ public class JustifyTextView extends androidx.appcompat.widget.AppCompatTextView
             return line.charAt(line.length() - 1) != '\n';
         }
     }
+
 }

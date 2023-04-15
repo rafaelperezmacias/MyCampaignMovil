@@ -14,13 +14,13 @@ import retrofit2.http.POST;
 
 public interface VolunteerAPI {
 
-    @POST("MyCampaignWeb/public/api/volunteers/save")
+    @POST("api/volunteers/save")
     Call<VolunteerResponse> saveVolunteer(
             @Header("Authorization") String authorization,
             @Body VolunteerRequest volunteerRequest
     );
 
-    @GET("MyCampaignWeb/public/api/volunteers/mobile")
+    @GET("api/volunteers/mobile")
     Call<ArrayList<ServerVolunteer>> getVolunteers(
             @Header("Authorization") String authorization
     );

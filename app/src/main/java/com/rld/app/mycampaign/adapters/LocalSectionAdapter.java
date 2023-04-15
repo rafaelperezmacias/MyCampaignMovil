@@ -11,11 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rld.app.mycampaign.R;
-import com.rld.app.mycampaign.models.Entity;
 import com.rld.app.mycampaign.models.EntitySelect;
 
 import java.util.ArrayList;
-import java.util.function.Function;
 
 public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapter.ViewHolder> {
 
@@ -63,6 +61,5 @@ public class LocalSectionAdapter extends RecyclerView.Adapter<LocalSectionAdapte
         }
 
     }
-
 
 }

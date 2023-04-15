@@ -3,14 +3,11 @@ package com.rld.app.mycampaign;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -36,15 +33,11 @@ import com.rld.app.mycampaign.models.api.UserRequest;
 import com.rld.app.mycampaign.preferences.CampaignPreferences;
 import com.rld.app.mycampaign.preferences.TokenPreferences;
 import com.rld.app.mycampaign.preferences.UserPreferences;
-import com.rld.app.mycampaign.secrets.AppConfig;
 import com.rld.app.mycampaign.utils.Internet;
 import com.rld.app.mycampaign.utils.TextInputLayoutUtils;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
