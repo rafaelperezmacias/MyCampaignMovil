@@ -1,4 +1,4 @@
-package com.rld.app.mycampaign;
+package com.rld.app.mycampaign.camera;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,11 +18,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.rld.app.mycampaign.R;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-public class CameraPreview extends AppCompatActivity {
+public class DefaultCameraPreview extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_CODE = 100;
 
@@ -59,8 +61,8 @@ public class CameraPreview extends AppCompatActivity {
     }
 
     public void checkPermission(String permission, int requestCode) {
-        if ( ContextCompat.checkSelfPermission(CameraPreview.this, permission) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(CameraPreview.this, new String[]{ permission }, requestCode);
+        if ( ContextCompat.checkSelfPermission(DefaultCameraPreview.this, permission) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(DefaultCameraPreview.this, new String[]{ permission }, requestCode);
         } else {
             takePhoto();
         }

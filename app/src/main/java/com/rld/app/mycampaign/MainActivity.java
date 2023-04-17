@@ -1,6 +1,7 @@
 package com.rld.app.mycampaign;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -41,6 +42,8 @@ import com.rld.app.mycampaign.api.Client;
 import com.rld.app.mycampaign.api.DownloadManager;
 import com.rld.app.mycampaign.api.VolunteerAPI;
 import com.rld.app.mycampaign.bottomsheets.VolunteerBottomSheet;
+import com.rld.app.mycampaign.camera.DefaultCameraPreview;
+import com.rld.app.mycampaign.camera.CustomCameraPreview;
 import com.rld.app.mycampaign.databinding.ActivityMainBinding;
 import com.rld.app.mycampaign.dialogs.ErrorMessageDialog;
 import com.rld.app.mycampaign.dialogs.ErrorMessageDialogBuilder;
@@ -96,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private ActivityResultLauncher<Intent> startCameraPreviewIntent;
+    private ActivityResultLauncher<Intent> startCustomCameraPreviewIntent;
+    private ActivityResultLauncher<Intent> startDefaultCameraPreviewIntent;
     private ActivityResultLauncher<Intent> startFirmActivityIntent;
     private ActivityResultLauncher<Intent> startExternalStorageIntent;
 
@@ -173,12 +177,12 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         TextView txtName = headerLayout.findViewById(R.id.txt_name);
         TextView txtEmail = headerLayout.findViewById(R.id.txt_email);
 
-        startCameraPreviewIntent = registerForActivityResult(
+        startDefaultCameraPreviewIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    switch (result.getResultCode()) {
-                        case CameraPreview.RESULT_OK: {
-                            if (result.getData() != null) {
+                    switch ( result.getResultCode() ) {
+                        case DefaultCameraPreview.RESULT_OK: {
+                            if ( result.getData() != null ) {
                                 String path = result.getData().getStringExtra("imagePath");
                                 currentVolunteer = new Volunteer();
                                 initializeImageOfVolunteer(currentVolunteer, path, true);
@@ -186,11 +190,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             }
                         }
                         break;
-                        case CameraPreview.RESULT_CAMERA_NOT_PERMISSION: {
-                            Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                        case CameraPreview.RESULT_IMAGE_NOT_TAKEN: {
+                        case DefaultCameraPreview.RESULT_IMAGE_NOT_TAKEN: {
                             MessageDialogBuilder builder = new MessageDialogBuilder()
                                     .setTitle("Imagen no tómada")
                                     .setMessage("Para registrar a un voluntario es necesario tomar una fotografía a su identificación oficial")
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                             messageDialog.show();
                         }
                         break;
-                        case CameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
+                        case DefaultCameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
                             ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
                                     .setTitle("Imagen no tómada")
                                     .setMessage("La fotografía no se pudo crear de manera satisfactoria")
@@ -217,12 +217,74 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 }
         );
 
+        startCustomCameraPreviewIntent = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    switch ( result.getResultCode() ) {
+                        case CustomCameraPreview.RESULT_OK: {
+                            if ( result.getData() != null ) {
+                                String path = result.getData().getStringExtra("imagePath");
+                                currentVolunteer = new Volunteer();
+                                initializeImageOfVolunteer(currentVolunteer, path, true);
+                                showFormVolunteerWithOCR(currentVolunteer);
+                            }
+                        }
+                        break;
+                        case CustomCameraPreview.RESULT_IMAGE_NOT_TAKEN: {
+                            MessageDialogBuilder builder = new MessageDialogBuilder()
+                                    .setTitle("Imagen no tómada")
+                                    .setMessage("Para registrar a un voluntario es necesario tomar una fotografía a su identificación oficial")
+                                    .setPrimaryButtonText("Aceptar")
+                                    .setCancelable(true);
+                            MessageDialog messageDialog = new MessageDialog(MainActivity.this, builder);
+                            messageDialog.setPrimaryButtonListener(v -> messageDialog.dismiss());
+                            messageDialog.show();
+                        }
+                        break;
+                        case CustomCameraPreview.RESULT_IMAGE_FILE_NOT_CREATE: {
+                            String error = null;
+                            if ( result.getData() != null ) {
+                                error = result.getData().getStringExtra("error");
+                            }
+                            ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                                    .setTitle("Imagen no tómada")
+                                    .setMessage("La fotografía no se pudo crear de manera satisfactoria")
+                                    .setError(error)
+                                    .setButtonText("Aceptar")
+                                    .setCancelable(true);
+                            ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                            errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
+                            errorMessageDialog.show();
+                        }
+                        break;
+                        case CustomCameraPreview.RESULT_ERROR: {
+                            String error = null;
+                            if ( result.getData() != null ) {
+                                error = result.getData().getStringExtra("error");
+                            }
+                            ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
+                                    .setTitle("Error")
+                                    .setMessage("Ocurrio un problema al intentar utilizar la cámara")
+                                    .setError(error)
+                                    .setButtonText("Aceptar")
+                                    .setCancelable(true);
+                            ErrorMessageDialog errorMessageDialog = new ErrorMessageDialog(MainActivity.this, builder);
+                            errorMessageDialog.setButtonClickListener(v -> errorMessageDialog.dismiss());
+                            errorMessageDialog.setOnDismissListener(dialog -> {
+                                startDefaultCameraPreviewIntent.launch(new Intent(MainActivity.this, DefaultCameraPreview.class));
+                            });
+                            errorMessageDialog.show();
+                        }
+                    }
+                }
+        );
+
         startFirmActivityIntent = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    switch (result.getResultCode()) {
+                    switch ( result.getResultCode() ) {
                         case FirmActivity.RESULT_ACCEPTED_FIRM: {
-                            if (result.getData() != null) {
+                            if ( result.getData() != null ) {
                                 String path = result.getData().getStringExtra("imageFirmPath");
                                 initializeImageOfVolunteer(currentVolunteer, path, false);
                                 addLocalVolunteer();
@@ -531,7 +593,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 dialog.show();
                 return;
             }
-            startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
+                startCustomCameraPreviewIntent.launch(new Intent(MainActivity.this, CustomCameraPreview.class));
+            } else {
+                startDefaultCameraPreviewIntent.launch(new Intent(MainActivity.this, DefaultCameraPreview.class));
+            }
         } else {
             String[] permissions = new String[requestPermissions.size()];
             for ( int i = 0; i < requestPermissions.size(); i++ ) {
@@ -572,7 +638,11 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
                 }
             }
             if ( isAllGranted ) {
-                startCameraPreviewIntent.launch(new Intent(MainActivity.this, CameraPreview.class));
+                if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ) {
+                    startCustomCameraPreviewIntent.launch(new Intent(MainActivity.this, CustomCameraPreview.class));
+                } else {
+                    startDefaultCameraPreviewIntent.launch(new Intent(MainActivity.this, DefaultCameraPreview.class));
+                }
             } else {
                 ErrorMessageDialogBuilder builder = new ErrorMessageDialogBuilder()
                         .setTitle("Permisos insuficientes")

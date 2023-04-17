@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
-        android:maxSdkVersion="28"
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -20,34 +18,31 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FuturoApp"
-        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".camera.CustomCameraPreview"
+            android:exported="false" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:windowSoftInputMode="stateHidden" />
-
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".firm.FirmActivity" />
-
-        <activity
-            android:name=".CameraPreview" />
+        <activity android:name=".firm.FirmActivity" />
+        <activity android:name=".camera.DefaultCameraPreview" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -58,7 +53,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
