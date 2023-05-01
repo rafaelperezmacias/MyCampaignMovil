@@ -25,8 +25,7 @@ public class ReadImageText {
 
     // Given path must contain subdirectory `tessdata` where are `*.traineddata` language files
     String dataPath = new File(Environment.getExternalStorageDirectory()+"/tesseract").getAbsolutePath();
-
-
+    
     public ReadImageText(Context context, String lang) throws IOException {
         this.context=context;
 

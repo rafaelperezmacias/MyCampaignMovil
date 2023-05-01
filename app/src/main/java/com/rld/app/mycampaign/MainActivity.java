@@ -722,116 +722,156 @@ public class MainActivity extends AppCompatActivity implements VolunteerFragment
         if ( !readINE.isFourSides() ) {
             return;
         }
-        Log.e("nacimiento", readINE.getString("nacimiento"));
-        Log.e("sexo", readINE.getString("sexo"));
-        Log.e("nombre", readINE.getString("nombre"));
-        Log.e("domicilio", readINE.getString("domicilio"));
-        Log.e("clave", readINE.getString("clave"));
-        Log.e("curp", readINE.getString("curp"));
-        Log.e("estado", readINE.getString("estado"));
-        Log.e("municipio", readINE.getString("municipio"));
-        Log.e("seccion", readINE.getString("seccion"));
-        Log.e("localidad", readINE.getString("localidad"));
+        try {
+            Log.e("nacimiento", readINE.getString("nacimiento"));
+            Log.e("sexo", readINE.getString("sexo"));
+            Log.e("nombre", readINE.getString("nombre"));
+            Log.e("domicilio", readINE.getString("domicilio"));
+            Log.e("clave", readINE.getString("clave"));
+            Log.e("curp", readINE.getString("curp"));
+            Log.e("estado", readINE.getString("estado"));
+            Log.e("municipio", readINE.getString("municipio"));
+            Log.e("seccion", readINE.getString("seccion"));
+            Log.e("localidad", readINE.getString("localidad"));
 
-        // Nombre
-        String[] ocrFullName = readINE.getString("nombre").split("\n");
-        if (ocrFullName.length == 3) {
-            volunteer.setFathersLastname(removeInvalidCharacters(ocrFullName[0].trim(), "[A-ZÑ]"));
-            volunteer.setMothersLastname(removeInvalidCharacters(ocrFullName[1].trim(), "[A-ZÑ]"));
-            volunteer.setName(removeInvalidCharacters(ocrFullName[2].trim(), "[A-ZÑ]"));
-        }
-        // Fecha de nacimiento
-        String ocrBirthdate = removeInvalidCharacters(readINE.getString("nacimiento"), "[0-9/]");
-        if ( ocrBirthdate.matches("[0-3]*[0-9]{1}/[0-1]{1}[0-9]{1}/[0-9]{4}") ) {
-            Calendar calendar = Calendar.getInstance();
-            String[] birthdate = ocrBirthdate.split("/");
-            calendar.set(Calendar.YEAR, Integer.parseInt(birthdate[2]));
-            calendar.set(Calendar.MONTH, Integer.parseInt(birthdate[1]) - 1);
-            calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(birthdate[0]));
-            volunteer.setBirthdate(calendar);
-        }
-        // Domicilio
-        String[] ocrAddress = readINE.getString("domicilio").split("\n");
-        if ( ocrAddress.length == 2 || ocrAddress.length == 3) {
-            Address address = new Address();
-            // Calle
-            String ocrStreet = removeInvalidCharacters(ocrAddress[0].trim(), "[A-ZÑ0-9 ]");
-            if ( ocrStreet.startsWith("C ") ) {
-                ocrStreet = ocrStreet.substring(ocrStreet.indexOf("C ") + "C ".length());
+            // Nombre
+            String[] ocrFullName = readINE.getString("nombre").split("\n");
+            if (ocrFullName.length == 3) {
+                volunteer.setFathersLastname(removeInvalidCharacters(ocrFullName[0].trim(), "[A-ZÑ]"));
+                volunteer.setMothersLastname(removeInvalidCharacters(ocrFullName[1].trim(), "[A-ZÑ]"));
+                volunteer.setName(removeInvalidCharacters(ocrFullName[2].trim(), "[A-ZÑ]"));
             }
-            String[] streetFields = ocrStreet.split(" ");
-            int idxExternalNumber = 0;
-            for ( int i = 0; i < streetFields.length; i++ ) {
-                if ( streetFields[i].matches("[0-9]+") ) {
-                    idxExternalNumber = i;
-                    break;
-                }
-            }
-            StringBuilder street = new StringBuilder();
-            for ( int i = 0; i < idxExternalNumber; i++ ) {
-                street.append(streetFields[i]).append(" ");
-            }
-            address.setStreet(street.toString());
-            address.setExternalNumber(streetFields[idxExternalNumber]);
-            if ( idxExternalNumber == streetFields.length - 2 ) {
-                address.setInternalNumber(streetFields[idxExternalNumber + 1]);
-            }
-            // Colonia y codigo postal
-            String ocrSuburb = removeInvalidCharacters(ocrAddress[1].trim(), "[A-ZÑ0-9 ]");
-            if ( ocrSuburb.startsWith("COL ") ) {
-                ocrSuburb = ocrSuburb.substring(ocrSuburb.indexOf("COL ") + "COL ".length());
-            }
-            String[] suburbFields = ocrSuburb.split(" ");
-            if ( suburbFields.length > 1 ) {
-                StringBuilder suburb = new StringBuilder();
-                for ( int i = 0; i < suburbFields.length - 1; i++ ) {
-                    suburb.append(suburbFields[i]).append(" ");
-                }
-                address.setSuburb(suburb.toString());
-                address.setZipcode(suburbFields[suburbFields.length - 1]);
+            // Fecha de nacimiento
+            String ocrBirthdate = removeInvalidCharacters(readINE.getString("nacimiento"), "[0-9/]");
+            if ( ocrBirthdate.matches("[0-3]*[0-9]{1}/[0-1]{1}[0-9]{1}/[0-9]{4}") ) {
+                Calendar calendar = Calendar.getInstance();
+                String[] birthdate = ocrBirthdate.split("/");
+                calendar.set(Calendar.YEAR, Integer.parseInt(birthdate[2]));
+                calendar.set(Calendar.MONTH, Integer.parseInt(birthdate[1]) - 1);
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(birthdate[0]));
+                volunteer.setBirthdate(calendar);
             } else {
-                address.setSuburb(suburbFields[0]);
+                Calendar calendar = Calendar.getInstance();
+                String[] birthdate = ocrBirthdate.split("/");
+                switch ( birthdate.length ) {
+                    case 1: {
+                        int day = Integer.parseInt(birthdate[0]);
+                        if ( day > 0 && day < 31) {
+                            calendar.set(Calendar.DAY_OF_MONTH, day);
+                        }
+                    } break;
+                    case 2: {
+                        int day = Integer.parseInt(birthdate[0]);
+                        if ( day > 0 && day <= 31) {
+                            calendar.set(Calendar.DAY_OF_MONTH, day);
+                        }
+                        int month = Integer.parseInt(birthdate[1]);
+                        if ( month > 0 && month <= 12 ) {
+                            calendar.set(Calendar.MONTH, month - 1);
+                        }
+                    } break;
+                    case 3: {
+                        int day = Integer.parseInt(birthdate[0]);
+                        if ( day > 0 && day <= 31) {
+                            calendar.set(Calendar.DAY_OF_MONTH, day);
+                        }
+                        int month = Integer.parseInt(birthdate[1]);
+                        if ( month > 0 && month <= 12 ) {
+                            calendar.set(Calendar.MONTH, month - 1);
+                        }
+                        int year = Integer.parseInt(birthdate[2]);
+                        if ( year > 1970 && year < 2100 ) {
+                            calendar.set(Calendar.YEAR, year);
+                        }
+                    } break;
+                }
+                volunteer.setBirthdate(calendar);
             }
-            volunteer.setAddress(address);
-        }
-        // Seccion
-        String ocrState = removeInvalidCharacters(readINE.getString("estado").trim(), "[0-9]");
-        String stateId = findBiggestString(ocrState, "[0-9]+");
-        String ocrMunicipality = removeInvalidCharacters(readINE.getString("municipio").trim(), "[0-9]");
-        String municipalityNumber = findBiggestString(ocrMunicipality,"[0-9]+");
-        String ocrSection = removeInvalidCharacters(readINE.getString("seccion").trim(), "[0-9]");
-        String sectionNumber = findBiggestString(ocrSection, "[0-9]+");
-
-        State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId.equals("") ? "0" : stateId));
-        if ( state != null ) {
-            Section section = null;
-            String currentStateName = LocalDataPreferences.getNameStateSelected(getApplicationContext());
-            if ( currentStateName.equalsIgnoreCase(state.getName()) ) {
-                for ( int i = 0; i < localDataFileManager.getSections().size(); i++ ) {
-                    if ( localDataFileManager.getSections().get(i).getSection().equals(String.valueOf(sectionNumber))
-                            && localDataFileManager.getSections().get(i).getMunicipality().getNumber() == Integer.parseInt(municipalityNumber)) {
-                        section = localDataFileManager.getSections().get(i);
+            // Domicilio
+            String[] ocrAddress = readINE.getString("domicilio").split("\n");
+            if ( ocrAddress.length == 2 || ocrAddress.length == 3) {
+                Address address = new Address();
+                // Calle
+                String ocrStreet = removeInvalidCharacters(ocrAddress[0].trim(), "[A-ZÑ0-9 ]");
+                if ( ocrStreet.startsWith("C ") ) {
+                    ocrStreet = ocrStreet.substring(ocrStreet.indexOf("C ") + "C ".length());
+                }
+                String[] streetFields = ocrStreet.split(" ");
+                int idxExternalNumber = 0;
+                for ( int i = 0; i < streetFields.length; i++ ) {
+                    if ( streetFields[i].matches("[0-9]+") ) {
+                        idxExternalNumber = i;
                         break;
                     }
                 }
-            }
-            if ( section == null ) {
-                section = new Section();
-                section.setState(state);
-                if ( !municipalityNumber.isEmpty() ) {
-                    Municipality municipality = new Municipality();
-                    municipality.setNumber(Integer.parseInt(municipalityNumber));
-                    section.setMunicipality(municipality);
+                StringBuilder street = new StringBuilder();
+                for ( int i = 0; i < idxExternalNumber; i++ ) {
+                    street.append(streetFields[i]).append(" ");
                 }
-                section.setSection(sectionNumber);
+                address.setStreet(street.toString());
+                address.setExternalNumber(streetFields[idxExternalNumber]);
+                if ( idxExternalNumber == streetFields.length - 2 ) {
+                    address.setInternalNumber(streetFields[idxExternalNumber + 1]);
+                }
+                // Colonia y codigo postal
+                String ocrSuburb = removeInvalidCharacters(ocrAddress[1].trim(), "[A-ZÑ0-9 ]");
+                if ( ocrSuburb.startsWith("COL ") ) {
+                    ocrSuburb = ocrSuburb.substring(ocrSuburb.indexOf("COL ") + "COL ".length());
+                }
+                String[] suburbFields = ocrSuburb.split(" ");
+                if ( suburbFields.length > 1 ) {
+                    StringBuilder suburb = new StringBuilder();
+                    for ( int i = 0; i < suburbFields.length - 1; i++ ) {
+                        suburb.append(suburbFields[i]).append(" ");
+                    }
+                    address.setSuburb(suburb.toString());
+                    address.setZipcode(suburbFields[suburbFields.length - 1]);
+                } else {
+                    address.setSuburb(suburbFields[0]);
+                }
+                volunteer.setAddress(address);
             }
-            volunteer.setSection(section);
+            // Seccion
+            String ocrState = removeInvalidCharacters(readINE.getString("estado").trim(), "[0-9]");
+            String stateId = findBiggestString(ocrState, "[0-9]+");
+            String ocrMunicipality = removeInvalidCharacters(readINE.getString("municipio").trim(), "[0-9]");
+            String municipalityNumber = findBiggestString(ocrMunicipality,"[0-9]+");
+            String ocrSection = removeInvalidCharacters(readINE.getString("seccion").trim(), "[0-9]");
+            String sectionNumber = findBiggestString(ocrSection, "[0-9]+");
+
+            State state = LocalDataFileManager.findState(localDataFileManager.getStates(), Integer.parseInt(stateId.equals("") ? "0" : stateId));
+            if ( state != null ) {
+                Section section = null;
+                String currentStateName = LocalDataPreferences.getNameStateSelected(getApplicationContext());
+                if ( currentStateName.equalsIgnoreCase(state.getName()) ) {
+                    for ( int i = 0; i < localDataFileManager.getSections().size(); i++ ) {
+                        if ( localDataFileManager.getSections().get(i).getSection().equals(String.valueOf(sectionNumber))
+                                && localDataFileManager.getSections().get(i).getMunicipality().getNumber() == Integer.parseInt(municipalityNumber)) {
+                            section = localDataFileManager.getSections().get(i);
+                            break;
+                        }
+                    }
+                }
+                if ( section == null ) {
+                    section = new Section();
+                    section.setState(state);
+                    if ( !municipalityNumber.isEmpty() ) {
+                        Municipality municipality = new Municipality();
+                        municipality.setNumber(Integer.parseInt(municipalityNumber));
+                        section.setMunicipality(municipality);
+                    }
+                    section.setSection(sectionNumber);
+                }
+                volunteer.setSection(section);
+            }
+            // Clave de elector
+            String ocrElectoralKey = removeInvalidCharacters(readINE.getString("clave"), "[0-9A-ZÑ ]");
+            String electoralKey = findBiggestString(ocrElectoralKey, "[0-9A-ZN ]+");
+            volunteer.setElectorKey(electoralKey);
+            readINE.kill();
+        } catch ( Exception e ) {
+            readINE.kill();
         }
-        // Clave de elector
-        String ocrElectoralKey = removeInvalidCharacters(readINE.getString("clave"), "[0-9A-ZÑ ]");
-        String electoralKey = findBiggestString(ocrElectoralKey, "[0-9A-ZN ]+");
-        volunteer.setElectorKey(electoralKey);
-        readINE.kill();
     }
 
     /**

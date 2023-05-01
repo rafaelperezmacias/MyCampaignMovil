@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -15,14 +13,11 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.Image;
-import android.media.ImageReader;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -31,12 +26,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,10 +42,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 public class CustomCameraPreview extends AppCompatActivity {
@@ -129,6 +118,7 @@ public class CustomCameraPreview extends AppCompatActivity {
                 btnTakePicture.setImageResource(R.drawable.round_refresh_24);
                 return;
             }
+            startBackgroundThread();
             if ( currentImageFile != null && currentImageFile.exists() ) {
                 currentImageFile.delete();
                 currentImageFile = null;
@@ -188,6 +178,7 @@ public class CustomCameraPreview extends AppCompatActivity {
                 setResult(RESULT_IMAGE_FILE_NOT_CREATE);
                 finish();
             }
+            stopBackgroundThread();
             imageTaken.setImageBitmap(textureView.getBitmap());
             lytImage.setVisibility(View.VISIBLE);
             textureView.setVisibility(View.GONE);
@@ -332,7 +323,9 @@ public class CustomCameraPreview extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        startBackgroundThread();
+        if ( currentImageFile == null ) {
+            startBackgroundThread();
+        }
         if ( textureView.isAvailable() ) {
             openCamera();
         } else {
@@ -343,7 +336,9 @@ public class CustomCameraPreview extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopBackgroundThread();
+        if ( currentImageFile == null ) {
+            stopBackgroundThread();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -351,7 +346,7 @@ public class CustomCameraPreview extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if ( progressDialog != null ) {
-            progressDialog.show();
+            progressDialog.dismiss();
         }
         if ( cameraDevice != null ) {
             cameraDevice.close();
