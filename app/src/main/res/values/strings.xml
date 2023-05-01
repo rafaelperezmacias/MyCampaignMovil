@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FuturoApp</string>
+    <string name="app_name">My Campaign</string>
     <string name="icon">icon</string>
 
     <!-- inputs caracter -->
@@ -7,10 +7,12 @@
 
     <!-- Volunteer BottomSheet  -->
     <string name="fbs_title">Registro de voluntario</string>
-    <string name="fbs_step1">Paso 1 de 4</string>
-    <string name="fbs_step2">Paso 2 de 4</string>
-    <string name="fbs_step3">Paso 3 de 4</string>
-    <string name="fbs_step4">Paso 4 de 4</string>
+    <string name="fbs_step1">Paso 1 de 6</string>
+    <string name="fbs_step2">Paso 2 de 6</string>
+    <string name="fbs_step3">Paso 3 de 6</string>
+    <string name="fbs_step4">Paso 4 de 6</string>
+    <string name="fbs_step5">Paso 5 de 6</string>
+    <string name="fbs_step6">Paso 6 de 6</string>
     <string name="fbs_continue">CONTINUAR</string>
     <string name="fbs_finish">FINALIZAR</string>
     <string name="fbs_snackbar">Voluntario registrado con éxito</string>
@@ -24,7 +26,7 @@
     <string name="fpvbs_lastName2_error">Ingrese el apellido materno</string>
     <string name="fpvbs_street">Calle</string>
     <string name="fpvbs_street_error">Ingrese la calle</string>
-    <string name="fpvbs_complement">Número Interior</string>
+    <string name="fpvbs_complement">Número Interior (Opcional)</string>
     <string name="fpvbs_out_number">Número Exterior</string>
     <string name="fpvbs_out_number_error">Ingrese el número exterior</string>
     <string name="fpvbs_cp">Código Postal</string>
@@ -41,7 +43,7 @@
     <string name="fcvbs_email_error">Ingrese el correo electrónico</string>
     <string name="fcvbs_phone">Teléfono</string>
     <string name="fcvbs_phone_error">Ingrese el teléfono</string>
-    <string name="fcvbs_searchSection">Búsqueda de casilla</string>
+    <string name="fcvbs_searchSection">Búsqueda de sección</string>
     <string name="fcvbs_state">Estado</string>
     <string name="fcvbs_state_error">Ingrese un estado valido</string>
     <string name="fcvbs_section">Sección</string>
@@ -50,7 +52,7 @@
     <string name="fcvbs_error_2">Error al obtener los datos locales, se procedera al registro manualmente.</string>
 
     <!-- Fragment Seccion Volunteer BottomSheet  -->
-    <string name="fsvbs_title">Identificacion de la sección</string>
+    <string name="fsvbs_title">Identificación de la sección</string>
     <string name="fsvbs_state">Estado</string>
     <string name="fsvbs_name">Nombre</string>
     <string name="fsvbs_number">Número</string>
@@ -88,41 +90,27 @@
     <string name="avm_take">Tomar una foto</string>
     <string name="avm_capture">Captura manual</string>
 
-    <!-- Estados de Mexico -->
-    <string-array name="states">
-        <item>14-JALISCO</item>
-        <!--
-        <item>1-AGUASCALIENTES</item>
-        <item>2-BAJA CALIFORNIA</item>
-        <item>3-BAJA CALIFORNIA SUR</item>
-        <item>4-CAMPECHE</item>
-        <item>5-COAHUILA</item>
-        <item>6-COLIMA</item>
-        <item>7-CHIAPAS</item>
-        <item>8-CHIHUAHUA</item>
-        <item>9-DISTRITO FEDERAL</item>
-        <item>10-DURANGO</item>
-        <item>11-GUANAJUATO</item>
-        <item>12-GUERRERO</item>
-        <item>13-HIDALGO</item>
-        <item>15-MÉXICO</item>
-        <item>16-MICHOACÁN</item>
-        <item>17-MORELOS</item>
-        <item>18-NAYARIT</item>
-        <item>19-NUEVO LEÓN</item>
-        <item>20-OAXACA</item>
-        <item>21-PUEBLA</item>
-        <item>22-QUERÉTARO</item>
-        <item>23-QUINTANA ROO</item>
-        <item>24-SAN LUIS POTOSÍ</item>
-        <item>25-SINALOA</item>
-        <item>26-SONORA</item>
-        <item>27-TABASCO</item>
-        <item>28-TAMAULIPAS</item>
-        <item>29-TLAXCALA</item>
-        <item>30-VERACRUZ</item>
-        <item>31-YUCATÁN</item>
-        <item>32-ZACATECAS</item> -->
-    </string-array>
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Menu de navegacion -->
+    <string name="menu_profile">Perfil</string>
+    <string name="menu_volunteer">Voluntarios</string>
+
+    <string name="aviso_privacidad">El tratamiento de los datos personales que sean recabados se realizan con fundamento en lo establecido en los artículos 6°, apartado A, fracciones I, II y IV, y 16 párrafo segundo de la Constitución Política de los Estados Unidos Mexicanos; artículos 4° y 9°, fracciones II, V y VI de la Constitución Política del Estado de Jalisco; artículos 3, fracción II, 18, 26, 27 y 28 de la Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados; artículos 3, fracciones III y XXXII, 5, 10, 19, 20, 24 y 87 fracciones III y X de la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Jalisco y sus Municipios; artículos 1, 70 y 76 de la Ley General de Transparencia y Acceso a la Información Pública; los artículos 8, 16 y 25, fracción XVIII de la Ley de Transparencia y Acceso a la Información Pública del Estado de Jalisco y sus Municipios; artículos 30 párrafo primero inciso g), 41 párrafo primero inciso c), 43 párrafo primero incisos b) y d), 44 y 63 párrafo primero inciso e) de la Ley General de Partidos Políticos; artículo 38 fracción IV del Código Electoral del Estado de Jalisco; artículos 12, 35 párrafo primero, 40, 41, 42, 43, 44, 46 y transitorio segundo de los Estatutos del partido político local FUTURO; e inciso B) de la Convocatoria para la integración de la Comisión Ejecutiva Estatal 2020–2023.\n\nLos datos personales a los cuales se les dará tratamiento para la integración de los expedientes de las personas postulantes para la convocatoria son los siguientes:\n\n" +Datos de identificación y localización. Nombre completo, edad, fotografía, lugar de residencia, correo electrónico particular, número de afiliación, registro federal de contribuyentes, estado civil, nacionalidad, domicilio, giro comercial, teléfono, clave única de registro poblacional y datos bancarios.\n\nDatos académicos, de experiencia y laborales. Carrera de estudio (institución y profesión), empleos anteriores (cargo, período e institución), publicaciones e investigaciones (tipo, medio y año de publicación).\n\nDatos para declaraciones fiscales, patrimoniales y de intereses. Nombre, nacionalidad, relación, ingresos anuales, bienes inmuebles (tipo, ubicación y valor), vehículos (tipo, registro, marca, modelo y valor), bienes muebles (tipo y valor), inversiones, cuentas bancarias y valores (tipo, ubicación, nombre entidad y saldo), participación en direcciones y consejos (nombre de la institución, ubicación, actividad económica, tipo de participación y monto anual), participación accionaria (nombre de la institución, ubicación, antigüedad, porcentaje de participación), préstamos, créditos y obligaciones (nombre de acreedor, tipo, monto original y actual), posiciones y cargos (nombre de la institución, cargo, duración y monto anual), intereses diversos (nombre de la institución, cargo y vigencia), viajes financiados (nombre de financiador, fecha de viaje, ubicación y valor de viaje), patrocinios, cortesías y donativos (nombre de donante, propósito y valor).\n\nDatos sensibles. Firma y fotografía.\n\nLos datos personales son recabados directamente del titular de los datos salvo aquellos terceros involucrados en las declaraciones patrimoniales y de intereses; por lo que la persona que entregue datos personales de terceros deberá de notificar a sus titulares este aviso de privacidad previo al aprovechamiento de sus datos personales.\n\nLos datos personales son recabados para las siguientes finalidades: Suscribir su intención de participar en la convocatoria abierta a la Comisión Ejecutiva Estatal de Futuro; Compartir con la militancia sus versiones públicas de las declaraciones patrimoniales, de interés y fiscal de los interesados en participar en la convocatoria; Compartir con la militancia el resto de documentación enviada para participar en la convocatoria abierta a la Comisión Ejecutiva Estatal de Futuro; Servir como fin informativo para la Asamblea General a efecto de que esta pueda decidir su voto para la conformación de la Comisión Ejecutiva Estatal; Llevar el registro público de los padrones de proveedores y gastos relacionados a honorarios, prestación de servicios, asesorías y comunicación social que son requeridos por la Ley General de Transparencia y Acceso a la Información Pública, y la Ley de Transparencia y Acceso a la Información Pública del Estado de Jalisco y sus Municipios; así como la elaboración de los contratos para dar certeza jurídica de la relación que se establecerá.\n\nFinalidades secundarias: para fines estadísticos, de envío de información, de contacto directo, de creación, invitación, colaboración, de elaboración y desarrollo de análisis de datos y de directorios en términos colectivos o demográficos.\n\nSi usted NO desea que sus datos personales sean tratados para las finalidades secundarias señaladas, o alguna de ellas, puede negarnos su consentimiento desde este momento enviándonos su solicitud al correo electrónico: transparencia@mycampaign.mx. Su negativa no será motivo para dejar de contactarles y realizar las demás finalidades.\n</string>
 
 </resources>

@@ -23,7 +23,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon"
+            android:id="@+id/icon_electoral_key"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -33,10 +33,10 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcvbs_electorKey_lyt"
+            android:id="@+id/lyt_electoral_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon"
+            android:layout_toEndOf="@+id/icon_electoral_key"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fcvbs_key"
             android:paddingStart="16dp"
@@ -75,7 +75,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon1"
+            android:id="@+id/icon_email"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -85,10 +85,10 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcvbs_email_lyt"
+            android:id="@+id/lyt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon1"
+            android:layout_toEndOf="@+id/icon_email"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fcvbs_email"
             android:paddingStart="16dp"
@@ -96,7 +96,6 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="70"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -112,7 +111,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon2"
+            android:id="@+id/icon_phone"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -122,10 +121,10 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fcvbs_phone_lyt"
+            android:id="@+id/lyt_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon2"
+            android:layout_toEndOf="@+id/icon_phone"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fcvbs_phone"
             android:paddingStart="16dp"
@@ -133,7 +132,6 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="30"
                 android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -143,101 +141,65 @@
 
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/lyt_search_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
-        android:text="@string/fcvbs_searchSection"
-        android:textColor="@android:color/black"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
+        android:orientation="vertical">
 
-    <!-- Field without image -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fcvbs_states_lyt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:hint="@string/fcvbs_state"
-        android:paddingStart="56dp"
-        android:paddingEnd="16dp"
-        app:errorEnabled="true">
-
-        <AutoCompleteTextView
-            android:inputType="none"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </AutoCompleteTextView>
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fcvbs_sections_auto_lyt"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:hint="@string/fcvbs_section"
-        android:paddingStart="56dp"
-        android:paddingEnd="16dp"
-        app:errorEnabled="true">
-
-        <AutoCompleteTextView
-            android:inputType="none"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </AutoCompleteTextView>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_error"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/error_y_background"
-        android:visibility="visible"
-        app:cardBackgroundColor="@color/error_y_background"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="0dp"
-        app:contentPadding="16dp"
-        app:strokeColor="@color/error_y_text"
-        app:strokeWidth="1dp">
-
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:paddingTop="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
+            android:text="@string/fcvbs_searchSection"
+            android:textColor="@android:color/black"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/fbvbs_cardIcon_img"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_baseline_warning_24"
-                android:tint="@color/error_y"
-                android:contentDescription="@string/icon"/>
+        <!-- Field without image -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lyt_states"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:hint="@string/fcvbs_state"
+            android:paddingStart="56dp"
+            android:paddingEnd="16dp"
+            app:errorEnabled="true">
 
-            <TextView
-                android:id="@+id/fcvbs_cardError_txt"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/error_y_text"
-                tools:text="@string/fcvbs_error_1"
-                />
+            <AutoCompleteTextView
+                android:inputType="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lyt_sections"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:hint="@string/fcvbs_section"
+            android:paddingStart="56dp"
+            android:paddingEnd="16dp"
+            app:errorEnabled="true">
+
+            <AutoCompleteTextView
+                android:dropDownAnchor="@id/lyt_sections"
+                android:inputType="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

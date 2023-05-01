@@ -34,21 +34,21 @@
         android:visibility="visible">
 
         <RadioButton
-            android:id="@+id/fovbs_yes_rb"
+            android:id="@+id/btn_radio_yes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:checked="true"
             android:gravity="center_vertical"
             android:text="@string/fovbs_yes" />
 
         <RadioButton
-            android:id="@+id/fovbs_no_rb"
+            android:id="@+id/btn_radio_no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
             android:text="@string/fovbs_no" />
 
@@ -71,41 +71,34 @@
         android:paddingBottom="16dp">
 
         <RadioButton
-            android:id="@+id/fovbs_rc_rb"
+            android:id="@+id/btn_voting_booth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:checked="true"
             android:gravity="center_vertical"
-            android:text="Representante de Casilla" />
+            android:minHeight="48dp"
+            android:text="Representante de casilla" />
 
         <RadioButton
-            android:id="@+id/fovbs_rg_rb"
+            android:id="@+id/btn_radio_general"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
-            android:text="Representante General" />
+            android:minHeight="48dp"
+            android:text="Representante general" />
 
         <RadioButton
-            android:id="@+id/fovbs_vo_rb"
+            android:id="@+id/btn_radio_other"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
+            android:buttonTint="@color/blue"
             android:gravity="center_vertical"
-            android:text="Voluntario" />
-
-        <RadioButton
-            android:id="@+id/fovbs_sc_rb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:buttonTint="@color/orange_liane"
-            android:gravity="center_vertical"
-            android:text="Simpatizante / Contacto" />
+            android:text="Otro" />
 
     </RadioGroup>
 
@@ -131,7 +124,7 @@
         android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon2"
+            android:id="@+id/icon_notes"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginTop="22dp"
@@ -141,10 +134,10 @@
             android:contentDescription="@string/icon"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fovbs_notes_lyt"
+            android:id="@+id/lyt_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/icon2"
+            android:layout_toEndOf="@+id/icon_notes"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="@string/fovbs_notes"
             android:paddingStart="16dp"
@@ -152,7 +145,6 @@
             app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:maxLength="500"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:gravity="top"

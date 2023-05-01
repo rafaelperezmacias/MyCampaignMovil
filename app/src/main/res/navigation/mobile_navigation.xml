@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_volunteer">
+
+    <fragment
+        android:id="@+id/nav_volunteer"
+        android:name="com.rld.app.mycampaign.fragments.menu.VolunteerFragment"
+        android:label="@string/menu_volunteer"
+        tools:layout="@layout/fragment_volunteer" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.rld.app.mycampaign.fragments.menu.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_local_section"
+        android:name="com.rld.app.mycampaign.fragments.menu.LocalSectionFragment"
+        android:label="Secciones"
+        tools:layout="@layout/fragment_local_section" />
+
+</navigation>

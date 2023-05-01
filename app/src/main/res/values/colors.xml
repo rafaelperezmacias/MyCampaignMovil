@@ -10,7 +10,9 @@
 
     <color name="error_r_background">#FFDCE0</color>
     <color name="error_r_text">#86181D</color>
-    <color name="error_r">#d9534f</color>
+    <color name="error_r">#B00020</color>
+
+    <color name="error">#B00020</color>
 
     <color name="error_y_background">#ffe69c</color>
     <color name="error_y_text">#cc9a06</color>
@@ -23,5 +25,14 @@
     <color name="red_liane">#c83231</color>
     <color name="yellow_liane">#f8c013</color>
     <color name="light_orange_liane">#f8ad3b</color>
+
+    <!-- New colors (tmp) -->
+    <color name="blue">#326789</color>
+    <color name="light_blue">#78A6C8</color>
+    <color name="very_light_blue">#9978A6C8</color>
+    <color name="light_white">#E9EEF4</color>
+    <color name="orange">#E65C4F</color>
+    <color name="light_gray">#B3000000</color>
+    <color name="very_light_gray">#4D000000</color>
 
 </resources>
